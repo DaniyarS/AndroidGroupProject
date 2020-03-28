@@ -1,0 +1,55 @@
+package com.example.groupproject
+
+import android.content.Context
+import android.content.Intent
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+
+class MoviesAdapter(
+    var ListOfMovies: List<Movie>? = null,
+    var context: Context
+) : RecyclerView.Adapter<MoviesAdapter.MovieViewHolder>() {
+    override fun onCreateViewHolder(p0: ViewGroup, p1: Int): MovieViewHolder {
+        val view = LayoutInflater.from(p0.context).inflate(R.layout.item_film, p0, false)
+        return MovieViewHolder(view)
+    }
+
+    override fun getItemCount(): Int = ListOfMovies?.size ?: 0
+
+    override fun onBindViewHolder(p0: MovieViewHolder, p1: Int) {
+        p0.bind(ListOfMovies?.get(p1))
+    }
+
+    fun clearAll(){
+        (ListOfMovies as? ArrayList<Movie>)?.clear()
+        notifyDataSetChanged()
+    }
+
+    inner class MovieViewHolder(val view: View): RecyclerView.ViewHolder(view) {
+
+        fun bind(post: Movie?) {
+            val movieTitle = view.findViewById<TextView>(R.id.Movie_Title)
+            val movieOverview = view.findViewById<TextView>(R.id.Movie_Overview)
+            val movieImage= view.findViewById<ImageView>(R.id.Movie_Image)
+
+            movieTitle.text = post?.original_title
+            movieOverview.text =post?.overview
+
+            Glide.with(context)
+                .load(post?.getPosterPathImage())
+                .into(movieImage)
+
+        }
+    }
+
+    interface RecyclerViewItemClick {
+
+        fun itemClick(position: Int, item: Movie)
+    }
+
+}
