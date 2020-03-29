@@ -24,14 +24,10 @@ class MainActivity : AppCompatActivity(),MoviesAdapter.RecyclerViewItemClick{
     private var moviesAdapter: MoviesAdapter? = null
 
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-
-//        recyclerView = findViewById(R.id.recyclerView) //initlayout
-//        recyclerView.layoutManager = LinearLayoutManager(this)
 
         swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout) //initlayout
 
@@ -47,12 +43,6 @@ class MainActivity : AppCompatActivity(),MoviesAdapter.RecyclerViewItemClick{
 
     }
 
-//    override fun itemClick(position: Int, item: Post) {
-//        val intent = Intent(this, PostDetailActivity::class.java)
-//        intent.putExtra("movie_id", item.userId)
-//        startActivity(intent)
-//    }
-
         fun generateComponent(){
         recyclerView = findViewById(R.id.recyclerView)
 
@@ -64,6 +54,7 @@ class MainActivity : AppCompatActivity(),MoviesAdapter.RecyclerViewItemClick{
         moviesAdapter?.notifyDataSetChanged()
 
         initPopularMovies()
+            initTopRatedMovies()
 
     }
 
@@ -95,6 +86,31 @@ class MainActivity : AppCompatActivity(),MoviesAdapter.RecyclerViewItemClick{
                         swipeRefreshLayout.isRefreshing = false
                     }
                 }) } catch (e: Exception) {
+            Toast.makeText(this, e.toString(), Toast.LENGTH_SHORT)
+        }
+    }
+
+    fun initTopRatedMovies() {
+        try {
+            if (BuildConfig.MOVIE_DB_API_TOKEN.isEmpty()) {
+                return;
+            }
+            swipeRefreshLayout.isRefreshing = true
+            RetrofitMoviesService.getMovieApi().getTopRatedMovies(BuildConfig.MOVIE_DB_API_TOKEN).enqueue(object : Callback<GetMoviesResponse> {
+                override fun onFailure(call: Call<GetMoviesResponse>, t: Throwable) {
+                    swipeRefreshLayout.isRefreshing = false
+                }
+                override fun onResponse(call: Call<GetMoviesResponse>, response: Response<GetMoviesResponse>
+                ) {
+                    Log.d("top_rated_movie_list", response.body().toString())
+                    if (response.isSuccessful) {
+                        val list = response.body()?.results
+                        moviesAdapter?.ListOfMovies = list
+                        moviesAdapter?.notifyDataSetChanged()
+                    }
+                    swipeRefreshLayout.isRefreshing = false
+                }
+            }) } catch (e: Exception) {
             Toast.makeText(this, e.toString(), Toast.LENGTH_SHORT)
         }
     }

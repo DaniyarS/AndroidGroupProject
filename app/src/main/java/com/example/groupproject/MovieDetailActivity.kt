@@ -123,7 +123,7 @@ class MovieDetailActivity : AppCompatActivity() {
                     var movieCastCounter = 0
                     val castContainer = directorAndCastObject.cast
                     for (cast in castContainer){
-                        if (movieCastCounter == 2){
+                        if (movieCastCounter == 3){
                             break
                         }
                         movieCast.text=movieCast.text.toString() + cast.getCastName() + " "

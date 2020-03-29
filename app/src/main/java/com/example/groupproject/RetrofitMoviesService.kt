@@ -29,22 +29,31 @@ object RetrofitMoviesService {
 
 interface MovieApi {
 
+    //POPULAR MOVIES
     @GET("movie/popular")  //api to list all popular movies
     fun getPopularMovies(
         @Query("api_key") apiKey: String
     ): Call<GetMoviesResponse>
 
+    //MOVIE BY ID
     @GET("movie/{movie_id}")
     fun getMovieById(
         @Path("movie_id")  id: Int,
         @Query("api_key") apiKey: String
     ): Call<Movie>
 
+    //CREDITS FOR MOVIE ID
     @GET("movie/{movie_id}/credits")
     fun getCredits(
         @Path("movie_id") id: Int,
         @Query("api_key") apiKey: String
     ): Call<Credits>
+
+    //TOPRATED MOVIES
+    @GET("movie/top_rated")
+    fun getTopRatedMovies(
+        @Query("api_key") apiKey: String
+    ): Call<GetMoviesResponse>
 
 
 //    @GET("genre/movie/list")
