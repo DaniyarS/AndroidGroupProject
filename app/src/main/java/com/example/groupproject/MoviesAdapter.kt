@@ -35,11 +35,9 @@ class MoviesAdapter(
 
         fun bind(post: Movie?) {
             val movieTitle = view.findViewById<TextView>(R.id.Movie_Title)
-//            val movieOverview = view.findViewById<TextView>(R.id.Movie_Overview)
             val movieImage= view.findViewById<ImageView>(R.id.Movie_Image)
 
             movieTitle.text = post?.title
-//            movieOverview.text =post?.overview
             Glide.with(context).load(post?.getPosterPathImage()).into(movieImage)
 
             view.setOnClickListener {

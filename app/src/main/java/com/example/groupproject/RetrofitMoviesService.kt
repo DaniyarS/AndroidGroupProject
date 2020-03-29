@@ -30,7 +30,7 @@ object RetrofitMoviesService {
 interface MovieApi {
 
     //POPULAR MOVIES
-    @GET("movie/popular")  //api to list all popular movies
+    @GET("movie/popular")
     fun getPopularMovies(
         @Query("api_key") apiKey: String
     ): Call<GetMoviesResponse>
@@ -54,6 +54,12 @@ interface MovieApi {
     fun getTopRatedMovies(
         @Query("api_key") apiKey: String
     ): Call<GetMoviesResponse>
+
+    //UPCOMING MOVIES
+    @GET("movie/upcoming")
+    fun getUpcomingMovies(
+        @Query("api_key") apiKey: String
+    ) : Call<GetMoviesResponse>
 
 
 //    @GET("genre/movie/list")
