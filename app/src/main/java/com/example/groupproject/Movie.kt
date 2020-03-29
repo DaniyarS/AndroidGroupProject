@@ -14,13 +14,35 @@ data class Movie(
     @SerializedName("original_language") val original_language: String,
     @SerializedName("original_title") val original_title: String,
     @SerializedName("genre_ids") val genre_ids: List<Int>,
+    @SerializedName("genres") val genres: List<MovieGenres>,
     @SerializedName("title") val title: String,
     @SerializedName("vote_average") val vote_average: Double,
     @SerializedName("overview") val overview: String,
-    @SerializedName("release_date") val release_date: String
+    @SerializedName("release_date") val release_date: String,
+    @SerializedName("runtime") val runtime: Int
 )
 {
-    val baseImageUrl: String = "https://image.tmdb.org/t/p/w500"
+    val baseImageUrl: String = "https://image.tmdb.org/t/p/w300"
+    val backdropImageUrl: String= "https://image.tmdb.org/t/p/w780"
     fun getPosterPathImage(): String {
-        return "https://image.tmdb.org/t/p/w500"+poster_path }
+        return "https://image.tmdb.org/t/p/w342"+poster_path }
+
+    fun getBackDropPathImage(): String{
+        return "https://image.tmdb.org/t/p/w780" + backdrop_path }
 }
+
+
+// Backdrop pages format size:
+//w300
+//w780
+//w1280
+//original
+
+//poster_path images format size:
+//w92
+//w154
+//w185
+//w342
+//w500
+//w780
+//original

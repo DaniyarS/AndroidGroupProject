@@ -34,6 +34,16 @@ interface MovieApi {
         @Query("api_key") apiKey: String
     ): Call<GetMoviesResponse>
 
-//    @GET("movie/{id}")
-//    fun getMovieById(@Path("id")  id: Int): Call<Movie>
+    @GET("movie/{movie_id}")
+    fun getMovieById(
+        @Path("movie_id")  id: Int,
+        @Query("api_key") apiKey: String
+    ): Call<Movie>
+
+
+
+    @GET("genre/movie/list")
+    fun getMovieGenre(
+        @Query("api_key") apiKey: String
+    ): Call<MovieGenres>
 }

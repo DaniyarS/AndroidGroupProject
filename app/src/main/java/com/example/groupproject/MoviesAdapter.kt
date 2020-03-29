@@ -12,7 +12,8 @@ import com.bumptech.glide.Glide
 
 class MoviesAdapter(
     var ListOfMovies: List<Movie>? = null,
-    var context: Context
+    var context: Context,
+    val itemClickListener: RecyclerViewItemClick? = null
 ) : RecyclerView.Adapter<MoviesAdapter.MovieViewHolder>() {
     override fun onCreateViewHolder(p0: ViewGroup, p1: Int): MovieViewHolder {
         val view = LayoutInflater.from(p0.context).inflate(R.layout.item_film, p0, false)
@@ -34,15 +35,17 @@ class MoviesAdapter(
 
         fun bind(post: Movie?) {
             val movieTitle = view.findViewById<TextView>(R.id.Movie_Title)
-            val movieOverview = view.findViewById<TextView>(R.id.Movie_Overview)
+//            val movieOverview = view.findViewById<TextView>(R.id.Movie_Overview)
             val movieImage= view.findViewById<ImageView>(R.id.Movie_Image)
 
-            movieTitle.text = post?.original_title
-            movieOverview.text =post?.overview
+            movieTitle.text = post?.title
+//            movieOverview.text =post?.overview
+            Glide.with(context).load(post?.getPosterPathImage()).into(movieImage)
 
-            Glide.with(context)
-                .load(post?.getPosterPathImage())
-                .into(movieImage)
+            view.setOnClickListener {
+                itemClickListener?.itemClick(adapterPosition, post!!)
+            }
+
 
         }
     }

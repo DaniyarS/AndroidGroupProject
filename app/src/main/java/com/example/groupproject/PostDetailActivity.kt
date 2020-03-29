@@ -24,7 +24,7 @@ class PostDetailActivity : AppCompatActivity() {
         tvTitle = findViewById(R.id.tvTitle)
         tvBody = findViewById(R.id.tvBody)
 
-        val postId = intent.getIntExtra("movie_id", 1)
+        val postId = intent.getIntExtra("{movie_id", 1)
 //        getPost(id = postId)
 
     }

@@ -8,24 +8,16 @@
 
     <TextView
         android:id="@+id/Movie_Title"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-
+        android:layout_below="@+id/Movie_Image"
         android:text="TextView" />
 
-    <TextView
-        android:id="@+id/Movie_Overview"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_below="@+id/Movie_Title"
-        android:text="TextView"
-       />
 
     <ImageView
         android:id="@+id/Movie_Image"
-        android:layout_width="match_parent"
-        android:layout_height="220dp"
-        android:layout_below="@id/Movie_Overview"
+        android:layout_width="120dp"
+        android:layout_height="145dp"
+
        />
 </RelativeLayout>

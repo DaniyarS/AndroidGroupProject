@@ -14,7 +14,7 @@ import retrofit2.Callback
 import retrofit2.Response
 
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(),MoviesAdapter.RecyclerViewItemClick{
 
     lateinit var recyclerView: RecyclerView //recycler view init
     lateinit var swipeRefreshLayout: SwipeRefreshLayout //swiperefreshlayout init
@@ -35,18 +35,31 @@ class MainActivity : AppCompatActivity() {
 
         swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout) //initlayout
 
+        swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout)
+        swipeRefreshLayout.setOnRefreshListener {
+            moviesAdapter?.clearAll()
+            initPopularMovies()
+        }
+
+
         generateComponent()
 
 
     }
 
+//    override fun itemClick(position: Int, item: Post) {
+//        val intent = Intent(this, PostDetailActivity::class.java)
+//        intent.putExtra("movie_id", item.userId)
+//        startActivity(intent)
+//    }
+
         fun generateComponent(){
         recyclerView = findViewById(R.id.recyclerView)
 
         listMovies = ArrayList<Movie>()
-        moviesAdapter = MoviesAdapter(listMovies,this)
+        moviesAdapter = MoviesAdapter(listMovies,this,itemClickListener = this)
         recyclerView.layoutManager = LinearLayoutManager(this)
-        recyclerView.itemAnimator= DefaultItemAnimator()
+//        recyclerView.itemAnimator= DefaultItemAnimator()
         recyclerView.adapter = moviesAdapter
         moviesAdapter?.notifyDataSetChanged()
 
@@ -54,18 +67,24 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    override fun itemClick(position: Int, item: Movie) {
+        val intent = Intent(this, MovieDetailActivity::class.java)
+        intent.putExtra("movie_id", item.id)
+        startActivity(intent)
+    }
+
+
     fun initPopularMovies() {
         try {
-            if (BuildConfig.THE_MOVIE_DB_API_TOKEN.isEmpty()) {
+            if (BuildConfig.MOVIE_DB_API_TOKEN.isEmpty()) {
                 return;
             }
-            RetrofitMoviesService.getMovieApi().getPopularMovies(BuildConfig.THE_MOVIE_DB_API_TOKEN).enqueue(object : Callback<GetMoviesResponse> {
+            swipeRefreshLayout.isRefreshing = true
+            RetrofitMoviesService.getMovieApi().getPopularMovies(BuildConfig.MOVIE_DB_API_TOKEN).enqueue(object : Callback<GetMoviesResponse> {
                     override fun onFailure(call: Call<GetMoviesResponse>, t: Throwable) {
                         swipeRefreshLayout.isRefreshing = false
                     }
-                    override fun onResponse(
-                        call: Call<GetMoviesResponse>,
-                        response: Response<GetMoviesResponse>
+                    override fun onResponse(call: Call<GetMoviesResponse>, response: Response<GetMoviesResponse>
                     ) {
                         Log.d("popular_movie_list", response.body().toString())
                         if (response.isSuccessful) {
