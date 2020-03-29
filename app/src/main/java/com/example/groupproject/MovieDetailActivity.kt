@@ -44,16 +44,17 @@ class MovieDetailActivity : AppCompatActivity() {
         movieGenre= findViewById(R.id.genre_film)
         movieDetails = findViewById(R.id.movie_detail)
 
-//        movieDirector= findViewById(R.id.director_film)
-//        movieCast= findViewById(R.id.movie_cast)
+        movieDirector= findViewById(R.id.director_film)
+        movieCast= findViewById(R.id.movie_cast)
 
         val movieId= intent.getIntExtra("movie_id", 1)
         getMovieDetail(id = movieId)
+        getCredits(id = movieId)
 
     }
 
     private fun getMovieDetail(id: Int) {
-        RetrofitMoviesService.getMovieApi().getMovieById(id,BuildConfig.MOVIE_DB_API_TOKEN_CREDITS).enqueue(object : Callback<Movie> {
+        RetrofitMoviesService.getMovieApi().getMovieById(id,BuildConfig.MOVIE_DB_API_TOKEN).enqueue(object : Callback<Movie> {
             override fun onFailure(call: Call<Movie>, t: Throwable) {
                 progressBar.visibility = View.GONE
             }
@@ -96,20 +97,39 @@ class MovieDetailActivity : AppCompatActivity() {
 
                     movieDetails.text=post.overview
 
-                    val direcorAndCastObject = post.credits
-                    val crewCointainer = direcorAndCastObject.crew
+
+               }
+            }
+        })
+    }
+
+    private fun getCredits(id: Int) {
+        RetrofitMoviesService.getMovieApi().getCredits(id,BuildConfig.MOVIE_DB_API_TOKEN).enqueue(object: Callback<Credits> {
+            override fun onFailure(call: Call<Credits>, t: Throwable) {
+                TODO("Not yet implemented")
+            }
+
+            override fun onResponse(call: Call<Credits>, response: Response<Credits>) {
+                val creditsBody = response.body()
+                if (creditsBody!=null){
+                    val directorAndCastObject = creditsBody
+                    val crewCointainer = directorAndCastObject.crew
                     for (crew in crewCointainer){
                         if (crew.getDirectorName().equals("Producer")){
-                            movieDirector.text = crew.getDirectorName()
+                            movieDirector.text = crew.name
                         }
                     }
                     movieCast.text=""
-                    val castContainer = direcorAndCastObject.cast
+                    var movieCastCounter = 0
+                    val castContainer = directorAndCastObject.cast
                     for (cast in castContainer){
-                        movieCast.text=movieCast.text.toString() + cast.getCastName()
+                        if (movieCastCounter == 2){
+                            break
+                        }
+                        movieCast.text=movieCast.text.toString() + cast.getCastName() + " "
+                        movieCastCounter=movieCastCounter+1
                     }
-
-               }
+                }
             }
         })
     }

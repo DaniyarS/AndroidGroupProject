@@ -40,10 +40,15 @@ interface MovieApi {
         @Query("api_key") apiKey: String
     ): Call<Movie>
 
-
-
-    @GET("genre/movie/list")
-    fun getMovieGenre(
+    @GET("movie/{movie_id}/credits")
+    fun getCredits(
+        @Path("movie_id") id: Int,
         @Query("api_key") apiKey: String
-    ): Call<MovieGenres>
+    ): Call<Credits>
+
+
+//    @GET("genre/movie/list")
+//    fun getMovieGenre(
+//        @Query("api_key") apiKey: String
+//    ): Call<MovieGenres>
 }
