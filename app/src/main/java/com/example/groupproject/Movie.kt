@@ -13,13 +13,17 @@ data class Movie(
     @SerializedName("backdrop_path") val backdrop_path: String,
     @SerializedName("original_language") val original_language: String,
     @SerializedName("original_title") val original_title: String,
+
     @SerializedName("genre_ids") val genre_ids: List<Int>,
     @SerializedName("genres") val genres: List<MovieGenres>,
+
     @SerializedName("title") val title: String,
     @SerializedName("vote_average") val vote_average: Double,
     @SerializedName("overview") val overview: String,
     @SerializedName("release_date") val release_date: String,
-    @SerializedName("runtime") val runtime: Int
+    @SerializedName("runtime") val runtime: Int,
+
+    @SerializedName("credits") val credits : Credits
 )
 {
     val baseImageUrl: String = "https://image.tmdb.org/t/p/w300"
@@ -29,6 +33,7 @@ data class Movie(
 
     fun getBackDropPathImage(): String{
         return "https://image.tmdb.org/t/p/w780" + backdrop_path }
+
 }
 
 

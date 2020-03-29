@@ -12,7 +12,9 @@ import com.bumptech.glide.Glide
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+
 import retrofit2.http.Body
+import java.util.ArrayList
 
 
 class MovieDetailActivity : AppCompatActivity() {
@@ -41,6 +43,7 @@ class MovieDetailActivity : AppCompatActivity() {
         movieAdult = findViewById(R.id.movie_adult)
         movieGenre= findViewById(R.id.genre_film)
         movieDetails = findViewById(R.id.movie_detail)
+
 //        movieDirector= findViewById(R.id.director_film)
 //        movieCast= findViewById(R.id.movie_cast)
 
@@ -50,7 +53,7 @@ class MovieDetailActivity : AppCompatActivity() {
     }
 
     private fun getMovieDetail(id: Int) {
-        RetrofitMoviesService.getMovieApi().getMovieById(id,BuildConfig.MOVIE_DB_API_TOKEN).enqueue(object : Callback<Movie> {
+        RetrofitMoviesService.getMovieApi().getMovieById(id,BuildConfig.MOVIE_DB_API_TOKEN_CREDITS).enqueue(object : Callback<Movie> {
             override fun onFailure(call: Call<Movie>, t: Throwable) {
                 progressBar.visibility = View.GONE
             }
@@ -63,7 +66,7 @@ class MovieDetailActivity : AppCompatActivity() {
                     movieTitle.text = post.title
 
                     val realeaseDate = post.release_date
-                    movieRealease.text = realeaseDate.substring(0,4)
+                    movieRealease.text = "(" + realeaseDate.substring(0,4) + ")"
 
                     val runtime = post.runtime
                     if (runtime>60) {
@@ -80,12 +83,33 @@ class MovieDetailActivity : AppCompatActivity() {
                     else {
                         movieAdult.text="PG"}
 
-                    movieGenre.text= post.original_language
+                    val genreNameContainer = post.genres
+                    movieGenre.text=""
+                    var genreCounter = 1
+                    for (genre in genreNameContainer){
+                        if (genreCounter == genreNameContainer.size) {
+                            movieGenre.text = movieGenre.text.toString() + genre.getGenreName()}
+                        else{
+                            movieGenre.text = movieGenre.text.toString() + genre.getGenreName()+ " • "}
+                        genreCounter=genreCounter+1
+                    }
 
                     movieDetails.text=post.overview
-//                    movieDirector.text=post.title
-//                    movie
-                }
+
+                    val direcorAndCastObject = post.credits
+                    val crewCointainer = direcorAndCastObject.crew
+                    for (crew in crewCointainer){
+                        if (crew.getDirectorName().equals("Producer")){
+                            movieDirector.text = crew.getDirectorName()
+                        }
+                    }
+                    movieCast.text=""
+                    val castContainer = direcorAndCastObject.cast
+                    for (cast in castContainer){
+                        movieCast.text=movieCast.text.toString() + cast.getCastName()
+                    }
+
+               }
             }
         })
     }
