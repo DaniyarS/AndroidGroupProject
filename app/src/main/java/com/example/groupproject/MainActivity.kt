@@ -19,7 +19,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.fragment_home)
+        setContentView(R.layout.activity_main)
 
         nMainFrame = findViewById(R.id.main_frame)
         nMainNav = findViewById(R.id.main_nav)
@@ -55,4 +55,5 @@ class MainActivity : AppCompatActivity() {
         fragmentTransaction.replace(R.id.main_frame, fragment)
         fragmentTransaction.commit()
     }
+
 }
