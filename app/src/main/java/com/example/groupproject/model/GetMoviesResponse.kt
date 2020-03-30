@@ -1,5 +1,6 @@
-package com.example.groupproject
+package com.example.groupproject.model
 
+import com.example.groupproject.model.Movie
 import com.google.gson.annotations.SerializedName
 
 data class GetMoviesResponse (

@@ -1,7 +1,6 @@
-package com.example.groupproject
+package com.example.groupproject.adapter
 
 import android.content.Context
-import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +8,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.example.groupproject.R
+import com.example.groupproject.model.Movie
 
 class MoviesAdapter(
     var ListOfMovies: List<Movie>? = null,
@@ -34,8 +35,8 @@ class MoviesAdapter(
     inner class MovieViewHolder(val view: View): RecyclerView.ViewHolder(view) {
 
         fun bind(post: Movie?) {
-            val movieTitle = view.findViewById<TextView>(R.id.Movie_Title)
-            val movieImage= view.findViewById<ImageView>(R.id.Movie_Image)
+            val movieTitle = view.findViewById<TextView>(R.id.tvMovieName)
+            val movieImage= view.findViewById<ImageView>(R.id.ivMovie)
 
             movieTitle.text = post?.title
             Glide.with(context).load(post?.getPosterPathImage()).into(movieImage)
@@ -43,8 +44,6 @@ class MoviesAdapter(
             view.setOnClickListener {
                 itemClickListener?.itemClick(adapterPosition, post!!)
             }
-
-
         }
     }
 

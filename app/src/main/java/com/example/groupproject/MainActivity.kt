@@ -7,10 +7,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import android.util.Log
-import android.widget.GridLayout
 import android.widget.Toast
-import androidx.recyclerview.widget.DefaultItemAnimator
-import androidx.recyclerview.widget.GridLayoutManager
+import com.example.groupproject.adapter.MoviesAdapter
+import com.example.groupproject.api.RetrofitMoviesService
+import com.example.groupproject.model.GetMoviesResponse
+import com.example.groupproject.model.Movie
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -70,9 +71,21 @@ class MainActivity : AppCompatActivity(), MoviesAdapter.RecyclerViewItemClick{
         listMovies3 = ArrayList<Movie>()
 
 
-        moviesAdapter = MoviesAdapter(listMovies,this,itemClickListener = this)
-        moviesAdapter2 = MoviesAdapter(listMovies2,this,itemClickListener = this)
-        moviesAdapter3 = MoviesAdapter(listMovies3,this,itemClickListener = this)
+        moviesAdapter = MoviesAdapter(
+            listMovies,
+            this,
+            itemClickListener = this
+        )
+        moviesAdapter2 = MoviesAdapter(
+            listMovies2,
+            this,
+            itemClickListener = this
+        )
+        moviesAdapter3 = MoviesAdapter(
+            listMovies3,
+            this,
+            itemClickListener = this
+        )
 
         recyclerView.layoutManager =  LinearLayoutManager(this)
         recyclerView2.layoutManager = LinearLayoutManager(this)

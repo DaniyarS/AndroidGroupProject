@@ -1,10 +1,9 @@
-package com.example.groupproject
+package com.example.groupproject.api
 
-import com.example.groupproject.GetMoviesResponse
-import android.util.Log
+import com.example.groupproject.model.GetMoviesResponse
+import com.example.groupproject.model.Credits
+import com.example.groupproject.model.Movie
 import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
@@ -23,7 +22,23 @@ object RetrofitMoviesService {
         return retrofit.create(MovieApi::class.java)
     }
 
-
+    //    private fun getOkHttp(): OkHttpClient {
+//        val okHttpClient = OkHttpClient.Builder()
+//            .connectTimeout(60, TimeUnit.SECONDS)
+//            .readTimeout(60, TimeUnit.SECONDS)
+//            .addInterceptor(getLoggingInterceptor())
+//        return okHttpClient.build()
+//    }
+//
+//    private fun getLoggingInterceptor(): HttpLoggingInterceptor {
+//        return HttpLoggingInterceptor(logger = object : HttpLoggingInterceptor.Logger {
+//            override fun log(message: String) {
+//                Log.d("OkHttp", message)
+//            }
+//        }).apply {
+//            level = HttpLoggingInterceptor.Level.BODY
+//        }
+//    }
 
 }
 
