@@ -32,7 +32,7 @@ data class Movie(
         return "https://image.tmdb.org/t/p/w342"+poster_path }
 
     fun getBackDropPathImage(): String{
-        return "https://image.tmdb.org/t/p/w780" + backdrop_path }
+        return "https://image.tmdb.org/t/p/original" + backdrop_path }
 
 }
 

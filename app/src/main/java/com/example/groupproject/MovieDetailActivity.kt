@@ -23,7 +23,7 @@ class MovieDetailActivity : AppCompatActivity() {
     private lateinit var movieTitle: TextView
     private lateinit var movieRealease: TextView
     private lateinit var movieDuration: TextView
-    private lateinit var movieAdult: TextView
+//    private lateinit var movieAdult: TextView
     private lateinit var movieGenre: TextView
     private lateinit var movieDetails: TextView
     private lateinit var movieDirector: TextView
@@ -31,19 +31,19 @@ class MovieDetailActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_movie_detail)
+        setContentView(R.layout.movie_detail_items)
 
-        progressBar = findViewById(R.id.progressBar)
-        movieImageBackdrop = findViewById(R.id.backdrop_image)
-        movieTitle = findViewById(R.id.movie_title)
-        movieRealease= findViewById(R.id.release_date)
-        movieDuration= findViewById(R.id.time_duration)
-        movieAdult = findViewById(R.id.movie_adult)
-        movieGenre= findViewById(R.id.genre_film)
-        movieDetails = findViewById(R.id.movie_detail)
+//        progressBar = findViewById(R.id.progressBar)
+        movieImageBackdrop = findViewById(R.id.ivMovie)
+        movieTitle = findViewById(R.id.tvMovieName)
+        movieRealease= findViewById(R.id.tvYear)
+        movieDuration= findViewById(R.id.tvDuration)
+//        movieAdult = findViewById(R.id.movie_adult)
+        movieGenre= findViewById(R.id.textView6)
+        movieDetails = findViewById(R.id.tvDetailDesc)
 
-        movieDirector= findViewById(R.id.director_film)
-        movieCast= findViewById(R.id.movie_cast)
+        movieDirector= findViewById(R.id.tvDirectorName)
+        movieCast= findViewById(R.id.tvCastName)
 
         val movieId= intent.getIntExtra("movie_id", 1)
         getMovieDetail(id = movieId)
@@ -54,10 +54,10 @@ class MovieDetailActivity : AppCompatActivity() {
     private fun getMovieDetail(id: Int) {
         RetrofitMoviesService.getMovieApi().getMovieById(id,BuildConfig.MOVIE_DB_API_TOKEN).enqueue(object : Callback<Movie> {
             override fun onFailure(call: Call<Movie>, t: Throwable) {
-                progressBar.visibility = View.GONE
+//                progressBar.visibility = View.GONE
             }
             override fun onResponse(call: Call<Movie>, response: Response<Movie>) {
-                progressBar.visibility = View.GONE
+//                progressBar.visibility = View.GONE
                 val post = response.body()
                 if (post != null) {
                     Glide.with(movieImageBackdrop).load(post.getBackDropPathImage()).into(movieImageBackdrop)
@@ -76,11 +76,11 @@ class MovieDetailActivity : AppCompatActivity() {
                     else {
                     movieDuration.text= runtime.toString() + " min"}
 
-                    val adult = post.adult
-                    if (adult==true){
-                        movieAdult.text="R"}
-                    else {
-                        movieAdult.text="PG"}
+//                    val adult = post.adult
+//                    if (adult==true){
+//                        movieAdult.text="R"}
+//                    else {
+//                        movieAdult.text="PG"}
 
                     val genreNameContainer = post.genres
                     movieGenre.text=""
