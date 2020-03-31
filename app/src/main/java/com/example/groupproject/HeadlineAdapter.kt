@@ -8,8 +8,8 @@ import android.widget.ImageView
 import androidx.viewpager.widget.PagerAdapter
 import androidx.viewpager.widget.ViewPager
 
-class HeadlineAdapter(private val context: Context) /*: PagerAdapter()*/ {
-/*
+class HeadlineAdapter(private val context: Context) : PagerAdapter(){
+
     private var layoutInflater:LayoutInflater? = null
     private val images =  arrayOf(
         R.drawable.headline_img1,
@@ -18,7 +18,7 @@ class HeadlineAdapter(private val context: Context) /*: PagerAdapter()*/ {
         R.drawable.headline_img4,
         R.drawable.headline_img5
     )
-*//*
+
     override fun isViewFromObject(view: View, `object`: Any): Boolean {
         return view === `object`
     }
@@ -26,7 +26,7 @@ class HeadlineAdapter(private val context: Context) /*: PagerAdapter()*/ {
     override fun getCount(): Int {
         return images.size
     }
-*//*
+
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
         layoutInflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         val v = layoutInflater!!.inflate(R.layout.headline_movie_items, null)
@@ -41,5 +41,5 @@ class HeadlineAdapter(private val context: Context) /*: PagerAdapter()*/ {
         val vp = container as ViewPager
         val v = `object` as View
         vp.removeView(v)
-    }*/
+    }
 }
