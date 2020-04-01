@@ -16,6 +16,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var selectFragment:SelectFragment
     private lateinit var accountFragment:AccountFragment
 
+    private lateinit var registration: Registration
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,7 +29,7 @@ class MainActivity : AppCompatActivity() {
         homeFragment = HomeFragment()
         selectFragment = SelectFragment()
         accountFragment = AccountFragment()
-
+        registration = Registration()
 
         nMainNav.setOnNavigationItemSelectedListener(onNavigationItemSelectedListener)
     }
