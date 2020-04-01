@@ -1,6 +1,7 @@
 package com.example.groupproject.fragment
 
 import android.os.Bundle
+import android.view.ContextMenu
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,7 +17,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class MovieFragmentSecond: Fragment() {
+class MovieFragmentSix : Fragment() {
 
     private lateinit var Image : ImageView
     private lateinit var MovieName: TextView
@@ -34,8 +35,8 @@ class MovieFragmentSecond: Fragment() {
         MovieName = view.findViewById(R.id.tvMovieName)
         MovieGenre = view.findViewById(R.id.tvGenre)
         MovieIndex = view.findViewById(R.id.tvImageIndex)
-        MovieIndex.text="2"
-        getBriefMovieDetail(220)
+        MovieIndex.text="6"
+        getBriefMovieDetail(660)
 
         return view
     }
@@ -71,4 +72,5 @@ class MovieFragmentSecond: Fragment() {
             }
         })
     }
+
 }
