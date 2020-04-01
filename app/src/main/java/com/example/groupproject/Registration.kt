@@ -1,5 +1,6 @@
 package com.example.groupproject
 
+import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -14,33 +15,36 @@ class Registration : AppCompatActivity() {
     private lateinit var surname: EditText
     private lateinit var email2: EditText
     private lateinit var password2: EditText
-
+    private var context: Context? = null
+    
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_registration)
 
-        name = findViewById(R.id.name) as EditText
-        surname = findViewById(R.id.surname) as EditText
-        email2 = findViewById(R.id.email2) as EditText
-        password2 = findViewById(R.id.password2) as EditText
+        context = this
 
-        var pref = getSharedPreferences("UserInfo", 0)
+        name = findViewById<EditText>(R.id.name)
+        surname = findViewById<EditText>(R.id.surname)
+        email2 = findViewById<EditText>(R.id.email2)
+        password2 = findViewById<EditText>(R.id.password2)
+
+        val preferences = getSharedPreferences("UserInfo", 0)
 
         registrate.setOnClickListener() {
-            var name = name.text.toString()
-            var surname = surname.text.toString()
-            var email2 = email2.text.toString()
-            var password2 = password2.text.toString()
-            var editor = pref.edit()
+            val name = name.text.toString()
+            val surname = surname.text.toString()
+            val email2 = email2.text.toString()
+            val password2 = password2.text.toString()
+            val editor = preferences.edit()
 
-            if (email.length() > 1) {
+            if (tvEmail.length() > 1) {
                 editor.putString("name", name)
                 editor.putString("surname", surname)
                 editor.putString("email2", email2)
                 editor.putString("password2", password2)
-                editor.commit()
+                editor.apply()
 
-                var intent = Intent(activity, HomeFragment::class.java)
+                val intent = Intent(context, HomeFragment::class.java)
                 startActivity(intent)
             } else {
                 Toast.makeText(this, "Fill the columns!", Toast.LENGTH_LONG).show()

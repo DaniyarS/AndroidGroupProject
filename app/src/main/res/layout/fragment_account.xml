@@ -61,7 +61,7 @@
 
 
     <EditText
-        android:id="@+id/email"
+        android:id="@+id/tvEmail"
         android:maxLines="1"
         android:layout_width="260dp"
         android:layout_marginTop="30dp"
@@ -71,7 +71,7 @@
         android:textColor="@color/colorAccent"
         android:layout_gravity="center"/>
     <EditText
-        android:id="@+id/password"
+        android:id="@+id/tvPassword"
         android:maxLines="1"
         android:layout_width="260dp"
         android:layout_marginTop="20dp"
@@ -81,7 +81,7 @@
         android:textColor="@color/colorAccent"
         android:layout_gravity="center"/>
     <Button
-        android:id="@+id/login"
+        android:id="@+id/btLogin"
         android:layout_width="260dp"
         android:layout_marginTop="15dp"
         android:layout_height="wrap_content"
