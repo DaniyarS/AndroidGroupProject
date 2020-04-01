@@ -7,16 +7,14 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.HorizontalScrollView
-import android.widget.ImageView
 import android.widget.Toast
-import androidx.recyclerview.widget.DefaultItemAnimator
-import androidx.recyclerview.widget.GridLayoutManager
+import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.viewpager.widget.ViewPager
 import com.example.groupproject.adapter.MoviesAdapter
+import com.example.groupproject.adapter.ViewPagerAdapter
 //import com.example.groupproject.adapter.MoviesPagerAdapter
 import com.example.groupproject.api.RetrofitMoviesService
 import com.example.groupproject.model.GetMoviesResponse
@@ -43,7 +41,9 @@ class HomeFragment : Fragment(), MoviesAdapter.RecyclerViewItemClick {
     lateinit var upcomingRecyclerView: RecyclerView
     private var movies3Adapter: MoviesAdapter?=null
     lateinit var listUpcomingMovies: List<Movie>
-//    private lateinit var viewPager: ViewPager
+
+    lateinit var viewPager: ViewPager
+    lateinit var  pagerAdapter: ViewPagerAdapter
 //    private lateinit var pagerAdapter: MoviesPagerAdapter
 
     override fun onCreateView(
@@ -59,6 +59,18 @@ class HomeFragment : Fragment(), MoviesAdapter.RecyclerViewItemClick {
         recyclerView = viewMovies.findViewById(R.id.mainRecyclerView)
         topRatedRecyclerView = viewMovies.findViewById(R.id.secondRecyclerView)
         upcomingRecyclerView = viewMovies.findViewById(R.id.thirdRecyclerView)
+
+        viewPager = viewMovies.findViewById(R.id.vpHeadline)
+        if (viewPager != null) {
+            pagerAdapter = ViewPagerAdapter(childFragmentManager)
+            viewPager.adapter = pagerAdapter
+        }
+
+
+//            viewPager = viewMovies.findViewById(R.id.vpHeadline)
+//            val adapter = HeadlineAdapter(activity!!.applicationContext)
+//            viewPager.adapter = adapter
+
 
         swipeRefreshLayout = viewMovies.findViewById(R.id.swipeRefreshLayout)
         swipeRefreshLayout.setOnRefreshListener {

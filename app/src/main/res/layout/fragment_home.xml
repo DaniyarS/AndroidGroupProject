@@ -3,10 +3,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="#26272C"
     tools:context=".HomeFragment">
 
         <include layout="@layout/toolbar" />
+
 
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
@@ -21,9 +23,39 @@
                         <androidx.viewpager.widget.ViewPager
                             android:id="@+id/vpHeadline"
                             android:layout_width="match_parent"
-                            android:layout_height="350dp" >
+                            android:layout_height="350dp">
 
                         </androidx.viewpager.widget.ViewPager>
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="#26272C"
+                            android:layout_marginTop="8dp">
+
+                                <TextView
+                                    android:id="@+id/topicTitle"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="20dp"
+                                    android:fontFamily="sans-serif-black"
+                                    android:text="Most Popular"
+                                    android:textColor="#FFF"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent" />
+
+                                <ImageButton
+                                    android:id="@+id/ibMore"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginEnd="20dp"
+                                    android:background="@drawable/ic_more_horiz_black_24dp"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent"
+                                    app:srcCompat="@drawable/ic_more_horiz_black_24dp" />
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
 
 
                         <androidx.recyclerview.widget.RecyclerView
@@ -31,15 +63,71 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent" />
 
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="#26272C"
+                            android:layout_marginTop="8dp">
+
+                                <TextView
+                                    android:id="@+id/topicTitle1"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="20dp"
+                                    android:fontFamily="sans-serif-black"
+                                    android:text="Comedy"
+                                    android:textColor="#FFF"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent" />
+
+                                <ImageButton
+                                    android:id="@+id/ibMore1"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginEnd="20dp"
+                                    android:background="@drawable/ic_more_horiz_black_24dp"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent"
+                                    app:srcCompat="@drawable/ic_more_horiz_black_24dp" />
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
                         <androidx.recyclerview.widget.RecyclerView
                             android:id="@+id/secondRecyclerView"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent" />
 
-                        <androidx.recyclerview.widget.RecyclerView
-                            android:id="@+id/thirdRecyclerView"
+                        <androidx.constraintlayout.widget.ConstraintLayout
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent" />
+                            android:layout_height="wrap_content"
+                            android:background="#26272C"
+                            android:layout_marginTop="8dp">
+
+                                <TextView
+                                    android:id="@+id/topicTitle2"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="20dp"
+                                    android:fontFamily="sans-serif-black"
+                                    android:text="Family movies"
+                                    android:textColor="#FFF"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent" />
+
+                                <ImageButton
+                                    android:id="@+id/ibMore2"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginEnd="20dp"
+                                    android:background="@drawable/ic_more_horiz_black_24dp"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent"
+                                    app:srcCompat="@drawable/ic_more_horiz_black_24dp" />
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
 
                         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
                             android:id="@+id/swipeRefreshLayout"
@@ -47,6 +135,14 @@
                             android:layout_height="match_parent">
 
                         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/thirdRecyclerView"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent" />
+
+
                 </LinearLayout>
 
         </androidx.core.widget.NestedScrollView>
