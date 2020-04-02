@@ -54,5 +54,13 @@ class MainActivity : AppCompatActivity() {
         val fragmentTransaction:FragmentTransaction = supportFragmentManager.beginTransaction()
         fragmentTransaction.replace(R.id.main_frame, fragment)
         fragmentTransaction.commit()
+
     }
+
+    private fun setFragment(fragment: Fragment){
+        val fragmentTransaction:FragmentTransaction = supportFragmentManager.beginTransaction()
+        fragmentTransaction.replace(R.id.main_frame, fragment)
+        fragmentTransaction.commit()
+    }
+
 }

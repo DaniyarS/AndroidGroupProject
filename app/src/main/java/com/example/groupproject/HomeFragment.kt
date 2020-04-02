@@ -1,12 +1,17 @@
 package com.example.groupproject
 
+
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+
+import android.os.Bundle
+
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+
 import android.widget.Toast
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -23,10 +28,14 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
+import androidx.fragment.app.FragmentContainer
+import androidx.viewpager.widget.ViewPager
+
 
 /**
  * A simple [Fragment] subclass.
  */
+
 class HomeFragment : Fragment(), MoviesAdapter.RecyclerViewItemClick {
 
     lateinit var recyclerView: RecyclerView
@@ -46,10 +55,12 @@ class HomeFragment : Fragment(), MoviesAdapter.RecyclerViewItemClick {
     lateinit var  pagerAdapter: ViewPagerAdapter
 //    private lateinit var pagerAdapter: MoviesPagerAdapter
 
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
         val viewMovies = inflater.inflate(R.layout.fragment_home,container,false)
 
 //        viewPager = viewMovies.findViewById(R.id.vpHeadline)
@@ -196,6 +207,7 @@ class HomeFragment : Fragment(), MoviesAdapter.RecyclerViewItemClick {
             Toast.makeText(activity, e.toString(), Toast.LENGTH_SHORT)
         }
     }
+
 
 
 }
