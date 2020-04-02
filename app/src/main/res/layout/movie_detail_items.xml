@@ -4,7 +4,12 @@
     android:layout_height="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+
+    tools:context=".MovieDetailActivity"
     android:background="#26272C">
+
+
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -15,8 +20,9 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="#26272C
-">
+                android:background="#26272C">
+
+            
 
                 <ImageView
                     android:id="@+id/ivMovie"
@@ -26,6 +32,8 @@
                     app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
+
+                    android:scaleType="fitXY"
                     tools:srcCompat="@tools:sample/avatars[3]" />
 
                 <TextView
@@ -43,6 +51,7 @@
                     app:layout_constraintHorizontal_bias="0.143"
                     app:layout_constraintStart_toStartOf="@+id/ivMovie"
                     app:layout_constraintTop_toTopOf="parent" />
+
 
                 <TextView
                     android:id="@+id/tvYear"
@@ -83,7 +92,9 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:fontFamily="sans-serif-black"
-                    android:text="genre"
+
+                    tools:text="genre"
+
                     android:textColor="#FFF"
                     android:textSize="12sp"
                     app:layout_constraintStart_toStartOf="@+id/tvYear"
@@ -93,7 +104,9 @@
                     android:id="@+id/tvdot"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="・"
+
+                    android:text=""
+
                     android:textColor="#FFF"
                     android:textSize="12sp"
                     app:layout_constraintBottom_toBottomOf="@+id/tv"
@@ -117,7 +130,9 @@
                     android:id="@+id/ivAddList"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
+
+                    android:layout_marginTop="24dp"
+
                     app:layout_constraintEnd_toStartOf="@+id/ivShare"
                     app:layout_constraintHorizontal_bias="0.48"
                     app:layout_constraintStart_toStartOf="@+id/ivMovie"
@@ -136,6 +151,7 @@
                     app:layout_constraintVertical_bias="0.0"
                     app:srcCompat="@drawable/ic_play_arrow_black_24dp" />
 
+
                 <ImageView
                     android:id="@+id/ivShare"
                     android:layout_width="wrap_content"
@@ -152,12 +168,15 @@
                     android:id="@+id/btWatch"
                     android:layout_width="118dp"
                     android:layout_height="25dp"
+
                     android:layout_marginBottom="16dp"
                     android:background="@drawable/watch_button"
                     android:backgroundTint="@android:color/darker_gray"
                     android:elevation="0dp"
                     android:text="WATCH TRAILER"
+
                     android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+
                     android:textColor="#FFF"
                     android:textSize="8sp"
                     app:layout_constraintBottom_toBottomOf="@+id/ivMovie"
@@ -241,7 +260,11 @@
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>
+
+
         </androidx.cardview.widget.CardView>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
+
 
 </ScrollView>

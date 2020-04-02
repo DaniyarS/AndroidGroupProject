@@ -22,7 +22,8 @@
                         <androidx.viewpager.widget.ViewPager
                             android:id="@+id/vpHeadline"
                             android:layout_width="match_parent"
-                            android:layout_height="350dp" >
+                            android:layout_height="350dp">
+
 
                         </androidx.viewpager.widget.ViewPager>
 
@@ -56,11 +57,13 @@
 
                         </androidx.constraintlayout.widget.ConstraintLayout>
 
+
                         <androidx.recyclerview.widget.RecyclerView
                             android:id="@+id/mainRecyclerView"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:paddingStart="20dp"/>
+
 
                         <androidx.constraintlayout.widget.ConstraintLayout
                             android:layout_width="match_parent"
@@ -92,11 +95,13 @@
 
                         </androidx.constraintlayout.widget.ConstraintLayout>
 
+
                         <androidx.recyclerview.widget.RecyclerView
                             android:id="@+id/secondRecyclerView"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:paddingStart="20dp"/>
+
 
                         <androidx.constraintlayout.widget.ConstraintLayout
                             android:layout_width="match_parent"
@@ -128,11 +133,13 @@
 
                         </androidx.constraintlayout.widget.ConstraintLayout>
 
+
                         <androidx.recyclerview.widget.RecyclerView
                             android:id="@+id/thirdRecyclerView"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:paddingStart="20dp"/>
+
 
                         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
                             android:id="@+id/swipeRefreshLayout"
@@ -140,6 +147,16 @@
                             android:layout_height="match_parent">
 
                         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/thirdRecyclerView"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent" />
+
+
+
                 </LinearLayout>
 
         </androidx.core.widget.NestedScrollView>
