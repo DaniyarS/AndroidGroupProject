@@ -30,6 +30,8 @@ class MainActivity : AppCompatActivity() {
 
 
         nMainNav.setOnNavigationItemSelectedListener(onNavigationItemSelectedListener)
+        
+        setFragment(homeFragment)
     }
 
     private val onNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener {
