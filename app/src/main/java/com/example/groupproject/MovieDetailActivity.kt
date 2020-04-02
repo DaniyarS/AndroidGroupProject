@@ -1,10 +1,9 @@
 package com.example.groupproject
 
+import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.View
 import android.widget.ImageView
-import android.widget.ProgressBar
 import android.widget.TextView
 import com.bumptech.glide.Glide
 import com.example.groupproject.api.RetrofitMoviesService
@@ -18,7 +17,6 @@ import retrofit2.Response
 class MovieDetailActivity : AppCompatActivity() {
 
 
-    private lateinit var progressBar: ProgressBar
     private lateinit var movieImageBackdrop: ImageView
     private lateinit var movieTitle: TextView
     private lateinit var movieRealease: TextView
@@ -56,6 +54,7 @@ class MovieDetailActivity : AppCompatActivity() {
             override fun onFailure(call: Call<Movie>, t: Throwable) {
 //                progressBar.visibility = View.GONE
             }
+            @SuppressLint("SetTextI18n")
             override fun onResponse(call: Call<Movie>, response: Response<Movie>) {
 //                progressBar.visibility = View.GONE
                 val post = response.body()
@@ -74,7 +73,8 @@ class MovieDetailActivity : AppCompatActivity() {
                         movieDuration.text=runtimeHours.toString()+"h " + runtimeMinutes.toString() + "min"
                     }
                     else {
-                    movieDuration.text= runtime.toString() + " min"}
+                    movieDuration.text= "$runtime min"
+                    }
 
 //                    val adult = post.adult
 //                    if (adult==true){
@@ -90,7 +90,7 @@ class MovieDetailActivity : AppCompatActivity() {
                             movieGenre.text = movieGenre.text.toString() + genre.getGenreName()}
                         else{
                             movieGenre.text = movieGenre.text.toString() + genre.getGenreName()+ " • "}
-                        genreCounter=genreCounter+1
+                        genreCounter += 1
                     }
 
                     movieDetails.text=post.overview
@@ -107,25 +107,25 @@ class MovieDetailActivity : AppCompatActivity() {
                 TODO("Not yet implemented")
             }
 
+            @SuppressLint("SetTextI18n")
             override fun onResponse(call: Call<Credits>, response: Response<Credits>) {
                 val creditsBody = response.body()
                 if (creditsBody!=null){
-                    val directorAndCastObject = creditsBody
-                    val crewCointainer = directorAndCastObject.crew
+                    val crewCointainer = creditsBody.crew
                     for (crew in crewCointainer){
-                        if (crew.getDirectorName().equals("Producer")){
+                        if (crew.getDirectorName() == "Producer"){
                             movieDirector.text = crew.name
                         }
                     }
                     movieCast.text=""
                     var movieCastCounter = 0
-                    val castContainer = directorAndCastObject.cast
+                    val castContainer = creditsBody.cast
                     for (cast in castContainer){
                         if (movieCastCounter == 3){
                             break
                         }
-                        movieCast.text=movieCast.text.toString() + cast.getCastName() + " "
-                        movieCastCounter=movieCastCounter+1
+                        movieCast.text= movieCast.text.toString() + cast.getCastName() + " "
+                        movieCastCounter += 1
                     }
                 }
             }
