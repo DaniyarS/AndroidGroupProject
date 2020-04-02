@@ -10,7 +10,7 @@
 
     <ImageView
         android:layout_width="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
         android:layout_height="90dp"
         android:src="@drawable/tubi"/>
 
@@ -19,7 +19,7 @@
         android:layout_height="wrap_content"
         android:text="Free TV,"
         android:layout_marginLeft="20dp"
-        android:layout_marginTop="80dp"
+        android:layout_marginTop="40dp"
         android:textColor="#ffffff"
         android:textSize="42dp"
         android:textStyle="bold" />
@@ -44,11 +44,11 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="25dp"
+        android:layout_marginTop="15dp"
         android:text="Register now to build your queue, continue"
         android:layout_marginLeft="20dp"
         android:textColor="#ffffff"
-        android:textSize="19dp" />
+        android:textSize="17dp" />
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -56,7 +56,7 @@
         android:layout_marginTop="10dp"
         android:layout_marginLeft="20dp"
         android:textColor="#ffffff"
-        android:textSize="19dp" />
+        android:textSize="17dp" />
 
 
 
@@ -64,7 +64,7 @@
         android:id="@+id/tvEmail"
         android:maxLines="1"
         android:layout_width="260dp"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="20dp"
         android:layout_height="wrap_content"
         android:hint="email"
         android:textColorHint="@color/colorAccent"
