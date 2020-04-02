@@ -1,14 +1,127 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/log_back"
     tools:context=".AccountFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_height="90dp"
+        android:src="@drawable/tubi"/>
 
-</FrameLayout>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Free TV,"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="40dp"
+        android:textColor="#ffffff"
+        android:textSize="42dp"
+        android:textStyle="bold" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="free movies,"
+        android:layout_marginLeft="20dp"
+        android:textColor="#ffffff"
+        android:textSize="42dp"
+        android:textStyle="bold" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="free registration"
+        android:layout_marginLeft="20dp"
+        android:textColor="#ffffff"
+        android:textSize="42dp"
+        android:textStyle="bold" />
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:text="Register now to build your queue, continue"
+        android:layout_marginLeft="20dp"
+        android:textColor="#ffffff"
+        android:textSize="17dp" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="watching where you left off, and more!"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="20dp"
+        android:textColor="#ffffff"
+        android:textSize="17dp" />
+
+
+
+    <EditText
+        android:id="@+id/tvEmail"
+        android:maxLines="1"
+        android:layout_width="260dp"
+        android:layout_marginTop="20dp"
+        android:layout_height="wrap_content"
+        android:hint="email"
+        android:textColorHint="@color/colorAccent"
+        android:textColor="@color/colorAccent"
+        android:layout_gravity="center"/>
+    <EditText
+        android:id="@+id/tvPassword"
+        android:maxLines="1"
+        android:layout_width="260dp"
+        android:layout_marginTop="20dp"
+        android:layout_height="wrap_content"
+        android:hint="password"
+        android:textColorHint="@color/colorAccent"
+        android:textColor="@color/colorAccent"
+        android:layout_gravity="center"/>
+    <Button
+        android:id="@+id/btLogin"
+        android:layout_width="260dp"
+        android:layout_marginTop="15dp"
+        android:layout_height="wrap_content"
+        android:textAllCaps="false"
+        android:layout_gravity="center"
+        android:text="Sign In"
+        android:textSize="20dp"
+        android:background="#ffffff"/>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="NewAccount?"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="20dp"
+            android:textColor="#ffffff"
+            android:textSize="15dp" />
+        <Button
+            android:id="@+id/create"
+            android:layout_width="wrap_content"
+            android:layout_marginTop="4dp"
+            android:layout_height="21dp"
+            android:textAllCaps="false"
+            android:layout_marginLeft="5dp"
+            android:layout_gravity="center"
+            android:textStyle="bold"
+            android:textColor="#ffffff"
+            android:text="Create Account"
+            android:background="@null"
+            android:textSize="15dp"/>
+    </LinearLayout>
+
+
+    <!--    <include-->
+    <!--        android:id="@+id/home"-->
+    <!--        android:layout="@layout/home"-->
+    <!--        android:visibility="gone"/>-->
+
+</LinearLayout>
