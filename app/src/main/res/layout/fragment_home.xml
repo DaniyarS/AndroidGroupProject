@@ -27,6 +27,10 @@
                             android:layout_width="match_parent"
                             android:layout_height="350dp">
                         </androidx.viewpager.widget.ViewPager>
+                        <View
+                            android:layout_width="match_parent"
+                            android:background="#3a3b40"
+                            android:layout_height="1dp"/>
 
                         <androidx.constraintlayout.widget.ConstraintLayout
                             android:layout_width="match_parent"

@@ -46,7 +46,14 @@
                     app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
-
+                
+                <View
+                    android:layout_width="match_parent"
+                    android:background="#3a3b40"
+                    app:layout_constraintBottom_toBottomOf="@id/ivShadow"
+                    app:layout_constraintEnd_toEndOf="@id/ivShadow"
+                    app:layout_constraintStart_toStartOf="@id/ivShadow"
+                    android:layout_height="1dp"/>
 
                 <TextView
                     android:id="@+id/tvMovieName"
