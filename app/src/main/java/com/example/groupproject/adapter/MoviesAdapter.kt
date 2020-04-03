@@ -42,7 +42,7 @@ class MoviesAdapter(
             val movieImage= view.findViewById<ImageView>(R.id.ivMovie)
 
             Glide.with(context).load(post?.getPosterPathImage()).into(movieImage)
-            movieTitle.text = post?.title
+            movieTitle.text=post?.title
 
                     view.setOnClickListener {
                         itemClickListener?.itemClick(adapterPosition, post!!)
