@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
@@ -19,6 +20,7 @@ import retrofit2.Response
 
 class MovieFragmentSix : Fragment() {
 
+    private lateinit var progressBar: ProgressBar
     private lateinit var Image : ImageView
     private lateinit var MovieName: TextView
     private lateinit var MovieGenre: TextView
@@ -31,6 +33,7 @@ class MovieFragmentSix : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.headline_movie_items, container,false)
 
+        progressBar = view.findViewById(R.id.progressBar)
         Image = view.findViewById(R.id.ivHeadlineMovie)
         MovieName = view.findViewById(R.id.tvMovieName)
         MovieGenre = view.findViewById(R.id.tvGenre)
@@ -45,12 +48,13 @@ class MovieFragmentSix : Fragment() {
         RetrofitMoviesService.getMovieApi().getMovieById(id, BuildConfig.MOVIE_DB_API_TOKEN).enqueue(object :
             Callback<Movie> {
             override fun onFailure(call: Call<Movie>, t: Throwable) {
-//                progressBar.visibility = View.GONE
+                progressBar.visibility = View.GONE
             }
             override fun onResponse(call: Call<Movie>, response: Response<Movie>) {
-//                progressBar.visibility = View.GONE
+                progressBar.visibility = View.GONE
                 val post = response.body()
                 if (post != null) {
+
                     Glide.with(Image).load(post.getBackDropPathImage()).into(Image)
 
                     MovieName.text = post.title
@@ -65,12 +69,8 @@ class MovieFragmentSix : Fragment() {
                             MovieGenre.text = MovieGenre.text.toString() + genre.getGenreName()+ " • "}
                         genreCounter=genreCounter+1
                     }
-
-
-
                 }
             }
         })
     }
-
 }
