@@ -3,7 +3,9 @@ package com.example.groupproject
 import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.TextView
 import com.bumptech.glide.Glide
 import com.example.groupproject.api.RetrofitMoviesService
@@ -16,12 +18,12 @@ import retrofit2.Response
 
 class MovieDetailActivity : AppCompatActivity() {
 
+    private lateinit var progressBar: ProgressBar
 
     private lateinit var movieImageBackdrop: ImageView
     private lateinit var movieTitle: TextView
     private lateinit var movieRealease: TextView
     private lateinit var movieDuration: TextView
-//    private lateinit var movieAdult: TextView
     private lateinit var movieGenre: TextView
     private lateinit var movieDetails: TextView
     private lateinit var movieDirector: TextView
@@ -31,15 +33,14 @@ class MovieDetailActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.movie_detail_items)
 
-//        progressBar = findViewById(R.id.progressBar)
+        progressBar = findViewById(R.id.progressBar)
+
         movieImageBackdrop = findViewById(R.id.ivMovie)
         movieTitle = findViewById(R.id.tvMovieName)
         movieRealease= findViewById(R.id.tvYear)
         movieDuration= findViewById(R.id.tvDuration)
-//        movieAdult = findViewById(R.id.movie_adult)
         movieGenre= findViewById(R.id.textView6)
         movieDetails = findViewById(R.id.tvDetailDesc)
-
         movieDirector= findViewById(R.id.tvDirectorName)
         movieCast= findViewById(R.id.tvCastName)
 
@@ -52,11 +53,11 @@ class MovieDetailActivity : AppCompatActivity() {
     private fun getMovieDetail(id: Int) {
         RetrofitMoviesService.getMovieApi().getMovieById(id,BuildConfig.MOVIE_DB_API_TOKEN).enqueue(object : Callback<Movie> {
             override fun onFailure(call: Call<Movie>, t: Throwable) {
-//                progressBar.visibility = View.GONE
+                progressBar.visibility = View.GONE
             }
             @SuppressLint("SetTextI18n")
             override fun onResponse(call: Call<Movie>, response: Response<Movie>) {
-//                progressBar.visibility = View.GONE
+                progressBar.visibility = View.GONE
                 val post = response.body()
                 if (post != null) {
                     Glide.with(movieImageBackdrop).load(post.getBackDropPathImage()).into(movieImageBackdrop)
@@ -76,12 +77,6 @@ class MovieDetailActivity : AppCompatActivity() {
                     movieDuration.text= "$runtime min"
                     }
 
-//                    val adult = post.adult
-//                    if (adult==true){
-//                        movieAdult.text="R"}
-//                    else {
-//                        movieAdult.text="PG"}
-
                     val genreNameContainer = post.genres
                     movieGenre.text=""
                     var genreCounter = 1
@@ -92,9 +87,7 @@ class MovieDetailActivity : AppCompatActivity() {
                             movieGenre.text = movieGenre.text.toString() + genre.getGenreName()+ " • "}
                         genreCounter += 1
                     }
-
                     movieDetails.text=post.overview
-
 
                }
             }
@@ -106,7 +99,6 @@ class MovieDetailActivity : AppCompatActivity() {
             override fun onFailure(call: Call<Credits>, t: Throwable) {
                 TODO("Not yet implemented")
             }
-
             @SuppressLint("SetTextI18n")
             override fun onResponse(call: Call<Credits>, response: Response<Credits>) {
                 val creditsBody = response.body()

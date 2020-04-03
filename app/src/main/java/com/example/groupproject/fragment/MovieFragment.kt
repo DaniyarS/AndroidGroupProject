@@ -65,9 +65,6 @@ class MovieFragment : Fragment() {
                             MovieGenre.text = MovieGenre.text.toString() + genre.getGenreName()+ " • "}
                         genreCounter=genreCounter+1
                     }
-
-
-
                 }
             }
         })

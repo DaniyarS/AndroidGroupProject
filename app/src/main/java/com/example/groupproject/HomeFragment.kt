@@ -49,7 +49,6 @@ class HomeFragment : Fragment(), MoviesAdapter.RecyclerViewItemClick {
     private lateinit var viewPager: ViewPager
     private lateinit var  pagerAdapter: ViewPagerAdapter
 
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -69,50 +68,44 @@ class HomeFragment : Fragment(), MoviesAdapter.RecyclerViewItemClick {
 
         swipeRefreshLayout = viewMovies.findViewById(R.id.swipeRefreshLayout)
         swipeRefreshLayout.setOnRefreshListener {
-
+            moviesAdapter?.clearAll()
+            movies2Adapter?.clearAll()
+            movies3Adapter?.clearAll()
             generateComponent()
         }
-
 
         generateComponent()
 
         return viewMovies
-
     }
 
     private fun generateComponent(){
 
         listMovies = ArrayList()
-
         moviesAdapter =activity?.applicationContext?.let {MoviesAdapter(listMovies, it,itemClickListener = this)  }
         recyclerView.layoutManager =   LinearLayoutManager(activity,LinearLayoutManager.HORIZONTAL,false)
         recyclerView.adapter = moviesAdapter
-        moviesAdapter?.notifyDataSetChanged()
 
         listTopRatedMovies = ArrayList()
         movies2Adapter = activity?.applicationContext?.let{MoviesAdapter(listTopRatedMovies,it,itemClickListener = this)}
         topRatedRecyclerView.layoutManager = LinearLayoutManager(activity,LinearLayoutManager.HORIZONTAL,false)
         topRatedRecyclerView.adapter = movies2Adapter
-        movies2Adapter?.notifyDataSetChanged()
 
         listUpcomingMovies = ArrayList()
         movies3Adapter = activity?.applicationContext?.let{MoviesAdapter(listUpcomingMovies,it,itemClickListener = this)}
         upcomingRecyclerView.layoutManager = LinearLayoutManager(activity,LinearLayoutManager.HORIZONTAL,false)
         upcomingRecyclerView.adapter = movies3Adapter
-        movies3Adapter?.notifyDataSetChanged()
 
         initPopularMovies()
         initTopRatedMovies()
         initUpcomingMovies()
     }
 
-//
     override fun itemClick(position: Int, item: Movie) {
         val intent = Intent(activity, MovieDetailActivity::class.java)
         intent.putExtra("movie_id", item.id)
         startActivity(intent)
     }
-
 
     @SuppressLint("ShowToast")
     private fun initPopularMovies() {

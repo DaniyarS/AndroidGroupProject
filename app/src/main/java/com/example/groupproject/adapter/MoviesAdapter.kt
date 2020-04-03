@@ -37,35 +37,20 @@ class MoviesAdapter(
     inner class MovieViewHolder(val view: View): RecyclerView.ViewHolder(view) {
 
         fun bind(post: Movie?) {
+
             val movieTitle = view.findViewById<TextView>(R.id.tvMovieName)
             val movieImage= view.findViewById<ImageView>(R.id.ivMovie)
-            val movieHeadLine = view.findViewById<ImageView>(R.id.ivHeadlineMovie)
-            val tempTitle = post?.title
-            Glide.with(context).load(post?.getPosterPathImage()).into(movieImage)
-            if (tempTitle != null) {
-                if (tempTitle.length > 30) {
-//                        movieTitle.text=tempTitle.substring(0,27)+ '\n' + tempTitle.substring(28,tempTitle.length)
-                    movieTitle.text= tempTitle.substring(0,27)
-                }
-                else
-                {
-                    movieTitle.text=tempTitle
-                }
-            }
 
-                //            Glide.with(context).load(post?.getPosterPathImage()).into(movieHeadLine)
+            Glide.with(context).load(post?.getPosterPathImage()).into(movieImage)
+            movieTitle.text = post?.title
+
                     view.setOnClickListener {
                         itemClickListener?.itemClick(adapterPosition, post!!)
                     }
-
-
-
         }
     }
 
-
     interface RecyclerViewItemClick {
-
         fun itemClick(position: Int, item: Movie)
     }
 
