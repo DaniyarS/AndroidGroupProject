@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
+import android.widget.Toast
 import kotlinx.android.synthetic.main.fragment_account.*
 
 /**
@@ -39,7 +40,9 @@ class AccountFragment : Fragment() {
 
             btLogin.setOnClickListener() {
                 val userEmail = email.text.toString()
+                tvEmail.visibility = View.GONE
                 val userPass = password.text.toString()
+                tvPassword.visibility = View.GONE
 
                 val email = preferences?.getString("email", "")
                 val password = preferences?.getString("password", "")
@@ -47,6 +50,9 @@ class AccountFragment : Fragment() {
                 if (userEmail == email && userPass == password) {
                     val intent = Intent(activity, HomeFragment::class.java)
                     startActivity(intent)
+                    Toast.makeText(activity, "You have signed in", Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(activity, "Please, fill the blanks!", Toast.LENGTH_SHORT).show()
                 }
             }
         }
