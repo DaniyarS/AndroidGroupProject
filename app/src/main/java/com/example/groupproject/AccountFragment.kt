@@ -17,7 +17,7 @@ class AccountFragment : Fragment() {
 
     private lateinit var email: EditText
     private lateinit var password: EditText
-
+    var isSigned:Boolean = false
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -51,6 +51,7 @@ class AccountFragment : Fragment() {
                     val intent = Intent(activity, HomeFragment::class.java)
                     startActivity(intent)
                     Toast.makeText(activity, "You have signed in", Toast.LENGTH_SHORT).show()
+                      isSigned = true
                 } else {
                     Toast.makeText(activity, "Please, fill the blanks!", Toast.LENGTH_SHORT).show()
                 }

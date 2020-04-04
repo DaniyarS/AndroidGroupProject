@@ -7,6 +7,7 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
+import android.widget.Toast
 import com.bumptech.glide.Glide
 import com.example.groupproject.api.RetrofitMoviesService
 import com.example.groupproject.model.Credits
@@ -17,6 +18,8 @@ import retrofit2.Response
 
 
 class MovieDetailActivity : AppCompatActivity() {
+
+    private lateinit var ivAddList:ImageView
 
     private lateinit var progressBar: ProgressBar
 
@@ -33,6 +36,8 @@ class MovieDetailActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.movie_detail_items)
 
+        ivAddList = findViewById(R.id.ivAddList)
+
         progressBar = findViewById(R.id.progressBar)
 
         movieImageBackdrop = findViewById(R.id.ivMovie)
@@ -47,6 +52,17 @@ class MovieDetailActivity : AppCompatActivity() {
         val movieId= intent.getIntExtra("movie_id", 1)
         getMovieDetail(id = movieId)
         getCredits(id = movieId)
+
+
+        ivAddList.setOnClickListener {
+            if (AccountFragment().isSigned){
+                SelectFragment().addToFavorite(movieId)
+                Toast.makeText(this, "Added to Favorites", Toast.LENGTH_SHORT).show()
+            }
+            else{
+                Toast.makeText(this, "Please, sign in first", Toast.LENGTH_SHORT).show()
+            }
+        }
 
     }
 
@@ -123,4 +139,7 @@ class MovieDetailActivity : AppCompatActivity() {
             }
         })
     }
+
+
+
 }

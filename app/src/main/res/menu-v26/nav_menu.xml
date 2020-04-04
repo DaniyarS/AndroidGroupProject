@@ -9,7 +9,7 @@
     <item
         android:id="@+id/nav_select"
 
-        android:icon="@drawable/ic_star_black_24dp"
+        android:icon="@drawable/ic_star_fav_24dp"
 
         android:title="@string/nav_search" />
     <item
