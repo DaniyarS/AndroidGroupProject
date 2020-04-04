@@ -47,6 +47,13 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
+                <View
+                    android:layout_width="match_parent"
+                    android:background="#3a3b40"
+                    app:layout_constraintBottom_toBottomOf="@id/ivShadow"
+                    app:layout_constraintEnd_toEndOf="@id/ivShadow"
+                    app:layout_constraintStart_toStartOf="@id/ivShadow"
+                    android:layout_height="1dp"/>
 
                 <TextView
                     android:id="@+id/tvMovieName"
@@ -266,6 +273,16 @@
                     app:layout_constraintStart_toStartOf="@+id/tvDirectorName"
                     app:layout_constraintTop_toTopOf="@+id/tvCast"
                     app:layout_constraintVertical_bias="0.0" />
+                
+                <androidx.core.widget.ContentLoadingProgressBar
+                    android:id="@+id/progressBar"
+                    style="?android:attr/progressBarStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"/>
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>

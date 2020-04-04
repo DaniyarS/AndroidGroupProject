@@ -1,14 +1,20 @@
 package com.example.groupproject.api
 
+import android.util.Log
 import com.example.groupproject.model.GetMoviesResponse
 import com.example.groupproject.model.Credits
 import com.example.groupproject.model.Movie
+import okhttp3.OkHttpClient
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
+import okhttp3.Interceptor
+import okhttp3.logging.HttpLoggingInterceptor
+
+import java.util.concurrent.TimeUnit
 
 object RetrofitMoviesService {
     const val BASE_URL = "https://api.themoviedb.org/3/" //base url of tmdb
@@ -17,29 +23,28 @@ object RetrofitMoviesService {
         val retrofit = Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
-//            .client(getOkHttp())
+            .client(getOkHttp())
             .build()
         return retrofit.create(MovieApi::class.java)
     }
 
-    //    private fun getOkHttp(): OkHttpClient {
-//        val okHttpClient = OkHttpClient.Builder()
-//            .connectTimeout(60, TimeUnit.SECONDS)
-//            .readTimeout(60, TimeUnit.SECONDS)
-//            .addInterceptor(getLoggingInterceptor())
-//        return okHttpClient.build()
-//    }
-//
-//    private fun getLoggingInterceptor(): HttpLoggingInterceptor {
-//        return HttpLoggingInterceptor(logger = object : HttpLoggingInterceptor.Logger {
-//            override fun log(message: String) {
-//                Log.d("OkHttp", message)
-//            }
-//        }).apply {
-//            level = HttpLoggingInterceptor.Level.BODY
-//        }
-//    }
+    private fun getOkHttp(): OkHttpClient {
+        val okHttpClient = OkHttpClient.Builder()
+            .connectTimeout(60, TimeUnit.SECONDS)
+            .readTimeout(60, TimeUnit.SECONDS)
+            .addInterceptor(getLoggingInterceptor())
+        return okHttpClient.build()
+    }
 
+    private fun getLoggingInterceptor(): HttpLoggingInterceptor {
+        return HttpLoggingInterceptor(logger = object : HttpLoggingInterceptor.Logger {
+            override fun log(message: String) {
+                Log.d("OkHttp", message)
+            }
+        }).apply {
+            level = HttpLoggingInterceptor.Level.BODY
+        }
+    }
 }
 
 interface MovieApi {
@@ -76,9 +81,4 @@ interface MovieApi {
         @Query("api_key") apiKey: String
     ) : Call<GetMoviesResponse>
 
-
-//    @GET("genre/movie/list")
-//    fun getMovieGenre(
-//        @Query("api_key") apiKey: String
-//    ): Call<MovieGenres>
 }
