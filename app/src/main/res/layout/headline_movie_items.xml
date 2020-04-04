@@ -1,17 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
 
     xmlns:tools="http://schemas.android.com/tools"
 
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="@android:color/darker_gray">
 
     <ImageView
         android:id="@+id/ivHeadlineMovie"
         android:layout_width="match_parent"
         android:layout_height="350dp"
+        android:layout_marginBottom="3dp"
         android:scaleType="centerCrop"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -19,23 +20,14 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0"
-        tools:srcCompat="@tools:sample/avatars[3]"
-        />
+        tools:srcCompat="@tools:sample/avatars[3]" />
 
-    <ImageView
-        android:id="@+id/ivGrayLine"
-        android:layout_width="match_parent"
-        android:layout_height="3dp"
-        android:scaleType="fitXY"
-        android:src="@drawable/line"
-        android:visibility="visible"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ivHeadlineMovie" />
+
     <ImageView
         android:id="@+id/ivShadowBottom"
         android:layout_width="match_parent"
         android:layout_height="350dp"
+        android:layout_marginBottom="3dp"
         android:src="@drawable/grad_top"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
