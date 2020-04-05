@@ -32,67 +32,75 @@ class SelectFragment : Fragment() {
     private var favoritesAdapter: FavoritesAdapter? = null
     private lateinit var movieTitle: TextView
     private lateinit var movieImageBackdrop:ImageView
-
+    lateinit var favlist: MutableList<Int>
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val selectActivity = inflater.inflate(R.layout.fragment_select, container, false)
-
-            activity?.let {
-                val movieId = it.intent.getIntExtra("movie_id", 1)
-                movieImageBackdrop = selectActivity.findViewById(R.id.ivMovie)
-                movieTitle = selectActivity.findViewById(R.id.tvMovieName)
-                favMovieRecycler = selectActivity.findViewById(R.id.favMovieRecycler)
-                swipeRefreshLayout = selectActivity.findViewById(R.id.swipeRefreshLayout)
-                swipeRefreshLayout.setOnRefreshListener {
-                    favoritesAdapter?.clearAll()
-                    generate(movieId)
-                }
-                generate(movieId)
-            }
-        
+        movieImageBackdrop = selectActivity.findViewById(R.id.ivMovie)
+        movieTitle = selectActivity.findViewById(R.id.tvMovieName)
+        favMovieRecycler = selectActivity.findViewById(R.id.favMovieRecycler)
+        swipeRefreshLayout = selectActivity.findViewById(R.id.swipeRefreshLayout)
+        swipeRefreshLayout.setOnRefreshListener {
+            favoritesAdapter?.clearAll()
+            generate()
+        }
+        generate()
         return selectActivity
     }
 
 
-    fun generate(movieId:Int){
+//    private fun generateArray(){
+//
+//        var listFromMDActivity: MutableList<Int> = MovieDetailActivity().list
+//
+//        for (idMovie in listFromMDActivity){
+//            addToFavorite(listFromMDActivity[idMovie])
+//            generate()
+//        }
+//    }
+
+    private fun generate(){
         listOfFavMovies = ArrayList()
         favoritesAdapter =activity?.applicationContext?.let {FavoritesAdapter(listOfFavMovies, it.applicationContext)  }
         favMovieRecycler.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL,false)
         favMovieRecycler.adapter = favoritesAdapter
 
-        addToFavorite(movieId)
+        addToFavorite()
     }
 
-    @SuppressLint("ShowToast")
-    private fun addToFavorite(movieId:Int){
+
+    private fun addToFavorite(){
         try {
             if (BuildConfig.MOVIE_DB_API_TOKEN.isEmpty()) {
                 return
             }
             swipeRefreshLayout.isRefreshing = true
-            RetrofitMoviesService.getMovieApi().getMovieById(movieId,BuildConfig.MOVIE_DB_API_TOKEN).enqueue(object :
-                Callback<Movie> {
-                override fun onFailure(call: Call<Movie>, t: Throwable) {
-                    swipeRefreshLayout.isRefreshing = false
-                }
-                override fun onResponse(call: Call<Movie>, response: Response<Movie>
-                ) {
-                    val post = response.body()
-                    if (post != null) {
-                        Glide.with(movieImageBackdrop).load(post.getBackDropPathImage()).into(movieImageBackdrop)
-                        movieTitle.text = post.title
-                        val list = response.body()?.results
-                        favoritesAdapter?.listOfFavMovies= list
-                        favoritesAdapter?.notifyDataSetChanged()
+            //var listFromMDActivity: MutableList<Int> = MovieDetailActivity().list
+            for (idMovie in favlist){
+                RetrofitMoviesService.getMovieApi().getMovieById(favlist[idMovie],BuildConfig.MOVIE_DB_API_TOKEN).enqueue(object :
+                    Callback<Movie> {
+                    override fun onFailure(call: Call<Movie>, t: Throwable) {
+                        swipeRefreshLayout.isRefreshing = false
                     }
+                    override fun onResponse(call: Call<Movie>, response: Response<Movie>
+                    ) {
+                        val post = response.body()
+                        if (post != null) {
+                            Glide.with(movieImageBackdrop).load(post.getBackDropPathImage()).into(movieImageBackdrop)
+                            movieTitle.text = post.title
+                            val list = response.body()?.results
+                            favoritesAdapter?.listOfFavMovies= list
+                            favoritesAdapter?.notifyDataSetChanged()
+                        }
 
-                    swipeRefreshLayout.isRefreshing = false
+                        swipeRefreshLayout.isRefreshing = false
+                    }
+                })
                 }
-            }) } catch (e: Exception) {
-            Toast.makeText(activity, e.toString(), Toast.LENGTH_SHORT)
+            } catch (e: Exception) {
         }
     }
 }

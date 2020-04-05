@@ -32,6 +32,7 @@ class MovieDetailActivity : AppCompatActivity() {
     private lateinit var movieDetails: TextView
     private lateinit var movieDirector: TextView
     private lateinit var movieCast: TextView
+    var list: MutableList<Int> = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,7 +41,6 @@ class MovieDetailActivity : AppCompatActivity() {
         ivAddList = findViewById(R.id.ivAddList)
 
         progressBar = findViewById(R.id.progressBar)
-
         movieImageBackdrop = findViewById(R.id.ivMovie)
         movieTitle = findViewById(R.id.tvMovieName)
         movieRealease= findViewById(R.id.tvYear)
@@ -49,7 +49,6 @@ class MovieDetailActivity : AppCompatActivity() {
         movieDetails = findViewById(R.id.tvDetailDesc)
         movieDirector= findViewById(R.id.tvDirectorName)
         movieCast= findViewById(R.id.tvCastName)
-
         val movieId= intent.getIntExtra("movie_id", 1)
         getMovieDetail(id = movieId)
         getCredits(id = movieId)
@@ -59,6 +58,8 @@ class MovieDetailActivity : AppCompatActivity() {
             if (AccountFragment().isSigned){
                 val intent = Intent(this, SelectFragment::class.java)
                 intent.putExtra("movie_id", movieId)
+                //list.add(movieId)
+                SelectFragment().favlist.add(movieId)
                 Toast.makeText(this, "Added to Favorites", Toast.LENGTH_SHORT).show()
             }
             else{
@@ -67,9 +68,13 @@ class MovieDetailActivity : AppCompatActivity() {
                 Toast.makeText(this, "Please, sign in first", Toast.LENGTH_SHORT).show()
             }
         }
-
-
     }
+
+
+
+
+
+
 
     private fun getMovieDetail(id: Int) {
         RetrofitMoviesService.getMovieApi().getMovieById(id,BuildConfig.MOVIE_DB_API_TOKEN).enqueue(object : Callback<Movie> {
@@ -145,3 +150,4 @@ class MovieDetailActivity : AppCompatActivity() {
         })
     }
 }
+
