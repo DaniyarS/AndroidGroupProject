@@ -17,7 +17,7 @@ class AccountFragment : Fragment() {
 
     private lateinit var email: EditText
     private lateinit var password: EditText
-    var isSigned:Boolean = false
+    var isSigned:Boolean = true
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?

@@ -27,6 +27,7 @@ class MoviesAdapter(
 
     override fun onBindViewHolder(p0: MovieViewHolder, p1: Int) {
         p0.bind(ListOfMovies?.get(p1))
+
     }
 
     fun clearAll(){

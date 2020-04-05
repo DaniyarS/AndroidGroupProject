@@ -1,6 +1,7 @@
 package com.example.groupproject
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
@@ -56,13 +57,17 @@ class MovieDetailActivity : AppCompatActivity() {
 
         ivAddList.setOnClickListener {
             if (AccountFragment().isSigned){
-                SelectFragment().addToFavorite(movieId)
+                val intent = Intent(this, SelectFragment::class.java)
+                intent.putExtra("movie_id", movieId)
                 Toast.makeText(this, "Added to Favorites", Toast.LENGTH_SHORT).show()
             }
             else{
+                val intent = Intent(this, SelectFragment::class.java)
+                intent.putExtra("movie_id", movieId)
                 Toast.makeText(this, "Please, sign in first", Toast.LENGTH_SHORT).show()
             }
         }
+
 
     }
 
@@ -139,7 +144,4 @@ class MovieDetailActivity : AppCompatActivity() {
             }
         })
     }
-
-
-
 }
