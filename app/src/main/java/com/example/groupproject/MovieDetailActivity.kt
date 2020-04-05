@@ -29,6 +29,7 @@ class MovieDetailActivity : AppCompatActivity() {
     private lateinit var movieDirector: TextView
     private lateinit var movieCast: TextView
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.movie_detail_items)

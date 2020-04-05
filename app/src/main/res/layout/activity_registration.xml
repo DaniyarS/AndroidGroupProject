@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@drawable/log_back"
+    android:background="@drawable/log_back_smaller"
     tools:context=".Registration"
     android:id="@+id/activity_registration">
 
@@ -67,6 +67,17 @@
         android:textAllCaps="false"
         android:layout_gravity="center"
         android:text="Registrate"
+        android:textSize="20dp"
+        android:textStyle="bold"
+        android:background="@color/colorAccent"/>
+    <Button
+        android:id="@+id/registrationLink"
+        android:layout_width="260dp"
+        android:layout_marginTop="15dp"
+        android:layout_height="wrap_content"
+        android:textAllCaps="false"
+        android:layout_gravity="center"
+        android:text="RegistrateLink"
         android:textSize="20dp"
         android:textStyle="bold"
         android:background="@color/colorAccent"/>

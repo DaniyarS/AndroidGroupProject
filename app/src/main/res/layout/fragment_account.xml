@@ -1,18 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@drawable/log_back"
+    android:background="@drawable/log_back_smaller"
     tools:context=".AccountFragment">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
     <ImageView
         android:layout_width="wrap_content"
-        android:layout_marginTop="10dp"
         android:layout_height="90dp"
-        android:src="@drawable/tubi"/>
+        android:layout_marginTop="10dp"
+        android:src="@drawable/tubi" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -117,11 +121,11 @@
             android:background="@null"
             android:textSize="15dp"/>
     </LinearLayout>
-
+    </LinearLayout>
 
     <!--    <include-->
     <!--        android:id="@+id/home"-->
     <!--        android:layout="@layout/home"-->
     <!--        android:visibility="gone"/>-->
 
-</LinearLayout>
+</ScrollView>

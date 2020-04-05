@@ -2,7 +2,9 @@ package com.example.groupproject
 
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 
@@ -11,6 +13,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -25,6 +28,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import androidx.viewpager.widget.ViewPager
+import com.example.groupproject.api.FavoriteRequest
 
 
 /**
@@ -49,6 +53,10 @@ class HomeFragment : Fragment(), MoviesAdapter.RecyclerViewItemClick {
     private lateinit var viewPager: ViewPager
     private lateinit var  pagerAdapter: ViewPagerAdapter
 
+    private lateinit var getSP : SharedPreferences
+    private lateinit var session_id: String
+
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -56,8 +64,12 @@ class HomeFragment : Fragment(), MoviesAdapter.RecyclerViewItemClick {
 
 
         val viewMovies = inflater.inflate(R.layout.fragment_home,container,false)
-
-
+//////////////////
+        getSP = activity?.getSharedPreferences("shared_preferences", Context.MODE_PRIVATE)!!
+        if (getSP.contains("session_id")){
+            session_id = getSP.getString("session_id","null")!!
+        }
+/////////////////
         recyclerView = viewMovies.findViewById(R.id.mainRecyclerView)
         topRatedRecyclerView = viewMovies.findViewById(R.id.secondRecyclerView)
         upcomingRecyclerView = viewMovies.findViewById(R.id.thirdRecyclerView)
@@ -96,9 +108,22 @@ class HomeFragment : Fragment(), MoviesAdapter.RecyclerViewItemClick {
         upcomingRecyclerView.layoutManager = LinearLayoutManager(activity,LinearLayoutManager.HORIZONTAL,false)
         upcomingRecyclerView.adapter = movies3Adapter
 
+
+
         initPopularMovies()
         initTopRatedMovies()
         initUpcomingMovies()
+
+        val addFavorite = activity?.findViewById<Button>(R.id.add_favorite)
+        addFavorite?.setOnClickListener{
+           val item: Movie
+            val clicked: Boolean = true
+            lateinit var favoritesRequest: FavoriteRequest
+            if (clicked==false){
+                favoritesRequest = FavoriteRequest("movie",item.id,clicked)
+            }
+            RetrofitMoviesService.getMovieApi().addFavorite()
+        }
     }
 
     override fun itemClick(position: Int, item: Movie) {
@@ -106,6 +131,9 @@ class HomeFragment : Fragment(), MoviesAdapter.RecyclerViewItemClick {
         intent.putExtra("movie_id", item.id)
         startActivity(intent)
     }
+
+
+
 
     @SuppressLint("ShowToast")
     private fun initPopularMovies() {
