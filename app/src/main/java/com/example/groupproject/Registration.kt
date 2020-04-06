@@ -23,33 +23,33 @@ class Registration : AppCompatActivity() {
 
         context = this
 
-        name = findViewById<EditText>(R.id.name)
-        surname = findViewById<EditText>(R.id.surname)
-        email2 = findViewById<EditText>(R.id.email)
-        password2 = findViewById<EditText>(R.id.password)
+//        name = findViewById<EditText>(R.id.name)
+//        surname = findViewById<EditText>(R.id.surname)
+//        email2 = findViewById<EditText>(R.id.email)
+//        password2 = findViewById<EditText>(R.id.password)
 
         val preferences = getSharedPreferences("UserInfo", 0)
 
-        registrate.setOnClickListener() {
-            val name = name.text.toString()
-            val surname = surname.text.toString()
-            val email = email.text.toString()
-            val password = password.text.toString()
-            val editor = preferences.edit()
-
-            if (tvEmail.length() > 1) {
-                editor.putString("name", name)
-                editor.putString("surname", surname)
-                editor.putString("email2", email)
-                editor.putString("password2", password)
-                editor.apply()
-
-                val intent = Intent(context, HomeFragment::class.java)
-                startActivity(intent)
-                Toast.makeText(this, "You registered succesfully", Toast.LENGTH_SHORT).show()
-            } else {
-                Toast.makeText(this, "Fill the columns!", Toast.LENGTH_LONG).show()
-            }
-        }
+//        registrate.setOnClickListener() {
+//            val name = name.text.toString()
+//            val surname = surname.text.toString()
+//            val email = email.text.toString()
+//            val password = password.text.toString()
+//            val editor = preferences.edit()
+//
+//            if (tvEmail.length() > 1) {
+//                editor.putString("name", name)
+//                editor.putString("surname", surname)
+//                editor.putString("email2", email)
+//                editor.putString("password2", password)
+//                editor.apply()
+//
+//                val intent = Intent(context, HomeFragment::class.java)
+//                startActivity(intent)
+//                Toast.makeText(this, "You registered succesfully", Toast.LENGTH_SHORT).show()
+//            } else {
+//                Toast.makeText(this, "Fill the columns!", Toast.LENGTH_LONG).show()
+//            }
+//        }
     }
 }

@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#26272C">
+    android:background="#26272C"
+    tools:context=".Authorization">
 
     <EditText
         android:id="@+id/etUsername"

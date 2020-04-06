@@ -1,6 +1,7 @@
 package com.example.groupproject.api
 
 import android.util.Log
+import com.example.groupproject.model.Account
 import com.example.groupproject.model.GetMoviesResponse
 import com.example.groupproject.model.Credits
 import com.example.groupproject.model.Movie
@@ -8,11 +9,9 @@ import okhttp3.OkHttpClient
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.http.GET
-import retrofit2.http.Path
-import retrofit2.http.Query
 import okhttp3.Interceptor
 import okhttp3.logging.HttpLoggingInterceptor
+import retrofit2.http.*
 
 import java.util.concurrent.TimeUnit
 
@@ -80,5 +79,45 @@ interface MovieApi {
     fun getUpcomingMovies(
         @Query("api_key") apiKey: String
     ) : Call<GetMoviesResponse>
+////////////////////////////////////////////////////////////////////
+    //REQUEST TOKEN WHILE REGISTRATION
+    @GET("authentication/token/new")
+    fun getToken(
+        @Query("api_key") apiKey: String
+    ) : Call<RequestToken>
 
+    //VALIDATION WITH ACCOUNT == request token
+    @POST("authentication/token/validate_with_login")
+    fun validation(
+        @Query("api_key") apiKey: String,
+        @Body validation: Validation
+    ) : Call<RequestToken>
+
+    //CREATE NEW SESSION
+    @POST("authentication/session/new")
+    fun createSession(
+        @Query("api_key") apiKey: String,
+        @Body  token: RequestToken
+    ) : Call<Session>
+    ////////////////////////////////////
+    @GET("account") ///////account
+    fun getAccount(
+        @Query("api_key")apiKey:String,
+        @Query("session_id") sessionId: String
+    ): Call<Account>
+    /////////////////////////////////
+    //ADD MOVIE TO FAVORITE
+    @POST("account/{account_id}/favorite")
+    fun addFavorite(
+        @Query("api_key") apiKey: String,
+        @Query("session_id") sessionId : String,
+        @Body favoriteRequest: FavoriteRequest
+    ) : Call<FavoriteResponse>
+
+    //GET LIST OF FAVORITE MOVIES
+    @GET("account/{account_id}/favorite/movies")
+    fun getFavorite(
+        @Query("api_key") apiKey: String,
+        @Query("session_id") sessionId: String
+    ) : Call<GetMoviesResponse>
 }

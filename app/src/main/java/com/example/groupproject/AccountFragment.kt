@@ -28,34 +28,34 @@ class AccountFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         activity?.let {
 
-            email = it.findViewById(R.id.tvEmail)
-            password = it.findViewById(R.id.tvPassword)
+//            email = it.findViewById(R.id.tvEmail)
+//            password = it.findViewById(R.id.tvPassword)
 
             val preferences = context?.getSharedPreferences("UserInfo", 0)
 
-            create.setOnClickListener() {
-                val intent = Intent(activity, Registration::class.java)
-                startActivity(intent)
-            }
-
-            btLogin.setOnClickListener() {
-                val userEmail = email.text.toString()
-                tvEmail.visibility = View.GONE
-                val userPass = password.text.toString()
-                tvPassword.visibility = View.GONE
-
-                val email = preferences?.getString("email", "")
-                val password = preferences?.getString("password", "")
-
-                if (userEmail == email && userPass == password) {
-                    val intent = Intent(activity, HomeFragment::class.java)
-                    startActivity(intent)
-                    Toast.makeText(activity, "You have signed in", Toast.LENGTH_SHORT).show()
-                      isSigned = true
-                } else {
-                    Toast.makeText(activity, "Please, fill the blanks!", Toast.LENGTH_SHORT).show()
-                }
-            }
+//            create.setOnClickListener() {
+//                val intent = Intent(activity, Registration::class.java)
+//                startActivity(intent)
+//            }
+//
+//            btLogin.setOnClickListener() {
+//                val userEmail = email.text.toString()
+//                tvEmail.visibility = View.GONE
+//                val userPass = password.text.toString()
+//                tvPassword.visibility = View.GONE
+//
+//                val email = preferences?.getString("email", "")
+//                val password = preferences?.getString("password", "")
+//
+//                if (userEmail == email && userPass == password) {
+//                    val intent = Intent(activity, HomeFragment::class.java)
+//                    startActivity(intent)
+//                    Toast.makeText(activity, "You have signed in", Toast.LENGTH_SHORT).show()
+//                      isSigned = true
+//                } else {
+//                    Toast.makeText(activity, "Please, fill the blanks!", Toast.LENGTH_SHORT).show()
+//                }
+//            }
         }
     }
 }
