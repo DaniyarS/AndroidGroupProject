@@ -1,6 +1,8 @@
 package com.example.groupproject
 
 import android.annotation.SuppressLint
+import android.content.Context
+import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
@@ -8,6 +10,8 @@ import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import com.bumptech.glide.Glide
+import com.example.groupproject.api.FavoriteRequest
+import com.example.groupproject.api.FavoriteResponse
 import com.example.groupproject.api.RetrofitMoviesService
 import com.example.groupproject.model.Credits
 import com.example.groupproject.model.Movie
@@ -30,6 +34,11 @@ class MovieDetailActivity : AppCompatActivity() {
     private lateinit var movieCast: TextView
 
 
+    private lateinit var getSP : SharedPreferences
+    private lateinit var session_id: String
+    private lateinit var addFav: ImageView
+    private var isClicked = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.movie_detail_items)
@@ -45,9 +54,50 @@ class MovieDetailActivity : AppCompatActivity() {
         movieDirector= findViewById(R.id.tvDirectorName)
         movieCast= findViewById(R.id.tvCastName)
 
+        addFav = findViewById(R.id.ivAddList)
+        //////////
+        getSP = getSharedPreferences("shared_preferences", Context.MODE_PRIVATE)!!
+        if (getSP.contains("session_id")){
+            session_id = getSP.getString("session_id","null")!!
+        }
+        /////////
         val movieId= intent.getIntExtra("movie_id", 1)
         getMovieDetail(id = movieId)
         getCredits(id = movieId)
+        addFav.setOnClickListener {
+            addToFavoriteMovie(movieId)
+        }
+    }
+
+    private fun addToFavoriteMovie(item: Int){
+
+            lateinit var favoriteRequest: FavoriteRequest
+
+            if (!isClicked){
+                isClicked=true
+                favoriteRequest=FavoriteRequest("movie",item, isClicked)
+                RetrofitMoviesService.getMovieApi().addFavorite(BuildConfig.MOVIE_DB_API_TOKEN,session_id,favoriteRequest).enqueue(object: Callback<FavoriteResponse>{
+                    override fun onFailure(call: Call<FavoriteResponse>, t: Throwable) {}
+
+                    override fun onResponse(
+                        call: Call<FavoriteResponse>,
+                        response: Response<FavoriteResponse>
+                    ) {}
+                })
+            }
+            else{
+                isClicked=false
+                favoriteRequest=FavoriteRequest("movie",item, isClicked)
+//                favoriteRequest.favorite=isClicked
+                RetrofitMoviesService.getMovieApi().addFavorite(BuildConfig.MOVIE_DB_API_TOKEN, session_id, favoriteRequest).enqueue(object: Callback<FavoriteResponse>{
+                    override fun onFailure(call: Call<FavoriteResponse>, t: Throwable) {}
+
+                    override fun onResponse(
+                        call: Call<FavoriteResponse>,
+                        response: Response<FavoriteResponse>
+                    ) {}
+                })
+            }
 
     }
 

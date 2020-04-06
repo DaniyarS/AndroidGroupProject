@@ -40,12 +40,12 @@ class Registration : AppCompatActivity() {
         setContentView(R.layout.activity_registration)
 
         sPreferences = getSharedPreferences("shared_preferences", Context.MODE_PRIVATE)
-
-        if (sPreferences.contains("session_id")) {
-            val intent = Intent(this,MainActivity::class.java)
-            startActivity(intent)
-            finish()
-        }
+//
+//        if (sPreferences.contains("session_id")) {
+//            val intent = Intent(this,MainActivity::class.java)
+//            startActivity(intent)
+//            finish()
+//        }
         context = this
 
         name = findViewById<EditText>(R.id.name)

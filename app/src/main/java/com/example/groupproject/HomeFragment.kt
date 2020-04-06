@@ -114,16 +114,7 @@ class HomeFragment : Fragment(), MoviesAdapter.RecyclerViewItemClick {
         initTopRatedMovies()
         initUpcomingMovies()
 
-        val addFavorite = activity?.findViewById<Button>(R.id.add_favorite)
-        addFavorite?.setOnClickListener{
-           val item: Movie
-            val clicked: Boolean = true
-            lateinit var favoritesRequest: FavoriteRequest
-            if (clicked==false){
-                favoritesRequest = FavoriteRequest("movie",item.id,clicked)
-            }
-            RetrofitMoviesService.getMovieApi().addFavorite()
-        }
+
     }
 
     override fun itemClick(position: Int, item: Movie) {
