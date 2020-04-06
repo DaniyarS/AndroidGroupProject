@@ -1,24 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/swipeRefreshLayout"
     tools:context=".SelectFragment">
 
-    <FrameLayout
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/favMovieRecycler"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#26272C">
+        android:paddingStart="20dp"
+        tools:ignore="RtlSymmetry"
+        android:background="#3a3b40"/>
 
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/favMovieRecycler"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:paddingStart="20dp"
-                    tools:ignore="RtlSymmetry" />
-
-
-    </FrameLayout>
-</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+</FrameLayout>

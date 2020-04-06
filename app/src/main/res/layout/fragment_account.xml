@@ -1,127 +1,123 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@drawable/log_back"
-    tools:context=".AccountFragment">
+    tools:context=".SelectFragment">
 
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_height="90dp"
-        android:src="@drawable/tubi"/>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#26272C">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Free TV,"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="40dp"
-        android:textColor="#ffffff"
-        android:textSize="42dp"
-        android:textStyle="bold" />
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="free movies,"
-        android:layout_marginLeft="20dp"
-        android:textColor="#ffffff"
-        android:textSize="42dp"
-        android:textStyle="bold" />
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="free registration"
-        android:layout_marginLeft="20dp"
-        android:textColor="#ffffff"
-        android:textSize="42dp"
-        android:textStyle="bold" />
+        <ImageView
+            android:id="@+id/ivLogo"
+            android:layout_width="150dp"
+            android:layout_height="63dp"
+            android:layout_marginTop="200dp"
+            android:layout_marginEnd="100dp"
+            android:src="@drawable/logo"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        android:text="Register now to build your queue, continue"
-        android:layout_marginLeft="20dp"
-        android:textColor="#ffffff"
-        android:textSize="17dp" />
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="watching where you left off, and more!"
-        android:layout_marginTop="10dp"
-        android:layout_marginLeft="20dp"
-        android:textColor="#ffffff"
-        android:textSize="17dp" />
-
-
-
-    <EditText
-        android:id="@+id/tvEmail"
-        android:maxLines="1"
-        android:layout_width="260dp"
-        android:layout_marginTop="20dp"
-        android:layout_height="wrap_content"
-        android:hint="email"
-        android:textColorHint="@color/colorAccent"
-        android:textColor="@color/colorAccent"
-        android:layout_gravity="center"/>
-    <EditText
-        android:id="@+id/tvPassword"
-        android:maxLines="1"
-        android:layout_width="260dp"
-        android:layout_marginTop="20dp"
-        android:layout_height="wrap_content"
-        android:hint="password"
-        android:textColorHint="@color/colorAccent"
-        android:textColor="@color/colorAccent"
-        android:layout_gravity="center"/>
-    <Button
-        android:id="@+id/btLogin"
-        android:layout_width="260dp"
-        android:layout_marginTop="15dp"
-        android:layout_height="wrap_content"
-        android:textAllCaps="false"
-        android:layout_gravity="center"
-        android:text="Sign In"
-        android:textSize="20dp"
-        android:background="#ffffff"/>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center">
         <TextView
+            android:id="@+id/tvUserFirst"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="NewAccount?"
-            android:layout_marginTop="10dp"
-            android:layout_marginLeft="20dp"
-            android:textColor="#ffffff"
-            android:textSize="15dp" />
-        <Button
-            android:id="@+id/create"
+            android:layout_marginTop="50dp"
+            android:text="Name:"
+            android:textColor="#FFF"
+            android:textSize="18sp"
+            app:layout_constraintStart_toStartOf="@+id/ivLogo"
+            app:layout_constraintTop_toBottomOf="@+id/ivLogo" />
+
+        <TextView
+        android:id="@+id/tvUserSecond"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Surname:"
+        android:textColor="#FFF"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="@+id/tvUserFirst"
+        app:layout_constraintTop_toBottomOf="@+id/tvUserFirst" />
+
+        <TextView
+            android:id="@+id/tvSession"
             android:layout_width="wrap_content"
-            android:layout_marginTop="4dp"
-            android:layout_height="21dp"
-            android:textAllCaps="false"
-            android:layout_marginLeft="5dp"
-            android:layout_gravity="center"
-            android:textStyle="bold"
-            android:textColor="#ffffff"
-            android:text="Create Account"
-            android:background="@null"
-            android:textSize="15dp"/>
-    </LinearLayout>
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Session ID:"
+            android:textColor="#FFF"
+            android:textSize="18sp"
+            app:layout_constraintStart_toStartOf="@+id/tvUserSecond"
+            app:layout_constraintTop_toBottomOf="@+id/tvUserSecond" />
 
+        <TextView
+            android:id="@+id/tvEmAddress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Email:"
+            android:textColor="#FFF"
+            android:textSize="18sp"
+            app:layout_constraintStart_toStartOf="@+id/tvSession"
+            app:layout_constraintTop_toBottomOf="@+id/tvSession" />
 
-    <!--    <include-->
-    <!--        android:id="@+id/home"-->
-    <!--        android:layout="@layout/home"-->
-    <!--        android:visibility="gone"/>-->
+        <TextView
+            android:id="@+id/tvUserFirstName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="Sample Name"
+            android:textColor="@color/colorPrimary"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toBottomOf="@+id/tvUserFirst"
+            app:layout_constraintStart_toEndOf="@+id/tvUserFirst"
+            app:layout_constraintTop_toTopOf="@+id/tvUserFirst"
+            app:layout_constraintVertical_bias="1.0" />
 
-</LinearLayout>
+        <TextView
+            android:id="@+id/tvUserSecondName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="Sample Surname"
+            android:textColor="@color/colorPrimary"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toBottomOf="@+id/tvUserSecond"
+            app:layout_constraintStart_toEndOf="@+id/tvUserSecond"
+            app:layout_constraintTop_toTopOf="@+id/tvUserSecond"
+            app:layout_constraintVertical_bias="1.0" />
+
+        <TextView
+            android:id="@+id/tvSessionId"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="Sample Id"
+            android:textColor="@color/colorPrimary"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toBottomOf="@+id/tvSession"
+            app:layout_constraintStart_toEndOf="@+id/tvSession"
+            app:layout_constraintTop_toTopOf="@+id/tvSession"
+            app:layout_constraintVertical_bias="1.0" />
+
+        <TextView
+            android:id="@+id/tvEmailAddress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="Sample email"
+            android:textColor="@color/colorPrimary"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toBottomOf="@+id/tvEmAddress"
+            app:layout_constraintStart_toEndOf="@+id/tvEmAddress"
+            app:layout_constraintTop_toTopOf="@+id/tvEmAddress"
+            app:layout_constraintVertical_bias="1.0" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</FrameLayout>

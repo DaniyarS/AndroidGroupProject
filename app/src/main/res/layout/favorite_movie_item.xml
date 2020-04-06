@@ -21,7 +21,7 @@
         android:background="#26272C">
 
         <ImageView
-            android:id="@+id/ivMovie"
+            android:id="@+id/ivMovieFav"
             android:layout_width="0dp"
             android:layout_height="150dp"
             android:layout_marginStart="4dp"
@@ -35,7 +35,7 @@
         </ImageView>
 
         <TextView
-            android:id="@+id/tvMovieName"
+            android:id="@+id/tvMovieNameFav"
             style="@android:style/Widget.DeviceDefault.Light.TextView"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -48,8 +48,8 @@
             android:textStyle="normal"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/ivAddList"
-            app:layout_constraintStart_toStartOf="@+id/ivMovie"
-            app:layout_constraintTop_toBottomOf="@+id/ivMovie">
+            app:layout_constraintStart_toStartOf="@+id/ivMovieFav"
+            app:layout_constraintTop_toBottomOf="@+id/ivMovieFav">
 
         </TextView>
 
@@ -57,9 +57,9 @@
             android:id="@+id/ivAddList"
             android:layout_width="31dp"
             android:layout_height="32dp"
-            app:layout_constraintBottom_toBottomOf="@+id/tvMovieName"
-            app:layout_constraintEnd_toEndOf="@+id/ivMovie"
-            app:layout_constraintTop_toTopOf="@+id/tvMovieName"
+            app:layout_constraintBottom_toBottomOf="@+id/tvMovieNameFav"
+            app:layout_constraintEnd_toEndOf="@+id/ivMovieFav"
+            app:layout_constraintTop_toTopOf="@+id/tvMovieNameFav"
             app:srcCompat="@drawable/ic_star_black_24dp" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 

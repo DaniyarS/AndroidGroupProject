@@ -53,13 +53,13 @@ class MovieDetailActivity : AppCompatActivity() {
         getMovieDetail(id = movieId)
         getCredits(id = movieId)
 
-
+        Toast.makeText(this, movieId.toString(), Toast.LENGTH_SHORT).show()
         ivAddList.setOnClickListener {
             if (AccountFragment().isSigned){
-                val intent = Intent(this, SelectFragment::class.java)
-                intent.putExtra("movie_id", movieId)
+                val bundle = Bundle()
+                bundle.putInt("movie_id", movieId)
                 //list.add(movieId)
-                SelectFragment().favlist.add(movieId)
+                //SelectFragment().favlist.add(movieId)
                 Toast.makeText(this, "Added to Favorites", Toast.LENGTH_SHORT).show()
             }
             else{
@@ -69,12 +69,6 @@ class MovieDetailActivity : AppCompatActivity() {
             }
         }
     }
-
-
-
-
-
-
 
     private fun getMovieDetail(id: Int) {
         RetrofitMoviesService.getMovieApi().getMovieById(id,BuildConfig.MOVIE_DB_API_TOKEN).enqueue(object : Callback<Movie> {
@@ -150,4 +144,3 @@ class MovieDetailActivity : AppCompatActivity() {
         })
     }
 }
-
