@@ -37,7 +37,7 @@ class Authorization : AppCompatActivity() {
         setContentView(R.layout.activity_authorization)
 
         pref = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE)
-
+        initComponents()
 
     }
 
@@ -114,7 +114,7 @@ class Authorization : AppCompatActivity() {
     }
 
     private fun signInSuccessIntent(){
-        val toActivity = Intent(this@Authorization,HomeFragment::class.java)
+        val toActivity = Intent(this@Authorization,MainActivity::class.java)
         startActivity(toActivity)
     }
 

@@ -24,8 +24,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var registration: Registration
 
     private lateinit var pref: SharedPreferences
-    private val APP_PREFERENCES = "appsettings"
-    private val APP_SESSION = "session_id"
+    val APP_PREFERENCES = "appsettings"
+    val APP_SESSION = "session_id"
 
     private lateinit var btRegistrate: Button
 
