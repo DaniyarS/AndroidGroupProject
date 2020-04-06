@@ -1,74 +1,161 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@drawable/log_back"
     tools:context=".Registration"
-    android:id="@+id/activity_registration">
+    android:id="@+id/activity_registration"
+    android:background="#26272C">
+
+
+    <EditText
+        android:id="@+id/etUserPassword"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/colorPrimary"
+        android:ems="10"
+        android:inputType="textPassword"
+        android:textColor="@color/colorPrimary"
+        android:textColorHint="@color/colorPrimary"
+        app:layout_constraintBottom_toBottomOf="@+id/tvPass"
+        app:layout_constraintStart_toStartOf="@+id/etUserFirst"
+        app:layout_constraintTop_toTopOf="@+id/tvPass" />
+
+    <EditText
+        android:id="@+id/etUsername"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/colorPrimary"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:textColor="@color/colorPrimary"
+        android:textColorHint="@color/colorPrimary"
+        app:layout_constraintBottom_toBottomOf="@+id/tvUser"
+        app:layout_constraintStart_toStartOf="@+id/etUserFirst"
+        app:layout_constraintTop_toTopOf="@+id/tvUser" />
 
     <ImageView
+        android:id="@+id/ivLogo"
+        android:layout_width="150dp"
+        android:layout_height="63dp"
+        android:layout_marginTop="200dp"
+        android:src="@drawable/logo"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tvUserFirst"
         android:layout_width="wrap_content"
-        android:layout_marginTop="20dp"
-        android:layout_height="90dp"
-        android:src="@drawable/tubi"/>
-
-    <EditText
-        android:id="@+id/name"
-        android:maxLines="1"
-        android:layout_width="260dp"
-        android:layout_marginTop="140dp"
         android:layout_height="wrap_content"
-        android:hint="Name"
-        android:textColorHint="@color/colorAccent"
-        android:textColor="@color/colorAccent"
-        android:layout_gravity="center"/>
+        android:layout_marginTop="50dp"
+        android:text="Name:"
+        android:textColor="#FFF"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/ivLogo"
+        app:layout_constraintTop_toBottomOf="@+id/ivLogo" />
 
-    <EditText
-        android:id="@+id/surname"
-        android:maxLines="1"
-        android:layout_width="260dp"
-        android:layout_marginTop="20dp"
+    <TextView
+        android:id="@+id/tvUserSecond"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:hint="surname"
-        android:textColorHint="@color/colorAccent"
-        android:textColor="@color/colorAccent"
-        android:layout_gravity="center"/>
+        android:layout_marginTop="8dp"
+        android:text="Surname:"
+        android:textColor="#FFF"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="@+id/tvUserFirst"
+        app:layout_constraintTop_toBottomOf="@+id/tvUserFirst" />
 
-    <EditText
-        android:id="@+id/email"
-        android:maxLines="1"
-        android:layout_width="260dp"
-        android:layout_marginTop="20dp"
+    <TextView
+        android:id="@+id/tvEmAddress"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:hint="email"
-        android:textColorHint="@color/colorAccent"
-        android:textColor="@color/colorAccent"
-        android:layout_gravity="center"/>
+        android:layout_marginTop="8dp"
+        android:text="Email:"
+        android:textColor="#FFF"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="@+id/tvUserSecond"
+        app:layout_constraintTop_toBottomOf="@+id/tvUserSecond" />
 
-    <EditText
-        android:id="@+id/password"
-        android:maxLines="1"
-        android:layout_width="260dp"
-        android:layout_marginTop="20dp"
+    <TextView
+    android:id="@+id/tvUser"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="8dp"
+    android:text="Username:"
+    android:textColor="#FFF"
+    android:textSize="18sp"
+    app:layout_constraintStart_toStartOf="@+id/tvEmAddress"
+    app:layout_constraintTop_toBottomOf="@+id/tvEmAddress" />
+
+    <TextView
+        android:id="@+id/tvPass"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:hint="password"
-        android:textColorHint="@color/colorAccent"
-        android:textColor="@color/colorAccent"
-        android:layout_gravity="center"/>
+        android:layout_marginTop="8dp"
+        android:text="Password:"
+        android:textColor="#FFF"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="@+id/tvUser"
+        app:layout_constraintTop_toBottomOf="@+id/tvUser" />
+
 
     <Button
-        android:id="@+id/registrate"
-        android:layout_width="260dp"
-        android:layout_marginTop="15dp"
+        android:id="@+id/btRegistrate"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:textAllCaps="false"
-        android:layout_gravity="center"
-        android:text="Registrate"
-        android:textSize="20dp"
-        android:textStyle="bold"
-        android:background="@color/colorAccent"/>
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="32dp"
+        android:backgroundTint="@color/colorPrimary"
+        android:text="Sign up"
+        android:textColor="#FFF"
+        app:layout_constraintEnd_toEndOf="@+id/etUserPassword"
+        app:layout_constraintStart_toStartOf="@+id/tvPass"
+        app:layout_constraintTop_toBottomOf="@+id/tvPass" />
 
-</LinearLayout>
+    <EditText
+        android:id="@+id/etUserFirst"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="40dp"
+        android:backgroundTint="@color/colorPrimary"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:textColor="@color/colorPrimary"
+        android:textColorHint="@color/colorPrimary"
+        app:layout_constraintBottom_toBottomOf="@+id/tvUserFirst"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/tvUserFirst"
+        app:layout_constraintTop_toTopOf="@+id/tvUserFirst" />
+
+    <EditText
+        android:id="@+id/etUserSecond"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/colorPrimary"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:textColor="@color/colorPrimary"
+        android:textColorHint="@color/colorPrimary"
+        app:layout_constraintBottom_toBottomOf="@+id/tvUserSecond"
+        app:layout_constraintStart_toStartOf="@+id/etUserFirst"
+        app:layout_constraintTop_toTopOf="@+id/tvUserSecond" />
+
+    <EditText
+        android:id="@+id/etUserEmail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/colorPrimary"
+        android:ems="10"
+        android:inputType="textEmailAddress"
+        android:textColor="@color/colorPrimary"
+        android:textColorHint="@color/colorPrimary"
+        app:layout_constraintBottom_toBottomOf="@+id/tvEmAddress"
+        app:layout_constraintStart_toStartOf="@+id/etUserFirst"
+        app:layout_constraintTop_toTopOf="@+id/tvEmAddress" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

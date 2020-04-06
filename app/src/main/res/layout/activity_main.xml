@@ -20,60 +20,44 @@
             android:layout_height="match_parent"
             android:background="#26272C">
 
-            <EditText
-                android:id="@+id/etUsername"
+            <TextView
+                android:id="@+id/tvCreate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="40dp"
-                android:backgroundTint="@color/colorPrimary"
-                android:ems="10"
-                android:hint="Username"
-                android:inputType="textPersonName"
+                android:layout_centerInParent="true"
+                android:linksClickable="true"
+                android:text="Create account?"
                 android:textColor="@color/colorPrimary"
-                android:textColorHint="@color/colorPrimary"
-                app:layout_constraintEnd_toEndOf="@+id/ivLogo"
-                app:layout_constraintStart_toStartOf="@+id/ivLogo"
-                app:layout_constraintTop_toBottomOf="@+id/ivLogo" />
+                app:layout_constraintEnd_toEndOf="@+id/btRegistrate"
+                app:layout_constraintHorizontal_bias="0.478"
+                app:layout_constraintStart_toStartOf="@+id/btRegistrate"
+                app:layout_constraintTop_toBottomOf="@+id/btRegistrate" />
 
             <ImageView
                 android:id="@+id/ivLogo"
                 android:layout_width="150dp"
                 android:layout_height="63dp"
-                android:layout_marginTop="200dp"
+                android:layout_marginBottom="32dp"
                 android:src="@drawable/logo"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <EditText
-                android:id="@+id/etPassword"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="16dp"
-                android:backgroundTint="@color/colorPrimary"
-                android:ems="10"
-                android:hint="Password"
-                android:inputType="textPassword"
-                android:textColor="@color/colorPrimary"
-                android:textColorHint="@color/colorPrimary"
-                app:layout_constraintEnd_toEndOf="@+id/etUsername"
-                app:layout_constraintStart_toStartOf="@+id/etUsername"
-                app:layout_constraintTop_toBottomOf="@+id/etUsername" />
-
             <Button
-                android:id="@+id/btSignIn"
-                android:layout_width="wrap_content"
+                android:id="@+id/btRegistrate"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="32dp"
                 android:backgroundTint="@color/colorPrimary"
                 android:text="Sign in"
                 android:textColor="#FFF"
-                app:layout_constraintEnd_toEndOf="@+id/etPassword"
-                app:layout_constraintStart_toStartOf="@+id/etPassword"
-                app:layout_constraintTop_toBottomOf="@+id/etPassword" />
+                app:layout_constraintEnd_toEndOf="@+id/ivLogo"
+                app:layout_constraintStart_toStartOf="@+id/ivLogo"
+                app:layout_constraintTop_toBottomOf="@+id/ivLogo" />
         </androidx.constraintlayout.widget.ConstraintLayout>
+
     </FrameLayout>
 
 
