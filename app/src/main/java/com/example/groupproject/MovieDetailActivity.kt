@@ -38,6 +38,8 @@ class MovieDetailActivity : AppCompatActivity() {
     private lateinit var movieDetails: TextView
     private lateinit var movieDirector: TextView
     private lateinit var movieCast: TextView
+    private lateinit var btnFavorite: ImageView
+    private var counter: Int = 0
 //    var list: MutableList<Int> = ArrayList()
 
     private lateinit var getSP : SharedPreferences
@@ -63,6 +65,8 @@ class MovieDetailActivity : AppCompatActivity() {
         movieDetails = findViewById(R.id.tvDetailDesc)
         movieDirector= findViewById(R.id.tvDirectorName)
         movieCast= findViewById(R.id.tvCastName)
+        btnFavorite = findViewById(R.id.ivAddList)
+
         val movieId= intent.getIntExtra("movie_id", 1)
         getMovieDetail(id = movieId)
         getCredits(id = movieId)
@@ -95,7 +99,7 @@ class MovieDetailActivity : AppCompatActivity() {
         if (isClicked==false){
             isClicked=true
             favoriteRequest=FavoriteRequest("movie",item, isClicked)
-
+            ivAddList.setImageResource(R.drawable.ic_star_black_24dp)
             RetrofitMoviesService.getMovieApi().addFavorite(BuildConfig.MOVIE_DB_API_TOKEN,session_id,favoriteRequest).enqueue(object: Callback<FavoriteResponse>{
 
                 override fun onFailure(call: Call<FavoriteResponse>, t: Throwable) {
@@ -108,6 +112,7 @@ class MovieDetailActivity : AppCompatActivity() {
         }
         else{
             isClicked=false
+            ivAddList.setImageResource(R.drawable.ic_star_border_black_24dp)
             favoriteRequest=FavoriteRequest("movie",item, isClicked)
             RetrofitMoviesService.getMovieApi().addFavorite(BuildConfig.MOVIE_DB_API_TOKEN, session_id, favoriteRequest).enqueue(object: Callback<FavoriteResponse>{
 

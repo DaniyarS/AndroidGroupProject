@@ -20,6 +20,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var homeFragment:HomeFragment
     private lateinit var selectFragment:SelectFragment
     private lateinit var accountFragment:AccountFragment
+    private lateinit var authorizationFragment: AuthorizationFragment
 
     private lateinit var registration: Registration
 
@@ -39,19 +40,14 @@ class MainActivity : AppCompatActivity() {
         homeFragment = HomeFragment()
         selectFragment = SelectFragment()
         accountFragment = AccountFragment()
+        authorizationFragment = AuthorizationFragment()
         registration = Registration()
 
         pref = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE)
 
-        btRegistrate = findViewById(R.id.btRegistrate)
-        btRegistrate.setOnClickListener(){
-            val goToAuthorization = Intent(this,Authorization::class.java)
-            startActivity(goToAuthorization)
-        }
-
+        setFragment(homeFragment)
 
         nMainNav.setOnNavigationItemSelectedListener(onNavigationItemSelectedListener)
-
     }
 
     private val onNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener {
@@ -65,7 +61,7 @@ class MainActivity : AppCompatActivity() {
                 return@OnNavigationItemSelectedListener  true
             }
             R.id.nav_account ->{
-                setFragment(accountFragment)
+                setFragment(authorizationFragment)
                 return@OnNavigationItemSelectedListener  true
             }
         }

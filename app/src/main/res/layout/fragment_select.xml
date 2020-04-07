@@ -9,8 +9,6 @@
         android:id="@+id/favMovieRecycler"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingStart="20dp"
-        tools:ignore="RtlSymmetry"
         android:background="#3a3b40"/>
 
 </FrameLayout>
