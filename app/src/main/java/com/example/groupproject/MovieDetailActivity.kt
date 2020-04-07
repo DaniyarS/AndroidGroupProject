@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.graphics.drawable.Drawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
@@ -71,21 +72,6 @@ class MovieDetailActivity : AppCompatActivity() {
         getMovieDetail(id = movieId)
         getCredits(id = movieId)
 
-//        Toast.makeText(this, movieId.toString(), Toast.LENGTH_SHORT).show()
-////        ivAddList.setOnClickListener {
-////            if (AccountFragment().isSigned){
-////                val bundle = Bundle()
-////                bundle.putInt("movie_id", movieId)
-////                //list.add(movieId)
-////                //SelectFragment().favlist.add(movieId)
-////                Toast.makeText(this, "Added to Favorites", Toast.LENGTH_SHORT).show()
-////            }
-////            else{
-////                val intent = Intent(this, SelectFragment::class.java)
-////                intent.putExtra("movie_id", movieId)
-////                Toast.makeText(this, "Please, sign in first", Toast.LENGTH_SHORT).show()
-////            }
-////        }
 
         ivAddList.setOnClickListener(){
             addToFavoriteMovie(movieId)
@@ -96,14 +82,15 @@ class MovieDetailActivity : AppCompatActivity() {
 
         lateinit var favoriteRequest: FavoriteRequest
 
-        if (isClicked==false){
+        if (ivAddList.drawable.constantState==resources.getDrawable(R.drawable.ic_star_border_black_24dp,null).constantState){
+            ivAddList.setImageResource(R.drawable.ic_star_fav_24dp)
             isClicked=true
             favoriteRequest=FavoriteRequest("movie",item, isClicked)
             ivAddList.setImageResource(R.drawable.ic_star_black_24dp)
             RetrofitMoviesService.getMovieApi().addFavorite(BuildConfig.MOVIE_DB_API_TOKEN,session_id,favoriteRequest).enqueue(object: Callback<FavoriteResponse>{
 
                 override fun onFailure(call: Call<FavoriteResponse>, t: Throwable) {
-                    Toast.makeText(this@MovieDetailActivity , "NOT ADDED", Toast.LENGTH_LONG).show() }
+                    Toast.makeText(this@MovieDetailActivity , "NEED TO SIGN IN", Toast.LENGTH_LONG).show() }
 
                 override fun onResponse(call: Call<FavoriteResponse>, response: Response<FavoriteResponse>) {
                     Toast.makeText(this@MovieDetailActivity, "ADDED", Toast.LENGTH_SHORT).show()

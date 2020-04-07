@@ -5,10 +5,14 @@
     android:layout_height="match_parent"
     tools:context=".SelectFragment">
 
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRefreshLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/favMovieRecycler"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#3a3b40"/>
-
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 </FrameLayout>
