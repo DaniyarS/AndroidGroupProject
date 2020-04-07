@@ -21,13 +21,11 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-
 class FavoritesAdapter(
     var listOfFavMovies: List<Movie>? = null,
     var context: Context,
     val itemClickListener: RecyclerViewItemClick? = null
 ): RecyclerView.Adapter<FavoritesAdapter.FavoritesViewHolder>() {
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FavoritesViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.favorite_movie_item, parent, false)
         return FavoritesViewHolder(view)
@@ -51,23 +49,23 @@ class FavoritesAdapter(
 
             val movieTitle = view.findViewById<TextView>(R.id.tvMovieNameFav)
             val movieImage = view.findViewById<ImageView>(R.id.ivMovieFav)
-            val removeFromFavList = view.findViewById<ImageView>(R.id.ivAddList)
+            val removeFromFavList = view.findViewById<ImageView>(R.id.ivAddListFav)
             Glide.with(context).load(post?.getBackDropPathImage()).into(movieImage)
             movieTitle.text = post?.title
 
-            removeFromFavList.setOnClickListener(){
-                itemClickListener?.removeFromFavorites(adapterPosition,post!!)
-                removeFromFavList.setImageResource(R.drawable.ic_star_border_black_24dp)
-            }
+
             view.setOnClickListener {
                 itemClickListener?.itemClick(adapterPosition, post!!)
             }
-
+            removeFromFavList.setOnClickListener {
+                itemClickListener?.removeFromFavorites(adapterPosition,post!!)
+                removeFromFavList.setImageResource(R.drawable.ic_star_border_black_24dp)
+            }
         }
     }
 
     interface RecyclerViewItemClick {
-        fun removeFromFavorites(position: Int, item: Movie)
         fun itemClick(position: Int, item: Movie)
+        fun removeFromFavorites(position: Int, item: Movie)
     }
 }

@@ -44,7 +44,6 @@ class SelectFragment : Fragment(),FavoritesAdapter.RecyclerViewItemClick {
     private var favoritesAdapter: FavoritesAdapter? = null
 
     lateinit var swipeRefreshLayout: SwipeRefreshLayout
-//    private lateinit var ivAddList : ImageView
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

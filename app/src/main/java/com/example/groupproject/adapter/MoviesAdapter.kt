@@ -27,7 +27,6 @@ class MoviesAdapter(
 
     override fun onBindViewHolder(p0: MovieViewHolder, p1: Int) {
         p0.bind(ListOfMovies?.get(p1))
-
     }
 
     fun clearAll(){
@@ -35,7 +34,8 @@ class MoviesAdapter(
         notifyDataSetChanged()
     }
 
-    inner class MovieViewHolder(val view: View): RecyclerView.ViewHolder(view) {
+    inner class MovieViewHolder(val view: View): RecyclerView.ViewHolder(view)
+    {
 
         fun bind(post: Movie?) {
 
