@@ -2,6 +2,7 @@ package com.example.groupproject
 
 import android.R
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -119,6 +120,10 @@ class AuthorizationFragment : Fragment() {
                 if (response.isSuccessful){
                     session_id = response.body()?.session_id.toString()
                     editSharedPref()
+                    val bundle:Bundle =  Bundle()
+                    bundle.putString("user_name", username.text.toString())
+                    bundle.putString("session_id", session_id.removeRange(5, session_id.length))
+                    accountFragment.arguments = bundle
                     setFragment(accountFragment)
                 }
                 else{
