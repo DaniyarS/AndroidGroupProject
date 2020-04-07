@@ -36,7 +36,7 @@ class MainActivity : AppCompatActivity() {
 
         pref = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE)
 
-        setFragment(homeFragment)
+        setFragment(authorizationFragment)
 
         nMainNav.setOnNavigationItemSelectedListener(onNavigationItemSelectedListener)
     }
