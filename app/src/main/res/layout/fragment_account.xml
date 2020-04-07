@@ -22,100 +22,50 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/tvUserFirst"
+            android:id="@+id/tvusername"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="50dp"
-            android:text="Name:"
+            android:text="Username:"
             android:textColor="#FFF"
             android:textSize="18sp"
             app:layout_constraintStart_toStartOf="@+id/ivLogo"
             app:layout_constraintTop_toBottomOf="@+id/ivLogo" />
 
         <TextView
-        android:id="@+id/tvUserSecond"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="Surname:"
-        android:textColor="#FFF"
-        android:textSize="18sp"
-        app:layout_constraintStart_toStartOf="@+id/tvUserFirst"
-        app:layout_constraintTop_toBottomOf="@+id/tvUserFirst" />
-
-        <TextView
-            android:id="@+id/tvSession"
+            android:id="@+id/tvSessionn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="4dp"
             android:text="Session ID:"
             android:textColor="#FFF"
             android:textSize="18sp"
-            app:layout_constraintStart_toStartOf="@+id/tvUserSecond"
-            app:layout_constraintTop_toBottomOf="@+id/tvUserSecond" />
+            app:layout_constraintStart_toStartOf="@+id/tvusername"
+            app:layout_constraintTop_toBottomOf="@+id/tvusername" />
 
         <TextView
-            android:id="@+id/tvEmAddress"
+            android:id="@+id/tvNameuser"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="Email:"
-            android:textColor="#FFF"
-            android:textSize="18sp"
-            app:layout_constraintStart_toStartOf="@+id/tvSession"
-            app:layout_constraintTop_toBottomOf="@+id/tvSession" />
-
-        <TextView
-            android:id="@+id/tvUserFirstName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
+            android:layout_marginStart="16dp"
             android:text="Sample Name"
             android:textColor="@color/colorPrimary"
             android:textSize="18sp"
-            app:layout_constraintBottom_toBottomOf="@+id/tvUserFirst"
-            app:layout_constraintStart_toEndOf="@+id/tvUserFirst"
-            app:layout_constraintTop_toTopOf="@+id/tvUserFirst"
-            app:layout_constraintVertical_bias="1.0" />
-
-        <TextView
-            android:id="@+id/tvUserSecondName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:text="Sample Surname"
-            android:textColor="@color/colorPrimary"
-            android:textSize="18sp"
-            app:layout_constraintBottom_toBottomOf="@+id/tvUserSecond"
-            app:layout_constraintStart_toEndOf="@+id/tvUserSecond"
-            app:layout_constraintTop_toTopOf="@+id/tvUserSecond"
-            app:layout_constraintVertical_bias="1.0" />
+            app:layout_constraintBottom_toBottomOf="@+id/tvusername"
+            app:layout_constraintStart_toEndOf="@+id/tvusername"
+            app:layout_constraintTop_toTopOf="@+id/tvusername" />
 
         <TextView
             android:id="@+id/tvSessionId"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
+            android:layout_marginStart="13dp"
             android:text="Sample Id"
             android:textColor="@color/colorPrimary"
             android:textSize="18sp"
-            app:layout_constraintBottom_toBottomOf="@+id/tvSession"
-            app:layout_constraintStart_toEndOf="@+id/tvSession"
-            app:layout_constraintTop_toTopOf="@+id/tvSession"
-            app:layout_constraintVertical_bias="1.0" />
-
-        <TextView
-            android:id="@+id/tvEmailAddress"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:text="Sample email"
-            android:textColor="@color/colorPrimary"
-            android:textSize="18sp"
-            app:layout_constraintBottom_toBottomOf="@+id/tvEmAddress"
-            app:layout_constraintStart_toEndOf="@+id/tvEmAddress"
-            app:layout_constraintTop_toTopOf="@+id/tvEmAddress"
-            app:layout_constraintVertical_bias="1.0" />
+            app:layout_constraintBottom_toBottomOf="@+id/tvSessionn"
+            app:layout_constraintStart_toEndOf="@+id/tvSessionn"
+            app:layout_constraintTop_toTopOf="@+id/tvSessionn" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
