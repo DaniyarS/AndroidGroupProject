@@ -23,7 +23,9 @@ data class Movie(
     @SerializedName("release_date") val release_date: String,
     @SerializedName("runtime") val runtime: Int,
 
-    @SerializedName("credits") val credits : Credits
+    @SerializedName("credits") val credits : Credits,
+
+    @SerializedName("results") val results: List<Movie>
 )
 {
     val baseImageUrl: String = "https://image.tmdb.org/t/p/w300"

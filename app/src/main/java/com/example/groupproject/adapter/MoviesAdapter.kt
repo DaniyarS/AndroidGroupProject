@@ -1,7 +1,6 @@
 package com.example.groupproject.adapter
 
 import android.content.Context
-import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,7 +8,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.example.groupproject.MovieDetailActivity
 import com.example.groupproject.R
 import com.example.groupproject.model.Movie
 
@@ -34,7 +32,8 @@ class MoviesAdapter(
         notifyDataSetChanged()
     }
 
-    inner class MovieViewHolder(val view: View): RecyclerView.ViewHolder(view) {
+    inner class MovieViewHolder(val view: View): RecyclerView.ViewHolder(view)
+    {
 
         fun bind(post: Movie?) {
 

@@ -1,5 +1,6 @@
 package com.example.groupproject.fragment
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.ContextMenu
 import android.view.LayoutInflater
@@ -50,6 +51,7 @@ class MovieFragment : Fragment() {
             override fun onFailure(call: Call<Movie>, t: Throwable) {
                 progressBar.visibility = View.GONE
             }
+            @SuppressLint("SetTextI18n")
             override fun onResponse(call: Call<Movie>, response: Response<Movie>) {
                 progressBar.visibility = View.GONE
                 val post = response.body()
@@ -67,7 +69,7 @@ class MovieFragment : Fragment() {
                             MovieGenre.text = MovieGenre.text.toString() + genre.getGenreName()}
                         else{
                             MovieGenre.text = MovieGenre.text.toString() + genre.getGenreName()+ " • "}
-                        genreCounter=genreCounter+1
+                        genreCounter += 1
                     }
                 }
             }

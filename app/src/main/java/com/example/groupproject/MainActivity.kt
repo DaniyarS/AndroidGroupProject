@@ -1,5 +1,7 @@
 package com.example.groupproject
 
+import android.content.Context
+import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.FrameLayout
@@ -15,9 +17,10 @@ class MainActivity : AppCompatActivity() {
     private lateinit var homeFragment:HomeFragment
     private lateinit var selectFragment:SelectFragment
     private lateinit var accountFragment:AccountFragment
+    private lateinit var authorizationFragment: AuthorizationFragment
 
-    private lateinit var registration: Registration
-
+    private lateinit var pref: SharedPreferences
+    private val APP_PREFERENCES = "appsettings"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,7 +32,11 @@ class MainActivity : AppCompatActivity() {
         homeFragment = HomeFragment()
         selectFragment = SelectFragment()
         accountFragment = AccountFragment()
-        registration = Registration()
+        authorizationFragment = AuthorizationFragment()
+
+        pref = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE)
+
+        setFragment(homeFragment)
 
         nMainNav.setOnNavigationItemSelectedListener(onNavigationItemSelectedListener)
     }
@@ -45,7 +52,7 @@ class MainActivity : AppCompatActivity() {
                 return@OnNavigationItemSelectedListener  true
             }
             R.id.nav_account ->{
-                setFragment(accountFragment)
+                setFragment(authorizationFragment)
                 return@OnNavigationItemSelectedListener  true
             }
         }
@@ -56,7 +63,6 @@ class MainActivity : AppCompatActivity() {
         val fragmentTransaction:FragmentTransaction = supportFragmentManager.beginTransaction()
         fragmentTransaction.replace(R.id.main_frame, fragment)
         fragmentTransaction.commit()
-
     }
 
 }

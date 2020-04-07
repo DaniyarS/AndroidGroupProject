@@ -1,22 +1,19 @@
 package com.example.groupproject
 
-import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
-import android.widget.Toast
-import kotlinx.android.synthetic.main.fragment_account.*
+import android.widget.TextView
 
 /**
  * A simple [Fragment] subclass.
  */
 class AccountFragment : Fragment() {
 
-    private lateinit var email: EditText
-    private lateinit var password: EditText
+    private lateinit var tvSession: TextView
+    private lateinit var tvUser: TextView
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -28,32 +25,13 @@ class AccountFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         activity?.let {
 
-            email = it.findViewById(R.id.tvEmail)
-            password = it.findViewById(R.id.tvPassword)
+            tvUser = it.findViewById(R.id.tvNameuser)
+            tvSession = it.findViewById(R.id.tvSessionId)
 
-            val preferences = context?.getSharedPreferences("UserInfo", 0)
-
-            create.setOnClickListener() {
-                val intent = Intent(activity, Registration::class.java)
-                startActivity(intent)
-            }
-
-            btLogin.setOnClickListener() {
-                val userEmail = email.text.toString()
-                tvEmail.visibility = View.GONE
-                val userPass = password.text.toString()
-                tvPassword.visibility = View.GONE
-
-                val email = preferences?.getString("email", "")
-                val password = preferences?.getString("password", "")
-
-                if (userEmail == email && userPass == password) {
-                    val intent = Intent(activity, HomeFragment::class.java)
-                    startActivity(intent)
-                    Toast.makeText(activity, "You have signed in", Toast.LENGTH_SHORT).show()
-                } else {
-                    Toast.makeText(activity, "Please, fill the blanks!", Toast.LENGTH_SHORT).show()
-                }
+            val bundle: Bundle? = arguments
+            if (bundle != null){
+                tvUser.text = bundle.getString("user_name")
+                tvSession.text = bundle.getString("session_id")
             }
         }
     }
