@@ -34,10 +34,10 @@ class AccountFragment : Fragment() {
 
             val preferences = this.activity?.getSharedPreferences("UserInfo", 0)
 
-            create.setOnClickListener() {
-                val intent = Intent(activity, Registration::class.java)
-                startActivity(intent)
-            }
+//            create.setOnClickListener() {
+//                val intent = Intent(activity, Registration::class.java)
+//                startActivity(intent)
+//            }
 
             btLogin.setOnClickListener() {
                 val userEmail = email.text.toString()

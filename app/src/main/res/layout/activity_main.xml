@@ -32,4 +32,8 @@
         app:itemIconSize="24dp"
         app:elevation="0dp"
         app:menu="@menu/nav_menu" />
+
+    <include
+        android:layout="@layout/fragment_account"
+        android:visibility="gone"/>
 </RelativeLayout>
