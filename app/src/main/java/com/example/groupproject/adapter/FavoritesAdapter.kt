@@ -1,25 +1,15 @@
 package com.example.groupproject.adapter
 
 import android.content.Context
-import android.content.SharedPreferences
-import android.media.Image
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.example.groupproject.BuildConfig
 import com.example.groupproject.R
-import com.example.groupproject.api.FavoriteRequest
-import com.example.groupproject.api.FavoriteResponse
-import com.example.groupproject.api.RetrofitMoviesService
 import com.example.groupproject.model.Movie
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 class FavoritesAdapter(
     var listOfFavMovies: List<Movie>? = null,

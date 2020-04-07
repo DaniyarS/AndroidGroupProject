@@ -12,8 +12,6 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Authorization"></activity>
-        <activity android:name=".Registration" />
         <activity android:name=".MovieDetailActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>

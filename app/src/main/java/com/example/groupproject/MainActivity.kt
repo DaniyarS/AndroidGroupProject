@@ -1,16 +1,13 @@
 package com.example.groupproject
 
 import android.content.Context
-import android.content.Intent
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.Button
 import android.widget.FrameLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
 
@@ -22,13 +19,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var accountFragment:AccountFragment
     private lateinit var authorizationFragment: AuthorizationFragment
 
-    private lateinit var registration: Registration
-
     private lateinit var pref: SharedPreferences
-    val APP_PREFERENCES = "appsettings"
-    val APP_SESSION = "session_id"
-
-    private lateinit var btRegistrate: Button
+    private val APP_PREFERENCES = "appsettings"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,7 +33,6 @@ class MainActivity : AppCompatActivity() {
         selectFragment = SelectFragment()
         accountFragment = AccountFragment()
         authorizationFragment = AuthorizationFragment()
-        registration = Registration()
 
         pref = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE)
 

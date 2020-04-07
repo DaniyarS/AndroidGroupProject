@@ -89,7 +89,7 @@ class SelectFragment : Fragment(),FavoritesAdapter.RecyclerViewItemClick {
         RetrofitMoviesService.getMovieApi().addFavorite(BuildConfig.MOVIE_DB_API_TOKEN, session_id, favoriteRequest).enqueue(object: Callback<FavoriteResponse>{
             override fun onFailure(call: Call<FavoriteResponse>, t: Throwable) {}
             override fun onResponse(call: Call<FavoriteResponse>, response: Response<FavoriteResponse>) {
-                Toast.makeText(activity, "DELETED", Toast.LENGTH_SHORT).show()
+                Toast.makeText(activity, "Removed", Toast.LENGTH_SHORT).show()
             }
         })
 
@@ -105,7 +105,7 @@ class SelectFragment : Fragment(),FavoritesAdapter.RecyclerViewItemClick {
             }
             getSP = activity?.getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE)!!
             if (getSP.contains(APP_SESSION)){
-                session_id = getSP.getString(APP_SESSION,"NULL")!!
+                session_id = getSP.getString(APP_SESSION,null)!!
             }
             swipeRefreshLayout.isRefreshing = true
             RetrofitMoviesService.getMovieApi().getFavorite(BuildConfig.MOVIE_DB_API_TOKEN,session_id).enqueue(object :
@@ -120,7 +120,7 @@ class SelectFragment : Fragment(),FavoritesAdapter.RecyclerViewItemClick {
                         val list = response.body()?.results
                         val movieList : GetMoviesResponse? = response.body()
                         if (list?.size==0){
-                            Toast.makeText(activity,"NO FILMS ADDED",Toast.LENGTH_LONG).show()
+                            Toast.makeText(activity,"No movie added",Toast.LENGTH_LONG).show()
                         }
                         favoritesAdapter?.listOfFavMovies = list
                         favoritesAdapter?.notifyDataSetChanged()

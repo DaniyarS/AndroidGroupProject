@@ -33,9 +33,6 @@ class AccountFragment : Fragment() {
                 tvUser.text = bundle.getString("user_name")
                 tvSession.text = bundle.getString("session_id")
             }
-
-           // val preferences = context?.getSharedPreferences("UserInfo", 0)
-
         }
     }
 }

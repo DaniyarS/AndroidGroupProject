@@ -120,10 +120,17 @@ class AuthorizationFragment : Fragment() {
                 if (response.isSuccessful){
                     session_id = response.body()?.session_id.toString()
                     editSharedPref()
+
+                    //bundle to send data for account fragment
                     val bundle:Bundle =  Bundle()
                     bundle.putString("user_name", username.text.toString())
                     bundle.putString("session_id", session_id.removeRange(5, session_id.length))
                     accountFragment.arguments = bundle
+
+                    //intent to send session id to moviedetail activity
+                    val intent = Intent(activity?.applicationContext, MovieDetailActivity::class.java)
+                    intent.putExtra("session_id_auth", session_id)
+
                     setFragment(accountFragment)
                 }
                 else{

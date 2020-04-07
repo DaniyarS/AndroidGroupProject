@@ -16,6 +16,9 @@ class RegistrationFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
+
+
+        // Group message: unfortunately we couldn't implement registration process
         return inflater.inflate(R.layout.fragment_registration, container, false)
     }
 

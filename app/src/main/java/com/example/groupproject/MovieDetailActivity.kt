@@ -2,9 +2,7 @@ package com.example.groupproject
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.Intent
 import android.content.SharedPreferences
-import android.graphics.drawable.Drawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
@@ -21,6 +19,7 @@ import com.example.groupproject.model.Movie
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import kotlin.coroutines.coroutineContext
 
 
 class MovieDetailActivity : AppCompatActivity() {
@@ -40,8 +39,6 @@ class MovieDetailActivity : AppCompatActivity() {
     private lateinit var movieDirector: TextView
     private lateinit var movieCast: TextView
     private lateinit var btnFavorite: ImageView
-    private var counter: Int = 0
-//    var list: MutableList<Int> = ArrayList()
 
     private lateinit var getSP : SharedPreferences
     private lateinit var session_id: String
@@ -54,7 +51,7 @@ class MovieDetailActivity : AppCompatActivity() {
         ivAddList = findViewById(R.id.ivAddList)
         getSP = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE)!!
         if (getSP.contains(APP_SESSION)){
-            session_id = getSP.getString(APP_SESSION,"null")!!
+            session_id = getSP.getString(APP_SESSION,null)!!
         }
 
         progressBar = findViewById(R.id.progressBar)
@@ -81,34 +78,68 @@ class MovieDetailActivity : AppCompatActivity() {
     private fun addToFavoriteMovie(item: Int){
 
         lateinit var favoriteRequest: FavoriteRequest
+        if (intent?.getStringExtra("session_id_auth") != null) {
+            if (ivAddList.drawable.constantState == resources.getDrawable(
+                    R.drawable.ic_star_border_black_24dp,
+                    null
+                ).constantState
+            ) {
+                ivAddList.setImageResource(R.drawable.ic_star_fav_24dp)
+                isClicked = true
+                favoriteRequest = FavoriteRequest("movie", item, isClicked)
+                ivAddList.setImageResource(R.drawable.ic_star_black_24dp)
+                RetrofitMoviesService.getMovieApi()
+                    .addFavorite(BuildConfig.MOVIE_DB_API_TOKEN, session_id, favoriteRequest)
+                    .enqueue(object : Callback<FavoriteResponse> {
 
-        if (ivAddList.drawable.constantState==resources.getDrawable(R.drawable.ic_star_border_black_24dp,null).constantState){
-            ivAddList.setImageResource(R.drawable.ic_star_fav_24dp)
-            isClicked=true
-            favoriteRequest=FavoriteRequest("movie",item, isClicked)
-            ivAddList.setImageResource(R.drawable.ic_star_black_24dp)
-            RetrofitMoviesService.getMovieApi().addFavorite(BuildConfig.MOVIE_DB_API_TOKEN,session_id,favoriteRequest).enqueue(object: Callback<FavoriteResponse>{
+                        override fun onFailure(call: Call<FavoriteResponse>, t: Throwable) {
+                            Toast.makeText(
+                                applicationContext,
+                                "Please, sign in first",
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
 
-                override fun onFailure(call: Call<FavoriteResponse>, t: Throwable) {
-                    Toast.makeText(this@MovieDetailActivity , "NEED TO SIGN IN", Toast.LENGTH_LONG).show() }
+                        override fun onResponse(
+                            call: Call<FavoriteResponse>,
+                            response: Response<FavoriteResponse>
+                        ) {
+                            Toast.makeText(
+                                applicationContext,
+                                "Added to favorites",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    })
+            } else {
+                isClicked = false
+                ivAddList.setImageResource(R.drawable.ic_star_border_black_24dp)
+                favoriteRequest = FavoriteRequest("movie", item, isClicked)
+                RetrofitMoviesService.getMovieApi()
+                    .addFavorite(BuildConfig.MOVIE_DB_API_TOKEN, session_id, favoriteRequest)
+                    .enqueue(object : Callback<FavoriteResponse> {
 
-                override fun onResponse(call: Call<FavoriteResponse>, response: Response<FavoriteResponse>) {
-                    Toast.makeText(this@MovieDetailActivity, "ADDED", Toast.LENGTH_SHORT).show()
-                }
-            })
+                        override fun onFailure(call: Call<FavoriteResponse>, t: Throwable) {}
+
+                        override fun onResponse(
+                            call: Call<FavoriteResponse>,
+                            response: Response<FavoriteResponse>
+                        ) {
+                            Toast.makeText(
+                                applicationContext,
+                                "Removed from favorites",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    })
+            }
         }
         else{
-            isClicked=false
-            ivAddList.setImageResource(R.drawable.ic_star_border_black_24dp)
-            favoriteRequest=FavoriteRequest("movie",item, isClicked)
-            RetrofitMoviesService.getMovieApi().addFavorite(BuildConfig.MOVIE_DB_API_TOKEN, session_id, favoriteRequest).enqueue(object: Callback<FavoriteResponse>{
-
-                override fun onFailure(call: Call<FavoriteResponse>, t: Throwable) {}
-
-                override fun onResponse(call: Call<FavoriteResponse>, response: Response<FavoriteResponse>) {
-                    Toast.makeText(this@MovieDetailActivity, "DELETED", Toast.LENGTH_SHORT).show()
-                }
-            })
+            Toast.makeText(
+                applicationContext,
+                "Please, sign in first",
+                Toast.LENGTH_SHORT
+            ).show()
         }
     }
 
@@ -126,8 +157,8 @@ class MovieDetailActivity : AppCompatActivity() {
 
                     movieTitle.text = post.title
 
-                    val realeaseDate = post.release_date
-                    movieRealease.text = "(" + realeaseDate.substring(0,4) + ")"
+                    val realiseDate = post.release_date
+                    movieRealease.text = "(" + realiseDate.substring(0,4) + ")"
 
                     val runtime = post.runtime
                     if (runtime>60) {
@@ -159,7 +190,7 @@ class MovieDetailActivity : AppCompatActivity() {
     private fun getCredits(id: Int) {
         RetrofitMoviesService.getMovieApi().getCredits(id,BuildConfig.MOVIE_DB_API_TOKEN).enqueue(object: Callback<Credits> {
             override fun onFailure(call: Call<Credits>, t: Throwable) {
-                TODO("Not yet implemented")
+                Toast.makeText(applicationContext, "Detail body is not filled yet", Toast.LENGTH_SHORT).show()
             }
             @SuppressLint("SetTextI18n")
             override fun onResponse(call: Call<Credits>, response: Response<Credits>) {
