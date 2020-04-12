@@ -1,8 +1,6 @@
 package com.example.groupproject
 
-import android.R
 import android.content.Context
-import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -30,6 +28,7 @@ class AuthorizationFragment : Fragment() {
     private val APP_PREFERENCES = "appsettings"
     private val APP_SESSION = "session_id"
 
+
     private lateinit var accountFragment:AccountFragment
 
     private lateinit var username: EditText
@@ -47,16 +46,16 @@ class AuthorizationFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(com.example.groupproject.R.layout.fragment_authorization,container,false)
+        return inflater.inflate(R.layout.fragment_authorization,container,false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         activity?.let {
             pref = it.getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE)
-            username = it.findViewById(com.example.groupproject.R.id.etUsername)
-            password = it.findViewById(com.example.groupproject.R.id.etPassword)
-            signIN = it.findViewById(com.example.groupproject.R.id.btRegistrate)
+            username = it.findViewById(R.id.etUsername)
+            password = it.findViewById(R.id.etPassword)
+            signIN = it.findViewById(R.id.btRegistrate)
 
             accountFragment = AccountFragment()
 
@@ -121,15 +120,13 @@ class AuthorizationFragment : Fragment() {
                     session_id = response.body()?.session_id.toString()
                     editSharedPref()
 
-                    //bundle to send data for account fragment
-                    val bundle:Bundle =  Bundle()
-                    bundle.putString("user_name", username.text.toString())
-                    bundle.putString("session_id", session_id.removeRange(5, session_id.length))
-                    accountFragment.arguments = bundle
-
-                    //intent to send session id to moviedetail activity
-                    val intent = Intent(activity?.applicationContext, MovieDetailActivity::class.java)
-                    intent.putExtra("session_id_auth", session_id)
+                    val sessionPreference = SessionPreference(activity?.applicationContext!!)
+                    sessionPreference.setUsername(username.text.toString())
+                    sessionPreference.setSessionId(session_id.removeRange(5, session_id.length))
+                    sessionPreference.setRealSessionId(session_id)
+                    var loginCount = sessionPreference.getLoginCount()
+                    loginCount++
+                    sessionPreference.setLoginCount(loginCount)
 
                     setFragment(accountFragment)
                 }
@@ -143,7 +140,7 @@ class AuthorizationFragment : Fragment() {
 
     private fun setFragment(fragment: Fragment){
         val fragmentTransaction:FragmentTransaction = fragmentManager?.beginTransaction()!!
-        fragmentTransaction.replace(com.example.groupproject.R.id.main_frame, fragment)
+        fragmentTransaction.replace(R.id.main_frame, fragment)
         fragmentTransaction.commit()
     }
 
