@@ -17,9 +17,6 @@ import kotlinx.android.synthetic.main.fragment_account.*
  * A simple [Fragment] subclass.
  */
 
-private const val KEY_USERNAME = "username_key"
-private const val KEY_SESSION_ID = "session_id_key"
-
 class AccountFragment : Fragment() {
 
 
