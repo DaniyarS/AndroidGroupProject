@@ -24,14 +24,19 @@ import com.example.groupproject.api.RetrofitMoviesService
 import com.example.groupproject.model.GetMoviesResponse
 import com.example.groupproject.model.Movie
 import kotlinx.android.synthetic.main.movie_detail_items.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import kotlin.coroutines.CoroutineContext
 
 /**
  * A simple [Fragment] subclass.
  */
-class SelectFragment : Fragment(),FavoritesAdapter.RecyclerViewItemClick {
+class SelectFragment : Fragment(),FavoritesAdapter.RecyclerViewItemClick, CoroutineScope {
 
     private val APP_PREFERENCES = "appsettings"
     private val APP_SESSION = "session_id"
@@ -44,6 +49,11 @@ class SelectFragment : Fragment(),FavoritesAdapter.RecyclerViewItemClick {
     private var favoritesAdapter: FavoritesAdapter? = null
 
     lateinit var swipeRefreshLayout: SwipeRefreshLayout
+
+    private val job = Job()
+
+    override val coroutineContext: CoroutineContext
+        get() = Dispatchers.Main + job
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -63,8 +73,7 @@ class SelectFragment : Fragment(),FavoritesAdapter.RecyclerViewItemClick {
         }
         generateComponent()
 
-
-            return view
+        return view
     }
 
 
@@ -74,7 +83,7 @@ class SelectFragment : Fragment(),FavoritesAdapter.RecyclerViewItemClick {
         favoritesAdapter =activity?.applicationContext?.let {FavoritesAdapter(listOfFavMovies, it.applicationContext,itemClickListener = this)  }
         favMovieRecycler.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL,false)
         favMovieRecycler.adapter = favoritesAdapter
-        getFavorite()
+        getFavoriteCorotine()
     }
 
     override fun itemClick(position: Int, item: Movie) {
@@ -83,53 +92,53 @@ class SelectFragment : Fragment(),FavoritesAdapter.RecyclerViewItemClick {
         startActivity(intent)
     }
 
-    override fun removeFromFavorites(position: Int, item: Movie) {
-        lateinit var favoriteRequest: FavoriteRequest
-        favoriteRequest= FavoriteRequest("movie",item.id, false)
-        RetrofitMoviesService.getMovieApi().addFavorite(BuildConfig.MOVIE_DB_API_TOKEN, session_id, favoriteRequest).enqueue(object: Callback<FavoriteResponse>{
-            override fun onFailure(call: Call<FavoriteResponse>, t: Throwable) {}
-            override fun onResponse(call: Call<FavoriteResponse>, response: Response<FavoriteResponse>) {
-                Toast.makeText(activity, "Removed", Toast.LENGTH_SHORT).show()
-            }
-        })
-
+    override fun onDestroy() {
+        super.onDestroy()
+        job.cancel()
     }
 
+    override fun removeFromFavoritesCoroutine(position: Int, item: Movie) {
+        launch {
+            lateinit var favoriteRequest: FavoriteRequest
+            favoriteRequest= FavoriteRequest("movie",item.id, false)
+            val response: Response<FavoriteResponse> = RetrofitMoviesService.getMovieApi()
+                .addFavoriteCoroutine(
+                    BuildConfig.MOVIE_DB_API_TOKEN,
+                    session_id,
+                    favoriteRequest
+                )
+            if (response.isSuccessful){
+                Toast.makeText(
+                    view?.context,
+                    "Removed",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
+    }
 
-
-    @SuppressLint("ShowToast")
-    private fun getFavorite(){
-        try {
+    private fun getFavoriteCorotine(){
+        launch {
             if (BuildConfig.MOVIE_DB_API_TOKEN.isEmpty()) {
-                return
+                return@launch
             }
             getSP = activity?.getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE)!!
             if (getSP.contains(APP_SESSION)){
                 session_id = getSP.getString(APP_SESSION,null)!!
             }
             swipeRefreshLayout.isRefreshing = true
-            RetrofitMoviesService.getMovieApi().getFavorite(BuildConfig.MOVIE_DB_API_TOKEN,session_id).enqueue(object :
-                Callback<GetMoviesResponse> {
-                override fun onFailure(call: Call<GetMoviesResponse>, t: Throwable) {
-                    swipeRefreshLayout.isRefreshing = false
+            val response: Response<GetMoviesResponse> = RetrofitMoviesService.getMovieApi()
+                .getFavoriteCoroutine(BuildConfig.MOVIE_DB_API_TOKEN,session_id)
+            if (response.isSuccessful){
+                val list = response.body()?.results
+                if (list?.size==0){
+                    Toast.makeText(activity,"No movie added",Toast.LENGTH_LONG).show()
                 }
-                override fun onResponse(call: Call<GetMoviesResponse>, response: Response<GetMoviesResponse>
-                ) {
-                    Log.d("favorite_movies_list", response.body().toString())
-                    if (response.isSuccessful) {
-                        val list = response.body()?.results
-                        val movieList : GetMoviesResponse? = response.body()
-                        if (list?.size==0){
-                            Toast.makeText(activity,"No movie added",Toast.LENGTH_LONG).show()
-                        }
-                        favoritesAdapter?.listOfFavMovies = list
-                        favoritesAdapter?.notifyDataSetChanged()
-
-                    }
-                    swipeRefreshLayout.isRefreshing = false
-                }
-            }) } catch (e: Exception) {
-            Toast.makeText(activity, e.toString(), Toast.LENGTH_SHORT)
+                favoritesAdapter?.listOfFavMovies = list
+                favoritesAdapter?.notifyDataSetChanged()
+            }
+            swipeRefreshLayout.isRefreshing = false
         }
     }
+
 }

@@ -11,6 +11,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import okhttp3.Interceptor
 import okhttp3.logging.HttpLoggingInterceptor
+import retrofit2.Response
 import retrofit2.http.*
 
 import java.util.concurrent.TimeUnit
@@ -114,10 +115,24 @@ interface MovieApi {
         @Body favoriteRequest: FavoriteRequest
     ) : Call<FavoriteResponse>
 
+    @POST("account/{account_id}/favorite")
+    suspend fun addFavoriteCoroutine(
+        @Query("api_key") apiKey: String,
+        @Query("session_id") sessionId : String,
+        @Body favoriteRequest: FavoriteRequest
+    ): Response<FavoriteResponse>
+
     //GET LIST OF FAVORITE MOVIES
     @GET("account/{account_id}/favorite/movies")
     fun getFavorite(
         @Query("api_key") apiKey: String,
         @Query("session_id") sessionId: String
     ) : Call<GetMoviesResponse>
+
+    @GET("account/{account_id}/favorite/movies")
+    suspend fun getFavoriteCoroutine(
+        @Query("api_key") apiKey: String,
+        @Query("session_id") sessionId: String
+    ) : Response<GetMoviesResponse>
+
 }
