@@ -86,6 +86,7 @@ class MovieDetailActivity : AppCompatActivity() {
             }
             else{
             addToFavoriteMovie(movieId)
+                progressBar.visibility = View.VISIBLE
             }
         }
 
@@ -93,8 +94,6 @@ class MovieDetailActivity : AppCompatActivity() {
 
 
     private fun addToFavoriteMovie(item: Int){
-
-
         lateinit var favoriteRequest: FavoriteRequest
 
         if (ivAddList.drawable.constantState == resources.getDrawable(
@@ -111,6 +110,7 @@ class MovieDetailActivity : AppCompatActivity() {
                 .enqueue(object : Callback<FavoriteResponse> {
 
                     override fun onFailure(call: Call<FavoriteResponse>, t: Throwable) {
+                        progressBar.visibility = View.GONE
                         Toast.makeText(
                             applicationContext,
                             "Please, sign in first",
@@ -122,6 +122,7 @@ class MovieDetailActivity : AppCompatActivity() {
                         call: Call<FavoriteResponse>,
                         response: Response<FavoriteResponse>
                     ) {
+                        progressBar.visibility = View.GONE
                         Toast.makeText(
                             applicationContext,
                             "Added to favorites",
@@ -137,12 +138,14 @@ class MovieDetailActivity : AppCompatActivity() {
                 .addFavorite(BuildConfig.MOVIE_DB_API_TOKEN, session_id, favoriteRequest)
                 .enqueue(object : Callback<FavoriteResponse> {
 
-                    override fun onFailure(call: Call<FavoriteResponse>, t: Throwable) {}
+                    override fun onFailure(call: Call<FavoriteResponse>, t: Throwable) {
+                        progressBar.visibility = View.GONE}
 
                     override fun onResponse(
                         call: Call<FavoriteResponse>,
                         response: Response<FavoriteResponse>
                     ) {
+                        progressBar.visibility = View.GONE
                         Toast.makeText(
                             applicationContext,
                             "Removed from favorites",
