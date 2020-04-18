@@ -1,12 +1,9 @@
 package com.example.groupproject
 
 
-import android.annotation.SuppressLint
+
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
-
-
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -21,17 +18,18 @@ import com.example.groupproject.adapter.ViewPagerAdapter
 import com.example.groupproject.api.RetrofitMoviesService
 import com.example.groupproject.model.GetMoviesResponse
 import com.example.groupproject.model.Movie
-import retrofit2.Call
-import retrofit2.Callback
+
 import retrofit2.Response
 import androidx.viewpager.widget.ViewPager
+import kotlinx.coroutines.*
+import kotlin.coroutines.CoroutineContext
 
 
 /**
  * A simple [Fragment] subclass.
  */
 
-class HomeFragment : Fragment(), MoviesAdapter.RecyclerViewItemClick {
+class HomeFragment : Fragment(), MoviesAdapter.RecyclerViewItemClick, CoroutineScope {
 
     private lateinit var recyclerView: RecyclerView
     private var moviesAdapter: MoviesAdapter?=null
@@ -49,11 +47,17 @@ class HomeFragment : Fragment(), MoviesAdapter.RecyclerViewItemClick {
     private lateinit var viewPager: ViewPager
     private lateinit var  pagerAdapter: ViewPagerAdapter
 
+    //new val job
+    private val job = Job()
+
+    //override fun for coroutine context
+    override val coroutineContext: CoroutineContext
+        get() = Dispatchers.Main + job
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
 
         val viewMovies = inflater.inflate(R.layout.fragment_home,container,false)
 
@@ -96,9 +100,9 @@ class HomeFragment : Fragment(), MoviesAdapter.RecyclerViewItemClick {
         upcomingRecyclerView.layoutManager = LinearLayoutManager(activity,LinearLayoutManager.HORIZONTAL,false)
         upcomingRecyclerView.adapter = movies3Adapter
 
-        initPopularMovies()
-        initTopRatedMovies()
-        initUpcomingMovies()
+        initPopularMoviesCoroutine()  //coroutinePopularMovies
+        initTopRatedMoviesCoroutine() //coroutineTopRated
+        initUpcomingMoviesCoroutine() //coroutineUpcoming
     }
 
     override fun itemClick(position: Int, item: Movie) {
@@ -107,88 +111,59 @@ class HomeFragment : Fragment(), MoviesAdapter.RecyclerViewItemClick {
         startActivity(intent)
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        job.cancel()
+    }
 
     //Binding data to the first recycler view
-    @SuppressLint("ShowToast")
-    private fun initPopularMovies() {
-        try {
-            if (BuildConfig.MOVIE_DB_API_TOKEN.isEmpty()) {
-                return
+    private fun initPopularMoviesCoroutine(){
+            launch {
+                swipeRefreshLayout.isRefreshing = true
+                val response: Response<GetMoviesResponse> = RetrofitMoviesService.getMovieApi().
+                getPopularMoviesCoroutine(BuildConfig.MOVIE_DB_API_TOKEN)
+                if (response.isSuccessful){
+                    val list = response.body()?.results
+                    moviesAdapter?.ListOfMovies = list
+                    moviesAdapter?.notifyDataSetChanged()
+                } else {
+                    Toast.makeText(activity, "Error", Toast.LENGTH_SHORT).show()
+                }
+                swipeRefreshLayout.isRefreshing = false
             }
-            swipeRefreshLayout.isRefreshing = true
-            RetrofitMoviesService.getMovieApi().getPopularMovies(BuildConfig.MOVIE_DB_API_TOKEN).enqueue(object :
-                Callback<GetMoviesResponse> {
-                override fun onFailure(call: Call<GetMoviesResponse>, t: Throwable) {
-                    swipeRefreshLayout.isRefreshing = false
-                }
-                override fun onResponse(call: Call<GetMoviesResponse>, response: Response<GetMoviesResponse>
-                ) {
-                    Log.d("popular_movie_list", response.body().toString())
-                    if (response.isSuccessful) {
-                        val list = response.body()?.results
-                        moviesAdapter?.ListOfMovies = list
-                        moviesAdapter?.notifyDataSetChanged()
-                    }
-                    swipeRefreshLayout.isRefreshing = false
-                }
-            }) } catch (e: Exception) {
-            Toast.makeText(activity, e.toString(), Toast.LENGTH_SHORT)
-        }
     }
 
     //Binding data to the second recycler view
-    @SuppressLint("ShowToast")
-    private fun initTopRatedMovies() {
-        try {
-            if (BuildConfig.MOVIE_DB_API_TOKEN.isEmpty()) {
-                return
+    private fun initTopRatedMoviesCoroutine() {
+            launch {
+                swipeRefreshLayout.isRefreshing = true
+                val response: Response<GetMoviesResponse> = RetrofitMoviesService.getMovieApi()
+                    .getTopRatedMoviesCoroutine(BuildConfig.MOVIE_DB_API_TOKEN)
+                if (response.isSuccessful) {
+                    val list = response.body()?.results
+                    movies2Adapter?.ListOfMovies = list
+                    movies2Adapter?.notifyDataSetChanged()
+                } else {
+                    Toast.makeText(activity, "Error", Toast.LENGTH_SHORT).show()
+                }
+                swipeRefreshLayout.isRefreshing = false
             }
-            swipeRefreshLayout.isRefreshing = true
-            RetrofitMoviesService.getMovieApi().getTopRatedMovies(BuildConfig.MOVIE_DB_API_TOKEN).enqueue(object :
-                Callback<GetMoviesResponse> {
-                override fun onFailure(call: Call<GetMoviesResponse>, t: Throwable) {
-                    swipeRefreshLayout.isRefreshing = false
-                }
-                override fun onResponse(call: Call<GetMoviesResponse>, response: Response<GetMoviesResponse>
-                ) {
-                    Log.d("top_rated_movie_list", response.body().toString())
-                    if (response.isSuccessful) {
-                        val list = response.body()?.results
-                        movies2Adapter?.ListOfMovies = list
-                        movies2Adapter?.notifyDataSetChanged()
-                    }
-                    swipeRefreshLayout.isRefreshing = false
-                }
-            }) } catch (e: Exception) {
-            Toast.makeText(activity, e.toString(), Toast.LENGTH_SHORT)
-        }
     }
 
     //Binding data to the second recycler view
-    @SuppressLint("ShowToast")
-    private fun initUpcomingMovies() {
-        try {
-            if (BuildConfig.MOVIE_DB_API_TOKEN.isEmpty()) {
-                return
+    private fun initUpcomingMoviesCoroutine() {
+            launch {
+                swipeRefreshLayout.isRefreshing = true
+                val response: Response<GetMoviesResponse> = RetrofitMoviesService.getMovieApi()
+                    .getUpcomingMoviesCoroutine(BuildConfig.MOVIE_DB_API_TOKEN)
+                if (response.isSuccessful) {
+                    val list = response.body()?.results
+                    movies3Adapter?.ListOfMovies = list
+                    movies3Adapter?.notifyDataSetChanged()
+                } else {
+                    Toast.makeText(activity, "Error", Toast.LENGTH_SHORT).show()
+                }
+                swipeRefreshLayout.isRefreshing = false
             }
-            swipeRefreshLayout.isRefreshing = true
-            RetrofitMoviesService.getMovieApi().getUpcomingMovies(BuildConfig.MOVIE_DB_API_TOKEN).enqueue(object :
-                Callback<GetMoviesResponse> {
-                override fun onFailure(call: Call<GetMoviesResponse>, t: Throwable) {
-                    swipeRefreshLayout.isRefreshing = false
-                }
-                override fun onResponse(call: Call<GetMoviesResponse>, response: Response<GetMoviesResponse>
-                ) {
-                    Log.d("upcoming_movie_list", response.body().toString())
-                    if (response.isSuccessful) {
-                        val list = response.body()?.results
-                        movies3Adapter?.ListOfMovies = list
-                        movies3Adapter?.notifyDataSetChanged()
-                    }
-                    swipeRefreshLayout.isRefreshing = false
-                }
-            }) } catch (e: Exception) {
-            Toast.makeText(activity, e.toString(), Toast.LENGTH_SHORT)
-        }
     }
 }
