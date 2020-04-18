@@ -30,6 +30,7 @@ class AccountFragment : Fragment() {
     private lateinit var tvusername: TextView
     private lateinit var tvSessionn: TextView
 
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?

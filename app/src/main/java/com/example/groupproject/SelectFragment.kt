@@ -35,10 +35,11 @@ class SelectFragment : Fragment(),FavoritesAdapter.RecyclerViewItemClick {
 
     private val APP_PREFERENCES = "appsettings"
     private val APP_SESSION = "session_id"
+    private val STAR_STATE = "starState"
 
     private var session_id: String=""
     private lateinit var getSP : SharedPreferences
-
+    private lateinit var starPreferences: SharedPreferences
     lateinit var  favMovieRecycler: RecyclerView
     private lateinit var listOfFavMovies: List<Movie>
     private var favoritesAdapter: FavoritesAdapter? = null
@@ -56,6 +57,7 @@ class SelectFragment : Fragment(),FavoritesAdapter.RecyclerViewItemClick {
         if (getSP.contains(APP_SESSION)){
             session_id = getSP.getString(APP_SESSION,"null")!!
         }
+        starPreferences = activity?.getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE)!!
         swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout)
         swipeRefreshLayout.setOnRefreshListener {
             favoritesAdapter?.clearAll()
@@ -92,7 +94,7 @@ class SelectFragment : Fragment(),FavoritesAdapter.RecyclerViewItemClick {
                 Toast.makeText(activity, "Removed", Toast.LENGTH_SHORT).show()
             }
         })
-
+        setStarState(false)
     }
 
 
@@ -131,5 +133,11 @@ class SelectFragment : Fragment(),FavoritesAdapter.RecyclerViewItemClick {
             }) } catch (e: Exception) {
             Toast.makeText(activity, e.toString(), Toast.LENGTH_SHORT)
         }
+    }
+
+    private fun setStarState(state: Boolean){
+        val editor = starPreferences.edit()
+        editor.putBoolean(STAR_STATE, state)
+        editor.apply()
     }
 }

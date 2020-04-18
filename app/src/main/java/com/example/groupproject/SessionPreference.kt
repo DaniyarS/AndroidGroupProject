@@ -9,6 +9,7 @@ class SessionPreference(context: Context) {
     val USERNAME = "Username"
     val SESSIONID = "SessionId"
     val REALSESSIONID = "RealSessionId"
+    val STAR_STATE = "StarState"
 
     val preference = context.getSharedPreferences(PREFERENCE,Context.MODE_PRIVATE)
 
