@@ -53,10 +53,8 @@ class MovieDetailActivity : AppCompatActivity() {
 
         ivAddList = findViewById(R.id.ivAddList)
         getSP = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE)!!
-        session_id = if (getSP.contains(APP_SESSION)) {
-            getSP.getString(APP_SESSION, null)!!
-        } else{
-            sessionPreference.getRealSessionId().toString()
+        if (getSP.contains(APP_SESSION)) {
+            session_id = getSP.getString(APP_SESSION, null)!!
         }
 
         progressBar = findViewById(R.id.progressBar)
@@ -87,7 +85,8 @@ class MovieDetailActivity : AppCompatActivity() {
                 setFragment(authorizationFragment)
             }
             else{
-            addToFavoriteMovie(movieId)
+                addToFavoriteMovie(movieId)
+                progressBar.visibility = View.VISIBLE
             }
         }
 
@@ -95,72 +94,66 @@ class MovieDetailActivity : AppCompatActivity() {
 
 
     private fun addToFavoriteMovie(item: Int){
+        lateinit var favoriteRequest: FavoriteRequest
 
-        if (session_id != null) {
-            lateinit var favoriteRequest: FavoriteRequest
+        if (ivAddList.drawable.constantState == resources.getDrawable(
+                R.drawable.ic_star_border_black_24dp,
+                null
+            ).constantState
+        ) {
+            ivAddList.setImageResource(R.drawable.ic_star_fav_24dp)
+            isClicked = true
+            favoriteRequest = FavoriteRequest("movie", item, isClicked)
+            ivAddList.setImageResource(R.drawable.ic_star_black_24dp)
+            RetrofitMoviesService.getMovieApi()
+                .addFavorite(BuildConfig.MOVIE_DB_API_TOKEN, session_id, favoriteRequest)
+                .enqueue(object : Callback<FavoriteResponse> {
 
-            if (ivAddList.drawable.constantState == resources.getDrawable(
-                    R.drawable.ic_star_border_black_24dp,
-                    null
-                ).constantState
-            ) {
-                ivAddList.setImageResource(R.drawable.ic_star_fav_24dp)
-                isClicked = true
-                favoriteRequest = FavoriteRequest("movie", item, isClicked)
-                ivAddList.setImageResource(R.drawable.ic_star_black_24dp)
-                RetrofitMoviesService.getMovieApi()
-                    .addFavorite(BuildConfig.MOVIE_DB_API_TOKEN, session_id, favoriteRequest)
-                    .enqueue(object : Callback<FavoriteResponse> {
+                    override fun onFailure(call: Call<FavoriteResponse>, t: Throwable) {
+                        progressBar.visibility = View.GONE
+                        Toast.makeText(
+                            applicationContext,
+                            "Please, sign in first",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
 
-                        override fun onFailure(call: Call<FavoriteResponse>, t: Throwable) {
-                            Toast.makeText(
-                                applicationContext,
-                                "Please, sign in first",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
+                    override fun onResponse(
+                        call: Call<FavoriteResponse>,
+                        response: Response<FavoriteResponse>
+                    ) {
+                        progressBar.visibility = View.GONE
+                        Toast.makeText(
+                            applicationContext,
+                            "Added to favorites",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                })
+        } else {
+            isClicked = false
+            ivAddList.setImageResource(R.drawable.ic_star_border_black_24dp)
+            favoriteRequest = FavoriteRequest("movie", item, isClicked)
+            RetrofitMoviesService.getMovieApi()
+                .addFavorite(BuildConfig.MOVIE_DB_API_TOKEN, session_id, favoriteRequest)
+                .enqueue(object : Callback<FavoriteResponse> {
 
-                        override fun onResponse(
-                            call: Call<FavoriteResponse>,
-                            response: Response<FavoriteResponse>
-                        ) {
-                            Toast.makeText(
-                                applicationContext,
-                                "Added to favorites",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
-                    })
-            } else {
-                isClicked = false
-                ivAddList.setImageResource(R.drawable.ic_star_border_black_24dp)
-                favoriteRequest = FavoriteRequest("movie", item, isClicked)
-                RetrofitMoviesService.getMovieApi()
-                    .addFavorite(BuildConfig.MOVIE_DB_API_TOKEN, session_id, favoriteRequest)
-                    .enqueue(object : Callback<FavoriteResponse> {
+                    override fun onFailure(call: Call<FavoriteResponse>, t: Throwable) {
+                        progressBar.visibility = View.GONE}
 
-                        override fun onFailure(call: Call<FavoriteResponse>, t: Throwable) {}
+                    override fun onResponse(
+                        call: Call<FavoriteResponse>,
+                        response: Response<FavoriteResponse>
+                    ) {
+                        progressBar.visibility = View.GONE
+                        Toast.makeText(
+                            applicationContext,
+                            "Removed from favorites",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                })
 
-                        override fun onResponse(
-                            call: Call<FavoriteResponse>,
-                            response: Response<FavoriteResponse>
-                        ) {
-                            Toast.makeText(
-                                applicationContext,
-                                "Removed from favorites",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
-                    })
-
-            }
-        }
-        else{
-            Toast.makeText(
-                applicationContext,
-                "Please, sign in first",
-                Toast.LENGTH_SHORT
-            ).show()
         }
 
     }
