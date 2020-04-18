@@ -85,7 +85,7 @@ class MovieDetailActivity : AppCompatActivity() {
                 setFragment(authorizationFragment)
             }
             else{
-                addToFavoriteMovie(movieId)
+            addToFavoriteMovie(movieId)
                 progressBar.visibility = View.VISIBLE
             }
         }
