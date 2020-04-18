@@ -112,9 +112,23 @@ class MovieDetailActivity : AppCompatActivity() {
         val movieId = intent.getIntExtra("movie_id", 1)
 
         if (getStarState()==false){
-            ivAddList.setImageResource(R.drawable.ic_star_border_black_24dp)
-        }else{
-            ivAddList.setImageResource(R.drawable.ic_star_black_24dp)
+                if (loginCount == 0) {
+                    Toast.makeText(
+                        applicationContext,
+                        "Please, sign in first",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    setFragment(authorizationFragment)
+                } else {
+                    addToFavoriteMovie(movieId)
+                    progressBar.visibility = View.VISIBLE
+                    setStarState(true)
+                    print(getStarState().toString())
+                }
+        }else {
+            deletFromFavorite(movieId)
+            progressBar.visibility = View.VISIBLE
+            setStarState(false)
         }
 
         ivAddList.setOnClickListener() {
@@ -131,10 +145,20 @@ class MovieDetailActivity : AppCompatActivity() {
                     progressBar.visibility = View.VISIBLE
                     setStarState(true)
                     print(getStarState().toString())
+                    Toast.makeText(
+                        applicationContext,
+                        "Added to favorites",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 } else {
                     deletFromFavorite(movieId)
                     progressBar.visibility = View.VISIBLE
                     setStarState(false)
+                    Toast.makeText(
+                        applicationContext,
+                        "Removed from favorites",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
         }
@@ -162,11 +186,11 @@ class MovieDetailActivity : AppCompatActivity() {
                     response: Response<FavoriteResponse>
                 ) {
                     progressBar.visibility = View.GONE
-                    Toast.makeText(
-                        applicationContext,
-                        "Added to favorites",
-                        Toast.LENGTH_SHORT
-                    ).show()
+//                    Toast.makeText(
+//                        applicationContext,
+//                        "Added to favorites",
+//                        Toast.LENGTH_SHORT
+//                    ).show()
                 }
             })
     }
@@ -188,11 +212,11 @@ class MovieDetailActivity : AppCompatActivity() {
                     response: Response<FavoriteResponse>
                 ) {
                     progressBar.visibility = View.GONE
-                    Toast.makeText(
-                        applicationContext,
-                        "Removed from favorites",
-                        Toast.LENGTH_SHORT
-                    ).show()
+//                    Toast.makeText(
+//                        applicationContext,
+//                        "Removed from favorites",
+//                        Toast.LENGTH_SHORT
+//                    ).show()
                 }
             })
     }
