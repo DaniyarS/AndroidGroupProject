@@ -28,6 +28,8 @@ class MainActivity : AppCompatActivity() {
 
         nMainFrame = findViewById(R.id.main_frame)
         nMainNav = findViewById(R.id.main_nav)
+        val sessionPreference = SessionPreference(this)
+        var loginCount = sessionPreference.getLoginCount()
 
         homeFragment = HomeFragment()
         selectFragment = SelectFragment()
@@ -36,8 +38,11 @@ class MainActivity : AppCompatActivity() {
 
         pref = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE)
 
-        setFragment(authorizationFragment)
-
+        if (loginCount==0) {
+            setFragment(authorizationFragment)
+        }else{
+            setFragment(homeFragment)
+        }
         nMainNav.setOnNavigationItemSelectedListener(onNavigationItemSelectedListener)
     }
 
@@ -52,7 +57,7 @@ class MainActivity : AppCompatActivity() {
                 return@OnNavigationItemSelectedListener  true
             }
             R.id.nav_account ->{
-                setFragment(authorizationFragment)
+                setFragment(accountFragment)
                 return@OnNavigationItemSelectedListener  true
             }
         }

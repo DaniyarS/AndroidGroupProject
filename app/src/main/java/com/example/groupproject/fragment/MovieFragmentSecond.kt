@@ -1,6 +1,7 @@
 package com.example.groupproject.fragment
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,6 +12,7 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.example.groupproject.BuildConfig
+import com.example.groupproject.MovieDetailActivity
 import com.example.groupproject.R
 import com.example.groupproject.api.RetrofitMoviesService
 import com.example.groupproject.model.Movie
@@ -41,7 +43,17 @@ class MovieFragmentSecond: Fragment() {
         MovieIndex.text="2"
         getBriefMovieDetail(220)
 
+        view.setOnClickListener{
+            getDetails(220)
+        }
+
         return view
+    }
+
+    private fun getDetails(id: Int){
+        val intent = Intent(activity, MovieDetailActivity::class.java)
+        intent.putExtra("movie_id", id)
+        startActivity(intent)
     }
 
     private fun getBriefMovieDetail(id: Int) {

@@ -57,7 +57,7 @@ class HomeFragment : Fragment(), MoviesAdapter.RecyclerViewItemClick {
 
         val viewMovies = inflater.inflate(R.layout.fragment_home,container,false)
 
-
+        //initializing values
         recyclerView = viewMovies.findViewById(R.id.mainRecyclerView)
         topRatedRecyclerView = viewMovies.findViewById(R.id.secondRecyclerView)
         upcomingRecyclerView = viewMovies.findViewById(R.id.thirdRecyclerView)
@@ -107,6 +107,8 @@ class HomeFragment : Fragment(), MoviesAdapter.RecyclerViewItemClick {
         startActivity(intent)
     }
 
+
+    //Binding data to the first recycler view
     @SuppressLint("ShowToast")
     private fun initPopularMovies() {
         try {
@@ -134,6 +136,7 @@ class HomeFragment : Fragment(), MoviesAdapter.RecyclerViewItemClick {
         }
     }
 
+    //Binding data to the second recycler view
     @SuppressLint("ShowToast")
     private fun initTopRatedMovies() {
         try {
@@ -161,6 +164,7 @@ class HomeFragment : Fragment(), MoviesAdapter.RecyclerViewItemClick {
         }
     }
 
+    //Binding data to the second recycler view
     @SuppressLint("ShowToast")
     private fun initUpcomingMovies() {
         try {
