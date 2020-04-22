@@ -28,7 +28,7 @@ import kotlin.coroutines.coroutineContext
 class MovieDetailActivity : AppCompatActivity() {
     private val APP_PREFERENCES = "appsettings"
     private val APP_SESSION = "session_id"
-    private val STAR_STATE = "starState"
+    //private val STAR_STATE = "starState"
 
 
     private lateinit var ivAddList: ImageView
@@ -45,7 +45,6 @@ class MovieDetailActivity : AppCompatActivity() {
     private lateinit var movieCast: TextView
     private lateinit var btnFavorite: ImageView
     private lateinit var getSP: SharedPreferences
-    private lateinit var starPreferences: SharedPreferences
     private lateinit var session_id: String
     private var isClicked = false
 
@@ -61,7 +60,6 @@ class MovieDetailActivity : AppCompatActivity() {
             session_id = getSP.getString(APP_SESSION, null)!!
         }
 
-        starPreferences = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE)
         progressBar = findViewById(R.id.progressBar)
         movieImageBackdrop = findViewById(R.id.ivMovie)
         movieTitle = findViewById(R.id.tvMovieName)
@@ -86,140 +84,80 @@ class MovieDetailActivity : AppCompatActivity() {
                     "Please, sign in first",
                     Toast.LENGTH_SHORT
                 ).show()
-                setFragment(authorizationFragment)
             } else {
-                if (getStarState()==false) {
-                    addToFavoriteMovie(movieId)
-                    progressBar.visibility = View.VISIBLE
-                    setStarState(true)
-                    setSetMovieId(movieId)
-                    Log.i("StarState", getStarState().toString())
-                } else {
-                    deletFromFavorite(movieId)
-                    progressBar.visibility = View.VISIBLE
-                    setStarState(false)
-                }
+                addToFavoriteMovie(movieId)
+                progressBar.visibility = View.VISIBLE
             }
         }
 
-    }
-
-    override fun onResume() {
-        super.onResume()
-        Log.i("StarStateONPAUSE", getStarState().toString())
-        val sessionPreference = SessionPreference(this)
-        var loginCount = sessionPreference.getLoginCount()
-        val movieId = intent.getIntExtra("movie_id", 1)
-
-        if (getStarState()==false){
-                if (loginCount == 0) {
-                    Toast.makeText(
-                        applicationContext,
-                        "Please, sign in first",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    setFragment(authorizationFragment)
-                } else {
-                    addToFavoriteMovie(movieId)
-                    progressBar.visibility = View.VISIBLE
-                    setStarState(true)
-                    print(getStarState().toString())
-                }
-        }else {
-            deletFromFavorite(movieId)
-            progressBar.visibility = View.VISIBLE
-            setStarState(false)
-        }
-
-        ivAddList.setOnClickListener() {
-            if (loginCount == 0) {
-                Toast.makeText(
-                    applicationContext,
-                    "Please, sign in first",
-                    Toast.LENGTH_SHORT
-                ).show()
-                setFragment(authorizationFragment)
-            } else {
-                if (getStarState()==false) {
-                    addToFavoriteMovie(movieId)
-                    progressBar.visibility = View.VISIBLE
-                    setStarState(true)
-                    print(getStarState().toString())
-                    Toast.makeText(
-                        applicationContext,
-                        "Added to favorites",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                } else {
-                    deletFromFavorite(movieId)
-                    progressBar.visibility = View.VISIBLE
-                    setStarState(false)
-                    Toast.makeText(
-                        applicationContext,
-                        "Removed from favorites",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-            }
-        }
     }
 
     private fun addToFavoriteMovie(item: Int) {
-        ivAddList.setImageResource(R.drawable.ic_star_black_24dp)
-        isClicked = true
-        val favoriteRequest = FavoriteRequest("movie", item, isClicked)
-        RetrofitMoviesService.getMovieApi()
-            .addFavorite(BuildConfig.MOVIE_DB_API_TOKEN, session_id, favoriteRequest)
-            .enqueue(object : Callback<FavoriteResponse> {
+        lateinit var favoriteRequest: FavoriteRequest
 
-                override fun onFailure(call: Call<FavoriteResponse>, t: Throwable) {
-                    progressBar.visibility = View.GONE
-                    Toast.makeText(
-                        applicationContext,
-                        "Please, sign in first",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
+        if (ivAddList.drawable.constantState == resources.getDrawable(
+                R.drawable.ic_star_border_black_24dp,
+                null
+            ).constantState
+        ) {
+            ivAddList.setImageResource(R.drawable.ic_star_fav_24dp)
+            isClicked = true
+            favoriteRequest = FavoriteRequest("movie", item, isClicked)
+            ivAddList.setImageResource(R.drawable.ic_star_black_24dp)
+            RetrofitMoviesService.getMovieApi()
+                .addFavorite(BuildConfig.MOVIE_DB_API_TOKEN, session_id, favoriteRequest)
+                .enqueue(object : Callback<FavoriteResponse> {
 
-                override fun onResponse(
-                    call: Call<FavoriteResponse>,
-                    response: Response<FavoriteResponse>
-                ) {
-                    progressBar.visibility = View.GONE
-//                    Toast.makeText(
-//                        applicationContext,
-//                        "Added to favorites",
-//                        Toast.LENGTH_SHORT
-//                    ).show()
-                }
-            })
+                    override fun onFailure(call: Call<FavoriteResponse>, t: Throwable) {
+                        Toast.makeText(
+                            applicationContext,
+                            "Please, sign in first",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        progressBar.visibility = View.GONE
+                    }
+
+                    override fun onResponse(
+                        call: Call<FavoriteResponse>,
+                        response: Response<FavoriteResponse>
+                    ) {
+                        Toast.makeText(
+                            applicationContext,
+                            "Added to favorites",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        progressBar.visibility = View.GONE
+                    }
+                })
+        } else {
+            progressBar.visibility = View.VISIBLE
+            isClicked = false
+            ivAddList.setImageResource(R.drawable.ic_star_border_black_24dp)
+            favoriteRequest = FavoriteRequest("movie", item, isClicked)
+            RetrofitMoviesService.getMovieApi()
+                .addFavorite(BuildConfig.MOVIE_DB_API_TOKEN, session_id, favoriteRequest)
+                .enqueue(object : Callback<FavoriteResponse> {
+
+                    override fun onFailure(call: Call<FavoriteResponse>, t: Throwable) {
+                        progressBar.visibility = View.GONE
+                    }
+
+                    override fun onResponse(
+                        call: Call<FavoriteResponse>,
+                        response: Response<FavoriteResponse>
+                    ) {
+                        Toast.makeText(
+                            applicationContext,
+                            "Removed from favorites",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        progressBar.visibility = View.GONE
+                    }
+                })
+
+        }
     }
 
-    private fun deletFromFavorite(item: Int) {
-        isClicked = false
-        ivAddList.setImageResource(R.drawable.ic_star_border_black_24dp)
-        val favoriteRequest = FavoriteRequest("movie", item, isClicked)
-        RetrofitMoviesService.getMovieApi()
-            .addFavorite(BuildConfig.MOVIE_DB_API_TOKEN, session_id, favoriteRequest)
-            .enqueue(object : Callback<FavoriteResponse> {
-
-                override fun onFailure(call: Call<FavoriteResponse>, t: Throwable) {
-                    progressBar.visibility = View.GONE
-                }
-
-                override fun onResponse(
-                    call: Call<FavoriteResponse>,
-                    response: Response<FavoriteResponse>
-                ) {
-                    progressBar.visibility = View.GONE
-//                    Toast.makeText(
-//                        applicationContext,
-//                        "Removed from favorites",
-//                        Toast.LENGTH_SHORT
-//                    ).show()
-                }
-            })
-    }
 
     private fun getMovieDetail(id: Int) {
         RetrofitMoviesService.getMovieApi().getMovieById(id, BuildConfig.MOVIE_DB_API_TOKEN)
@@ -306,26 +244,26 @@ class MovieDetailActivity : AppCompatActivity() {
             })
     }
 
-    private fun setFragment(fragment: Fragment) {
-        val fragmentTransaction: FragmentTransaction = supportFragmentManager.beginTransaction()
-        fragmentTransaction.replace(R.id.main_frame, fragment)
-        fragmentTransaction.commit()
-    }
+//    private fun setFragment(fragment: Fragment) {
+//        val fragmentTransaction: FragmentTransaction = supportFragmentManager.beginTransaction()
+//        fragmentTransaction.replace(R.id.main_frame, fragment)
+//        fragmentTransaction.commit()
+//    }
 
-    private fun setStarState(state: Boolean){
-        val editor = starPreferences.edit()
-        editor.putBoolean(STAR_STATE, state)
-        editor.apply()
-    }
-
-    private fun getStarState() : Boolean?{
-        return starPreferences.getBoolean(STAR_STATE, false)
-    }
-
-    private fun setSetMovieId(id: Int){
-        val editor = starPreferences.edit()
-        editor.putInt(STAR_STATE, id)
-        editor.apply()
-    }
+//    private fun setStarState(state: Boolean) {
+//        val editor = starPreferences.edit()
+//        editor.putBoolean(STAR_STATE, state)
+//        editor.apply()
+//    }
+//
+//    private fun getStarState(): Boolean? {
+//        return starPreferences.getBoolean(STAR_STATE, false)
+//    }
+//
+//    private fun setSetMovieId(id: Int) {
+//        val editor = starPreferences.edit()
+//        editor.putInt(STAR_STATE, id)
+//        editor.apply()
+//    }
 
 }
