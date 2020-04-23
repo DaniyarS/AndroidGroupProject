@@ -21,7 +21,10 @@ import com.example.groupproject.model.Movie
 
 import retrofit2.Response
 import androidx.viewpager.widget.ViewPager
+import com.example.groupproject.model.MovieDao
+import com.example.groupproject.model.MovieDatabase
 import kotlinx.coroutines.*
+import java.lang.Exception
 import kotlin.coroutines.CoroutineContext
 
 
@@ -50,6 +53,8 @@ class HomeFragment : Fragment(), MoviesAdapter.RecyclerViewItemClick, CoroutineS
     //new val job
     private val job = Job()
 
+    private var movieDao : MovieDao?=null
+
     //override fun for coroutine context
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + job
@@ -60,6 +65,8 @@ class HomeFragment : Fragment(), MoviesAdapter.RecyclerViewItemClick, CoroutineS
     ): View? {
 
         val viewMovies = inflater.inflate(R.layout.fragment_home,container,false)
+
+        movieDao = MovieDatabase.getDatabase(context = activity!!).movieDao()
 
         //initializing values
         recyclerView = viewMovies.findViewById(R.id.mainRecyclerView)
@@ -120,15 +127,34 @@ class HomeFragment : Fragment(), MoviesAdapter.RecyclerViewItemClick, CoroutineS
     private fun initPopularMoviesCoroutine(){
             launch {
                 swipeRefreshLayout.isRefreshing = true
-                val response: Response<GetMoviesResponse> = RetrofitMoviesService.getMovieApi().
-                getPopularMoviesCoroutine(BuildConfig.MOVIE_DB_API_TOKEN)
-                if (response.isSuccessful){
-                    val list = response.body()?.results
-                    moviesAdapter?.ListOfMovies = list
-                    moviesAdapter?.notifyDataSetChanged()
-                } else {
-                    Toast.makeText(activity, "Error", Toast.LENGTH_SHORT).show()
+                val list = withContext(Dispatchers.IO){
+                    try{
+                        val response = RetrofitMoviesService.getMovieApi().
+                        getPopularMoviesCoroutine(BuildConfig.MOVIE_DB_API_TOKEN)
+                        if (response.isSuccessful) {
+                            val result = response.body()?.results
+                            if (!result.isNullOrEmpty()){
+                                movieDao?.insertAll(result)
+                            }
+                            result
+                        } else {
+                            movieDao?.getPopular() ?: emptyList()
+                        }
+                    } catch (e: Exception) {
+                        movieDao?.getPopular() ?: emptyList()
+                    }
                 }
+                moviesAdapter?.ListOfMovies = list
+                moviesAdapter?.notifyDataSetChanged()
+//                val response: Response<GetMoviesResponse> = RetrofitMoviesService.getMovieApi().
+//                getPopularMoviesCoroutine(BuildConfig.MOVIE_DB_API_TOKEN)
+//                if (response.isSuccessful){
+//                    val list = response.body()?.results
+//                    moviesAdapter?.ListOfMovies = list
+//                    moviesAdapter?.notifyDataSetChanged()
+//                } else {
+//                    Toast.makeText(activity, "Error", Toast.LENGTH_SHORT).show()
+//                }
                 swipeRefreshLayout.isRefreshing = false
             }
     }
@@ -137,15 +163,34 @@ class HomeFragment : Fragment(), MoviesAdapter.RecyclerViewItemClick, CoroutineS
     private fun initTopRatedMoviesCoroutine() {
             launch {
                 swipeRefreshLayout.isRefreshing = true
-                val response: Response<GetMoviesResponse> = RetrofitMoviesService.getMovieApi()
-                    .getTopRatedMoviesCoroutine(BuildConfig.MOVIE_DB_API_TOKEN)
-                if (response.isSuccessful) {
-                    val list = response.body()?.results
-                    movies2Adapter?.ListOfMovies = list
-                    movies2Adapter?.notifyDataSetChanged()
-                } else {
-                    Toast.makeText(activity, "Error", Toast.LENGTH_SHORT).show()
+                val list = withContext(Dispatchers.IO){
+                    try{
+                        val response = RetrofitMoviesService.getMovieApi().
+                        getTopRatedMoviesCoroutine(BuildConfig.MOVIE_DB_API_TOKEN)
+                        if (response.isSuccessful) {
+                            val result = response.body()?.results
+                            if (!result.isNullOrEmpty()){
+                                movieDao?.insertAll(result)
+                            }
+                            result
+                        } else {
+                            movieDao?.getTopRated() ?: emptyList()
+                        }
+                    } catch (e: Exception) {
+                        movieDao?.getTopRated() ?: emptyList()
+                    }
                 }
+                movies2Adapter?.ListOfMovies = list
+                movies2Adapter?.notifyDataSetChanged()
+//                val response: Response<GetMoviesResponse> = RetrofitMoviesService.getMovieApi()
+//                    .getTopRatedMoviesCoroutine(BuildConfig.MOVIE_DB_API_TOKEN)
+//                if (response.isSuccessful) {
+//                    val list = response.body()?.results
+//                    movies2Adapter?.ListOfMovies = list
+//                    movies2Adapter?.notifyDataSetChanged()
+//                } else {
+//                    Toast.makeText(activity, "Error", Toast.LENGTH_SHORT).show()
+//                }
                 swipeRefreshLayout.isRefreshing = false
             }
     }
@@ -154,15 +199,34 @@ class HomeFragment : Fragment(), MoviesAdapter.RecyclerViewItemClick, CoroutineS
     private fun initUpcomingMoviesCoroutine() {
             launch {
                 swipeRefreshLayout.isRefreshing = true
-                val response: Response<GetMoviesResponse> = RetrofitMoviesService.getMovieApi()
-                    .getUpcomingMoviesCoroutine(BuildConfig.MOVIE_DB_API_TOKEN)
-                if (response.isSuccessful) {
-                    val list = response.body()?.results
-                    movies3Adapter?.ListOfMovies = list
-                    movies3Adapter?.notifyDataSetChanged()
-                } else {
-                    Toast.makeText(activity, "Error", Toast.LENGTH_SHORT).show()
+                val list = withContext(Dispatchers.IO){
+                    try{
+                        val response = RetrofitMoviesService.getMovieApi().
+                        getUpcomingMoviesCoroutine(BuildConfig.MOVIE_DB_API_TOKEN)
+                        if (response.isSuccessful) {
+                            val result = response.body()?.results
+                            if (!result.isNullOrEmpty()){
+                                movieDao?.insertAll(result)
+                            }
+                            result
+                        } else {
+                            movieDao?.getUpcoming() ?: emptyList()
+                        }
+                    } catch (e: Exception) {
+                        movieDao?.getUpcoming() ?: emptyList()
+                    }
                 }
+                movies3Adapter?.ListOfMovies = list
+                movies3Adapter?.notifyDataSetChanged()
+//                val response: Response<GetMoviesResponse> = RetrofitMoviesService.getMovieApi()
+//                    .getUpcomingMoviesCoroutine(BuildConfig.MOVIE_DB_API_TOKEN)
+//                if (response.isSuccessful) {
+//                    val list = response.body()?.results
+//                    movies3Adapter?.ListOfMovies = list
+//                    movies3Adapter?.notifyDataSetChanged()
+//                } else {
+//                    Toast.makeText(activity, "Error", Toast.LENGTH_SHORT).show()
+//                }
                 swipeRefreshLayout.isRefreshing = false
             }
     }

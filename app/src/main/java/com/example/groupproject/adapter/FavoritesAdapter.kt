@@ -38,9 +38,9 @@ class FavoritesAdapter(
 
 
             val movieTitle = view.findViewById<TextView>(R.id.tvMovieNameFav)
-            val movieImage = view.findViewById<ImageView>(R.id.ivMovieFav)
+//            val movieImage = view.findViewById<ImageView>(R.id.ivMovieFav)
             val removeFromFavList = view.findViewById<ImageView>(R.id.ivAddListFav)
-            Glide.with(context).load(post?.getBackDropPathImage()).into(movieImage)
+//            Glide.with(context).load(post?.getBackDropPathImage()).into(movieImage)
             movieTitle.text = post?.title
 
 

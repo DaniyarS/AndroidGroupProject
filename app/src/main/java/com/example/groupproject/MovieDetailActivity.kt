@@ -170,7 +170,7 @@ class MovieDetailActivity : AppCompatActivity() {
                     progressBar.visibility = View.GONE
                     val post = response.body()
                     if (post != null) {
-                        Glide.with(movieImageBackdrop).load(post.getBackDropPathImage())
+                        Glide.with(movieImageBackdrop).load("https://image.tmdb.org/t/p/original"+post.backdrop_path)
                             .into(movieImageBackdrop)
 
                         movieTitle.text = post.title
@@ -188,19 +188,19 @@ class MovieDetailActivity : AppCompatActivity() {
                             movieDuration.text = "$runtime min"
                         }
 
-                        val genreNameContainer = post.genres
-                        movieGenre.text = ""
-                        var genreCounter = 1
-                        for (genre in genreNameContainer) {
-                            if (genreCounter == genreNameContainer.size) {
-                                movieGenre.text = movieGenre.text.toString() + genre.getGenreName()
-                            } else {
-                                movieGenre.text =
-                                    movieGenre.text.toString() + genre.getGenreName() + " • "
-                            }
-                            genreCounter += 1
-                        }
-                        movieDetails.text = post.overview
+//                        val genreNameContainer = post.genres
+//                        movieGenre.text = ""
+//                        var genreCounter = 1
+//                        for (genre in genreNameContainer) {
+//                            if (genreCounter == genreNameContainer.size) {
+//                                movieGenre.text = movieGenre.text.toString() + genre.getGenreName()
+//                            } else {
+//                                movieGenre.text =
+//                                    movieGenre.text.toString() + genre.getGenreName() + " • "
+//                            }
+//                            genreCounter += 1
+//                        }
+//                        movieDetails.text = post.overview
 
                     }
                 }

@@ -3,11 +3,12 @@ package com.example.groupproject.model
 import com.google.gson.annotations.SerializedName
 
 data class MovieGenres (
-    @SerializedName("id") val id: Int,
-    @SerializedName("name") val name: String
-) {
+    @SerializedName("id") var id: Int = 0,
+    @SerializedName("name") var name: String = ""
+)
+//{
 
-    fun  getGenreName(): String{
-        return this.name
-    }
-}
+//    fun  getGenreName(): String{
+//        return this.name
+//    }
+//}

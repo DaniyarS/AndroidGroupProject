@@ -103,20 +103,20 @@ class MovieFragmentFifth : Fragment(), CoroutineScope {
                 val post = response.body()
                 if (post != null) {
                     progressBar.visibility = View.GONE
-                    Glide.with(Image).load(post.getBackDropPathImage()).into(Image)
+//                    Glide.with(Image).load(post.getBackDropPathImage()).into(Image)
                     MovieName.text = post.title
-                    val genreNameContainer = post.genres
-                    MovieGenre.text=""
-                    var genreCounter = 1
-                    for (genre in genreNameContainer){
-                        if (genreCounter == genreNameContainer.size) {
-                            MovieGenre.text = MovieGenre.text.toString() + genre.name}
-                        else{
-                            MovieGenre.text = MovieGenre.text.toString() + genre.name+ " • "}
-                        genreCounter += 1
+//                    val genreNameContainer = post.genres
+//                    MovieGenre.text=""
+//                    var genreCounter = 1
+//                    for (genre in genreNameContainer){
+//                        if (genreCounter == genreNameContainer.size) {
+//                            MovieGenre.text = MovieGenre.text.toString() + genre.name}
+//                        else{
+//                            MovieGenre.text = MovieGenre.text.toString() + genre.name+ " • "}
+//                        genreCounter += 1
                     }
                 }
             }
         }
     }
-}
+//}
