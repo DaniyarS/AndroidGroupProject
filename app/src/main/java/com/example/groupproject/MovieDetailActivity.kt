@@ -35,7 +35,7 @@ import kotlin.coroutines.CoroutineContext
 
 
 class MovieDetailActivity : AppCompatActivity(), CoroutineScope {
-    private val APP_PREFERENCES = "appsettings"
+    private val APP_PREFERENCES = "appSettings"
     private val APP_SESSION = "session_id"
     private val STAR_STATE = "starState"
 
@@ -117,6 +117,8 @@ class MovieDetailActivity : AppCompatActivity(), CoroutineScope {
         }
 
         getMovieDetailCoroutine()
+        getCreditsCoroutine()
+        getFavoriteResponse()
     }
 
     override fun onDestroy() {
