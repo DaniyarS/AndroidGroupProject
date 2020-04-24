@@ -87,6 +87,12 @@ interface MovieApi {
         @Query("api_key") apiKey: String
     ) : Call<RequestToken>
 
+    //REQUEST TOKEN WHILE REGISTRATION COROUTINE
+    @GET("authentication/token/new")
+    suspend fun getTokenCoroutine(
+        @Query("api_key") apiKey: String
+    ) : Response<RequestToken>
+
     //VALIDATION WITH ACCOUNT == request token
     @POST("authentication/token/validate_with_login")
     fun validation(
@@ -94,12 +100,26 @@ interface MovieApi {
         @Body validation: Validation
     ) : Call<RequestToken>
 
+    //VALIDATION WITH ACCOUNT == request token
+    @POST("authentication/token/validate_with_login")
+    suspend fun validationCoroutine(
+        @Query("api_key") apiKey: String,
+        @Body validation: Validation
+    ) : Response<RequestToken>
+
     //CREATE NEW SESSION
     @POST("authentication/session/new")
     fun createSession(
         @Query("api_key") apiKey: String,
         @Body  token: RequestToken
     ) : Call<Session>
+
+    @POST("authentication/session/new")
+    suspend fun createSessionCoroutine(
+        @Query("api_key") apiKey: String,
+        @Body  token: RequestToken
+    ) : Response<Session>
+
     ////////////////////////////////////
     @GET("account") ///////account
     fun getAccount(
@@ -134,5 +154,4 @@ interface MovieApi {
         @Query("api_key") apiKey: String,
         @Query("session_id") sessionId: String
     ) : Response<GetMoviesResponse>
-
 }
