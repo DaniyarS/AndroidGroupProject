@@ -9,20 +9,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 
-import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.groupproject.adapter.MoviesAdapter
 import com.example.groupproject.adapter.ViewPagerAdapter
 import com.example.groupproject.api.RetrofitMoviesService
-import com.example.groupproject.model.GetMoviesResponse
 import com.example.groupproject.model.Movie
 
-import retrofit2.Response
 import androidx.viewpager.widget.ViewPager
-import com.example.groupproject.model.MovieDao
-import com.example.groupproject.model.MovieDatabase
+import com.example.groupproject.database.MovieDao
+import com.example.groupproject.database.MovieDatabase
 import kotlinx.coroutines.*
 import java.lang.Exception
 import kotlin.coroutines.CoroutineContext
@@ -54,6 +51,7 @@ class HomeFragment : Fragment(), MoviesAdapter.RecyclerViewItemClick, CoroutineS
     private val job = Job()
 
     private var movieDao : MovieDao?=null
+
 
     //override fun for coroutine context
     override val coroutineContext: CoroutineContext
@@ -93,7 +91,7 @@ class HomeFragment : Fragment(), MoviesAdapter.RecyclerViewItemClick, CoroutineS
     private fun generateComponent(){
 
         listMovies = ArrayList()
-        moviesAdapter =activity?.applicationContext?.let {MoviesAdapter(listMovies, it,itemClickListener = this)  }
+        moviesAdapter =activity?.applicationContext?.let {MoviesAdapter(listMovies,it,itemClickListener = this)  }
         recyclerView.layoutManager =   LinearLayoutManager(activity,LinearLayoutManager.HORIZONTAL,false)
         recyclerView.adapter = moviesAdapter
 
@@ -107,9 +105,14 @@ class HomeFragment : Fragment(), MoviesAdapter.RecyclerViewItemClick, CoroutineS
         upcomingRecyclerView.layoutManager = LinearLayoutManager(activity,LinearLayoutManager.HORIZONTAL,false)
         upcomingRecyclerView.adapter = movies3Adapter
 
-        initPopularMoviesCoroutine()  //coroutinePopularMovies
-        initTopRatedMoviesCoroutine() //coroutineTopRated
-        initUpcomingMoviesCoroutine() //coroutineUpcoming
+        loadMovies()
+
+    }
+
+    private fun loadMovies(){
+        initPopularMoviesCoroutine()
+        initTopRatedMoviesCoroutine()
+        initUpcomingMoviesCoroutine()
     }
 
     override fun itemClick(position: Int, item: Movie) {
@@ -146,15 +149,6 @@ class HomeFragment : Fragment(), MoviesAdapter.RecyclerViewItemClick, CoroutineS
                 }
                 moviesAdapter?.ListOfMovies = list
                 moviesAdapter?.notifyDataSetChanged()
-//                val response: Response<GetMoviesResponse> = RetrofitMoviesService.getMovieApi().
-//                getPopularMoviesCoroutine(BuildConfig.MOVIE_DB_API_TOKEN)
-//                if (response.isSuccessful){
-//                    val list = response.body()?.results
-//                    moviesAdapter?.ListOfMovies = list
-//                    moviesAdapter?.notifyDataSetChanged()
-//                } else {
-//                    Toast.makeText(activity, "Error", Toast.LENGTH_SHORT).show()
-//                }
                 swipeRefreshLayout.isRefreshing = false
             }
     }
@@ -182,15 +176,6 @@ class HomeFragment : Fragment(), MoviesAdapter.RecyclerViewItemClick, CoroutineS
                 }
                 movies2Adapter?.ListOfMovies = list
                 movies2Adapter?.notifyDataSetChanged()
-//                val response: Response<GetMoviesResponse> = RetrofitMoviesService.getMovieApi()
-//                    .getTopRatedMoviesCoroutine(BuildConfig.MOVIE_DB_API_TOKEN)
-//                if (response.isSuccessful) {
-//                    val list = response.body()?.results
-//                    movies2Adapter?.ListOfMovies = list
-//                    movies2Adapter?.notifyDataSetChanged()
-//                } else {
-//                    Toast.makeText(activity, "Error", Toast.LENGTH_SHORT).show()
-//                }
                 swipeRefreshLayout.isRefreshing = false
             }
     }
@@ -218,15 +203,6 @@ class HomeFragment : Fragment(), MoviesAdapter.RecyclerViewItemClick, CoroutineS
                 }
                 movies3Adapter?.ListOfMovies = list
                 movies3Adapter?.notifyDataSetChanged()
-//                val response: Response<GetMoviesResponse> = RetrofitMoviesService.getMovieApi()
-//                    .getUpcomingMoviesCoroutine(BuildConfig.MOVIE_DB_API_TOKEN)
-//                if (response.isSuccessful) {
-//                    val list = response.body()?.results
-//                    movies3Adapter?.ListOfMovies = list
-//                    movies3Adapter?.notifyDataSetChanged()
-//                } else {
-//                    Toast.makeText(activity, "Error", Toast.LENGTH_SHORT).show()
-//                }
                 swipeRefreshLayout.isRefreshing = false
             }
     }

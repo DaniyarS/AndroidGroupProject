@@ -176,7 +176,7 @@ class MovieDetailActivity : AppCompatActivity() {
                         movieTitle.text = post.title
 
                         val realiseDate = post.release_date
-                        movieRealease.text = "(" + realiseDate.substring(0, 4) + ")"
+                        movieRealease.text = "(" + realiseDate?.substring(0, 4) + ")"
 
                         val runtime = post.runtime
                         if (runtime > 60) {

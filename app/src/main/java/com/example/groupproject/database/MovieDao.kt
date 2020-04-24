@@ -1,9 +1,10 @@
-package com.example.groupproject.model
+package com.example.groupproject.database
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import com.example.groupproject.model.Movie
 
 @Dao
 interface MovieDao {
@@ -23,6 +24,6 @@ interface MovieDao {
     @Query("SELECT * FROM movie_table WHERE id=:movieId")
     fun getBriefMovie(movieId: Int): Movie
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertMovie(movie: Movie)
+//    @Insert(onConflict = OnConflictStrategy.REPLACE)
+//    fun insertMovie(movie: Movie)
 }
