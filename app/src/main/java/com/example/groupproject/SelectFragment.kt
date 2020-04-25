@@ -38,8 +38,8 @@ class SelectFragment : Fragment(),FavoritesAdapter.RecyclerViewItemClick {
 
     private var session_id: String=""
     private lateinit var getSP : SharedPreferences
-
-    lateinit var  favMovieRecycler: RecyclerView
+    private lateinit var starPreferences: SharedPreferences
+    private lateinit var  favMovieRecycler: RecyclerView
     private lateinit var listOfFavMovies: List<Movie>
     private var favoritesAdapter: FavoritesAdapter? = null
 
@@ -56,6 +56,7 @@ class SelectFragment : Fragment(),FavoritesAdapter.RecyclerViewItemClick {
         if (getSP.contains(APP_SESSION)){
             session_id = getSP.getString(APP_SESSION,"null")!!
         }
+        starPreferences = activity?.getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE)!!
         swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout)
         swipeRefreshLayout.setOnRefreshListener {
             favoritesAdapter?.clearAll()
@@ -63,8 +64,7 @@ class SelectFragment : Fragment(),FavoritesAdapter.RecyclerViewItemClick {
         }
         generateComponent()
 
-
-            return view
+        return view
     }
 
 
@@ -86,13 +86,14 @@ class SelectFragment : Fragment(),FavoritesAdapter.RecyclerViewItemClick {
     override fun removeFromFavorites(position: Int, item: Movie) {
         lateinit var favoriteRequest: FavoriteRequest
         favoriteRequest= FavoriteRequest("movie",item?.id!!, false)
+
+
         RetrofitMoviesService.getMovieApi().addFavorite(BuildConfig.MOVIE_DB_API_TOKEN, session_id, favoriteRequest).enqueue(object: Callback<FavoriteResponse>{
             override fun onFailure(call: Call<FavoriteResponse>, t: Throwable) {}
             override fun onResponse(call: Call<FavoriteResponse>, response: Response<FavoriteResponse>) {
                 Toast.makeText(activity, "Removed", Toast.LENGTH_SHORT).show()
             }
         })
-
     }
 
 
@@ -130,6 +131,7 @@ class SelectFragment : Fragment(),FavoritesAdapter.RecyclerViewItemClick {
                 }
             }) } catch (e: Exception) {
             Toast.makeText(activity, e.toString(), Toast.LENGTH_SHORT)
+            Toast.makeText(activity?.applicationContext,"No movie added, sign in first",Toast.LENGTH_LONG).show()
         }
     }
 }
