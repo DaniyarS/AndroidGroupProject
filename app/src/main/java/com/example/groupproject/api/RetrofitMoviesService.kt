@@ -2,11 +2,13 @@ package com.example.groupproject.api
 
 import android.util.Log
 import com.example.groupproject.model.Account
-import com.example.groupproject.model.GetMoviesResponse
 import com.example.groupproject.model.Credits
+import com.example.groupproject.model.GetMoviesResponse
 import com.example.groupproject.model.Movie
 import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Call
+import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import okhttp3.Interceptor
@@ -14,7 +16,6 @@ import retrofit2.Response
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Response
 import retrofit2.http.*
-
 import java.util.concurrent.TimeUnit
 
 object RetrofitMoviesService {
@@ -150,7 +151,6 @@ interface MovieApi {
         @Query("session_id") sessionId: String
     ) : Call<GetMoviesResponse>
 
-
     //  COROUTINES
     @GET("posts")
     fun getMovieDetail():  Call<Movie>
@@ -163,7 +163,9 @@ interface MovieApi {
     fun getCredits():  Call<Credits>
     @GET("credits")
     fun getCreditsCoroutine(): Response<Credits>
-//    @GET("credits/{id}")
+
+    //    @GET("credits/{id}")
+
 //    fun getCredits(@Path("id") id: Int):  Call<Credits>
     /////////////////////////////////////////////////////////
     @GET("delete")
@@ -173,3 +175,4 @@ interface MovieApi {
 //    @GET("delete/{id}")
 //    fun getFavoriteResponse(@Path("id") id: Int):  Call<FavoriteResponse>
 }
+
