@@ -15,6 +15,7 @@ import com.example.groupproject.R
 import com.example.groupproject.api.RetrofitMoviesService
 import com.example.groupproject.database.MovieDao
 import com.example.groupproject.database.MovieDatabase
+import com.example.groupproject.model.Movie
 import kotlinx.coroutines.*
 import java.lang.Exception
 import kotlin.coroutines.CoroutineContext
@@ -66,27 +67,29 @@ class MovieFragment : Fragment(), CoroutineScope {
     @SuppressLint("SetTextI18n")
     private fun getBriefMovieDetailCoroutine(id: Int){
         launch {
-            val movie = withContext(Dispatchers.IO){
-                try{
-                    progressBar.visibility = View.GONE
-                    val response = RetrofitMoviesService.getMovieApi().
-                    getMovieByIdCoroutine(id,BuildConfig.MOVIE_DB_API_TOKEN)
-                    if (response.isSuccessful) {
-                        val post = response.body()
-                        if (post!=null){
-                            movieDao?.getBriefMovie(id)
-                        }
-                        post
-                    } else {
-                        movieDao?.getBriefMovie(id)
-                    }
-                } catch (e: Exception) {
-                    movieDao?.getBriefMovie(id)
-                }
-            }
             progressBar.visibility = View.GONE
-            Glide.with(Image).load("https://image.tmdb.org/t/p/original"+movie?.backdrop_path).into(Image)
-            MovieName.text = movie?.title
+            val movie = withContext(Dispatchers.IO){
+//                try {
+//                    progressBar.visibility = View.GONE
+//                    val response = RetrofitMoviesService.getMovieApi()
+//                        .getMovieByIdCoroutine(id, BuildConfig.MOVIE_DB_API_TOKEN)
+//                    if (response.isSuccessful) {
+//                        val post = response.body()
+//                        if (post!=null){
+//                            movieDao?.getBriefMovie(id)
+//                        }
+//                        post
+//                    } else {
+//                        movieDao?.getBriefMovie(id)
+//                    }
+//                } catch (e: Exception) {
+//                    movieDao?.getBriefMovie(id)
+//                }
+                movieDao?.getBriefMovie(id) ?: Movie()
+            }
+//            progressBar.visibility = View.GONE
+            Glide.with(Image).load("https://image.tmdb.org/t/p/original"+movie.backdrop_path).into(Image)
+            MovieName.text = movie.title
             MovieGenre.text = ""
 //            val genreNameContainer = movie?.genres
 //            var genreCounter = 1
