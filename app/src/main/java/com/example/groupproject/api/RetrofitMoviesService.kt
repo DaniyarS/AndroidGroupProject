@@ -2,17 +2,16 @@ package com.example.groupproject.api
 
 import android.util.Log
 import com.example.groupproject.model.Account
-import com.example.groupproject.model.GetMoviesResponse
 import com.example.groupproject.model.Credits
+import com.example.groupproject.model.GetMoviesResponse
 import com.example.groupproject.model.Movie
 import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Call
+import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import okhttp3.Interceptor
-import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.http.*
-
 import java.util.concurrent.TimeUnit
 
 object RetrofitMoviesService {
@@ -120,4 +119,26 @@ interface MovieApi {
         @Query("api_key") apiKey: String,
         @Query("session_id") sessionId: String
     ) : Call<GetMoviesResponse>
+
+    //  COROUTINES
+    @GET("posts")
+    fun getMovieDetail():  Call<Movie>
+    @GET("posts")
+    fun getMovieDetailCoroutine(): Response<Movie>
+    @GET("posts/{id}")
+    fun getMovieById(@Path("id") id: Int):  Call<Movie>
+    /////////////////////////////////////////////////////
+    @GET("credits")
+    fun getCredits():  Call<Credits>
+    @GET("credits")
+    fun getCreditsCoroutine(): Response<Credits>
+    //    @GET("credits/{id}")
+//    fun getCredits(@Path("id") id: Int):  Call<Credits>
+    /////////////////////////////////////////////////////////
+    @GET("delete")
+    fun getFavoriteResponse():  Call<FavoriteResponse>
+    @GET("delete")
+    fun getFavoriteResponseCoroutine(): Response<FavoriteResponse>
+//    @GET("delete/{id}")
+//    fun getFavoriteResponse(@Path("id") id: Int):  Call<FavoriteResponse>
 }
