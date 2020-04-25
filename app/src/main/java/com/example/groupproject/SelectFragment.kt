@@ -84,7 +84,10 @@ class SelectFragment : Fragment(),FavoritesAdapter.RecyclerViewItemClick {
     }
 
     override fun removeFromFavorites(position: Int, item: Movie) {
-        val favoriteRequest = FavoriteRequest("movie",item.id, false)
+        lateinit var favoriteRequest: FavoriteRequest
+        favoriteRequest= FavoriteRequest("movie",item?.id!!, false)
+
+
         RetrofitMoviesService.getMovieApi().addFavorite(BuildConfig.MOVIE_DB_API_TOKEN, session_id, favoriteRequest).enqueue(object: Callback<FavoriteResponse>{
             override fun onFailure(call: Call<FavoriteResponse>, t: Throwable) {}
             override fun onResponse(call: Call<FavoriteResponse>, response: Response<FavoriteResponse>) {
