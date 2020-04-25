@@ -13,20 +13,29 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.example.groupproject.adapter.MoviesAdapter
 import com.example.groupproject.api.FavoriteRequest
 import com.example.groupproject.api.FavoriteResponse
 import com.example.groupproject.api.RetrofitMoviesService
 import com.example.groupproject.model.Credits
 import com.example.groupproject.model.Movie
+import kotlinx.android.synthetic.main.fragment_home.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import kotlin.coroutines.coroutineContext
+import retrofit2.http.GET
+import retrofit2.http.Path
+import kotlin.coroutines.CoroutineContext
 
 
-class MovieDetailActivity : AppCompatActivity() {
-    private val APP_PREFERENCES = "appsettings"
+class MovieDetailActivity : AppCompatActivity(), CoroutineScope {
+    private val APP_PREFERENCES = "appSettings"
     private val APP_SESSION = "session_id"
     //private val STAR_STATE = "starState"
 
@@ -47,6 +56,11 @@ class MovieDetailActivity : AppCompatActivity() {
     private lateinit var getSP: SharedPreferences
     private lateinit var session_id: String
     private var isClicked = false
+
+    private val job = Job()
+    private var moviesAdapter: MoviesAdapter? = null
+    override val coroutineContext: CoroutineContext
+        get() = Dispatchers.Main + job
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -90,6 +104,14 @@ class MovieDetailActivity : AppCompatActivity() {
             }
         }
 
+        getMovieDetailCoroutine()
+        getCreditsCoroutine()
+        getFavoriteResponse()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        job.cancel()
     }
 
     private fun addToFavoriteMovie(item: Int) {
@@ -117,19 +139,22 @@ class MovieDetailActivity : AppCompatActivity() {
                         progressBar.visibility = View.GONE
                     }
 
-                    override fun onResponse(
-                        call: Call<FavoriteResponse>,
-                        response: Response<FavoriteResponse>
-                    ) {
-                        Toast.makeText(
-                            applicationContext,
-                            "Added to favorites",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                        progressBar.visibility = View.GONE
-                    }
-                })
+        if (getStarState()==false){
+                if (loginCount == 0) {
+                    Toast.makeText(
+                        applicationContext,
+                        "Please, sign in first",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    setFragment(authorizationFragment)
+                } else {
+                    addToFavoriteMovie(movieId)
+                    progressBar.visibility = View.VISIBLE
+                    setStarState(true)
+                    print(getStarState().toString())
+                }
         } else {
+            deletFromFavorite(movieId)
             progressBar.visibility = View.VISIBLE
             isClicked = false
             ivAddList.setImageResource(R.drawable.ic_star_border_black_24dp)
@@ -266,4 +291,52 @@ class MovieDetailActivity : AppCompatActivity() {
 //        editor.apply()
 //    }
 
+    private fun getMovieDetailCoroutine() {
+        launch {
+            progressBar.visibility = View.VISIBLE
+            val response = RetrofitMoviesService.getMovieApi().getMovieDetailCoroutine()
+            if (response.isSuccessful) {
+                val post = response.body()
+                moviesAdapter?.post = post
+                moviesAdapter?.notifyDataSetChanged()
+            } else {
+                Toast.makeText(this@MovieDetailActivity, "Error!", Toast.LENGTH_SHORT).show()
+            }
+            progressBar.visibility = View.GONE
+        }
+    }
+
+    private  fun getCreditsCoroutine() {
+        launch {
+            progressBar.visibility = View.VISIBLE
+            val response = RetrofitMoviesService.getMovieApi().getCreditsCoroutine()
+            if (response.isSuccessful) {
+                val creditsBody = response.body()
+                moviesAdapter?.creditsBody = creditsBody
+                moviesAdapter?.notifyDataSetChanged()
+            } else {
+                Toast.makeText(this@MovieDetailActivity, "Error!", Toast.LENGTH_SHORT).show()
+            }
+            progressBar.visibility = View.GONE
+        }
+    }
+
+    private  fun getFavoriteResponse() {
+        launch {
+            progressBar.visibility = View.VISIBLE
+            val response = RetrofitMoviesService.getMovieApi().getFavoriteResponseCoroutine()
+            if (response.isSuccessful) {
+//                val post = response.body()
+//                moviesAdapter?.post = post
+//                moviesAdapter?.notifyDataSetChanged()
+            } else {
+                Toast.makeText(this@MovieDetailActivity, "Error!", Toast.LENGTH_SHORT).show()
+            }
+            progressBar.visibility = View.GONE
+        }
+    }
 }
+
+
+
+
