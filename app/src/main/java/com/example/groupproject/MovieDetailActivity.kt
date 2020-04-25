@@ -13,6 +13,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.groupproject.adapter.MoviesAdapter
 import com.example.groupproject.api.FavoriteRequest
@@ -23,15 +24,24 @@ import com.example.groupproject.database.MovieDetailDao
 import com.example.groupproject.database.MovieDetailDatabase.Companion.getDatabase
 import com.example.groupproject.model.Credits
 import com.example.groupproject.model.Movie
+
 import kotlinx.coroutines.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import kotlinx.android.synthetic.main.fragment_home.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
+import retrofit2.http.GET
+import retrofit2.http.Path
 import kotlin.coroutines.CoroutineContext
 
 
 class MovieDetailActivity : AppCompatActivity(), CoroutineScope {
-    private val APP_PREFERENCES = "appsettings"
+
+    private val APP_PREFERENCES = "appSettings"
     private val APP_SESSION = "session_id"
     private val STAR_STATE = "starState"
 
@@ -58,6 +68,7 @@ class MovieDetailActivity : AppCompatActivity(), CoroutineScope {
     private var moviesAdapter: MoviesAdapter? = null
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + job
+
 
     private var movieDetailDao: MovieDetailDao? = null
 
@@ -108,12 +119,12 @@ class MovieDetailActivity : AppCompatActivity(), CoroutineScope {
         getMovieDetailCoroutine()
         getCreditsCoroutine()
         getFavoriteResponse()
-    }
 
     override fun onDestroy() {
         super.onDestroy()
         job.cancel()
     }
+
 
     override fun onResume() {
         super.onResume()
@@ -136,6 +147,7 @@ class MovieDetailActivity : AppCompatActivity(), CoroutineScope {
                 setStarState(true)
                 print(getStarState().toString())
             }
+
         } else {
             deletFromFavorite(movieId)
             progressBar.visibility = View.VISIBLE
@@ -244,13 +256,13 @@ class MovieDetailActivity : AppCompatActivity(), CoroutineScope {
                     progressBar.visibility = View.GONE
                     val post = response.body()
                     if (post != null) {
-                        Glide.with(movieImageBackdrop).load(post.getBackDropPathImage())
+                        Glide.with(movieImageBackdrop).load("https://image.tmdb.org/t/p/original"+post.backdrop_path)
                             .into(movieImageBackdrop)
 
                         movieTitle.text = post.title
 
                         val realiseDate = post.release_date
-                        movieRealease.text = "(" + realiseDate.substring(0, 4) + ")"
+                        movieRealease.text = "(" + realiseDate?.substring(0, 4) + ")"
 
                         val runtime = post.runtime
                         if (runtime > 60) {
@@ -262,19 +274,19 @@ class MovieDetailActivity : AppCompatActivity(), CoroutineScope {
                             movieDuration.text = "$runtime min"
                         }
 
-                        val genreNameContainer = post.genres
-                        movieGenre.text = ""
-                        var genreCounter = 1
-                        for (genre in genreNameContainer) {
-                            if (genreCounter == genreNameContainer.size) {
-                                movieGenre.text = movieGenre.text.toString() + genre.getGenreName()
-                            } else {
-                                movieGenre.text =
-                                    movieGenre.text.toString() + genre.getGenreName() + " • "
-                            }
-                            genreCounter += 1
-                        }
-                        movieDetails.text = post.overview
+//                        val genreNameContainer = post.genres
+//                        movieGenre.text = ""
+//                        var genreCounter = 1
+//                        for (genre in genreNameContainer) {
+//                            if (genreCounter == genreNameContainer.size) {
+//                                movieGenre.text = movieGenre.text.toString() + genre.getGenreName()
+//                            } else {
+//                                movieGenre.text =
+//                                    movieGenre.text.toString() + genre.getGenreName() + " • "
+//                            }
+//                            genreCounter += 1
+//                        }
+//                        movieDetails.text = post.overview
 
                     }
                 }
@@ -363,6 +375,21 @@ class MovieDetailActivity : AppCompatActivity(), CoroutineScope {
             progressBar.visibility = View.GONE
         }
     }
+      
+    private fun getMovieDetailCoroutine() {
+        launch {
+            progressBar.visibility = View.VISIBLE
+            val response = RetrofitMoviesService.getMovieApi().getMovieDetailCoroutine()
+            if (response.isSuccessful) {
+                val post = response.body()
+                moviesAdapter?.post = post
+                moviesAdapter?.notifyDataSetChanged()
+            } else {
+                Toast.makeText(this@MovieDetailActivity, "Error!", Toast.LENGTH_SHORT).show()
+            }
+            progressBar.visibility = View.GONE
+        }
+    }
 
     private  fun getCreditsCoroutine() {
         launch {
@@ -393,4 +420,6 @@ class MovieDetailActivity : AppCompatActivity(), CoroutineScope {
             progressBar.visibility = View.GONE
         }
     }
+
 }
+

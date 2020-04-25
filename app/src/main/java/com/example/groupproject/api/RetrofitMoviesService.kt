@@ -11,6 +11,10 @@ import retrofit2.Call
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import okhttp3.Interceptor
+import retrofit2.Response
+import okhttp3.logging.HttpLoggingInterceptor
+import retrofit2.Response
 import retrofit2.http.*
 import java.util.concurrent.TimeUnit
 
@@ -48,10 +52,15 @@ object RetrofitMoviesService {
 interface MovieApi {
 
     //POPULAR MOVIES
+//    @GET("movie/popular")
+//    fun getPopularMovies(
+//        @Query("api_key") apiKey: String
+//    ): Call<GetMoviesResponse>
+
     @GET("movie/popular")
-    fun getPopularMovies(
+    suspend fun getPopularMoviesCoroutine(
         @Query("api_key") apiKey: String
-    ): Call<GetMoviesResponse>
+    ): Response<GetMoviesResponse>
 
     //MOVIE BY ID
     @GET("movie/{movie_id}")
@@ -60,6 +69,12 @@ interface MovieApi {
         @Query("api_key") apiKey: String
     ): Call<Movie>
 
+    @GET("movie/{movie_id}")
+    suspend fun getMovieByIdCoroutine(
+        @Path("movie_id") id: Int,
+        @Query("api_key") apiKey: String
+    ): Response<Movie>
+
     //CREDITS FOR MOVIE ID
     @GET("movie/{movie_id}/credits")
     fun getCredits(
@@ -67,17 +82,33 @@ interface MovieApi {
         @Query("api_key") apiKey: String
     ): Call<Credits>
 
-    //TOPRATED MOVIES
-    @GET("movie/top_rated")
-    fun getTopRatedMovies(
+    @GET("movie/{movie_id}/credits")
+    suspend fun getCreditsCoroutine(
+        @Path("movie_id") id: Int,
         @Query("api_key") apiKey: String
-    ): Call<GetMoviesResponse>
+    ): Response<Credits>
+
+    //TOPRATED MOVIES
+//    @GET("movie/top_rated")
+//    fun getTopRatedMovies(
+//        @Query("api_key") apiKey: String
+//    ): Call<GetMoviesResponse>
+
+    @GET("movie/top_rated")
+    suspend fun getTopRatedMoviesCoroutine(
+        @Query("api_key") apiKey: String
+    ): Response<GetMoviesResponse>
 
     //UPCOMING MOVIES
+//    @GET("movie/upcoming")
+//    fun getUpcomingMovies(
+//        @Query("api_key") apiKey: String
+//    ) : Call<GetMoviesResponse>
+
     @GET("movie/upcoming")
-    fun getUpcomingMovies(
+    suspend fun getUpcomingMoviesCoroutine(
         @Query("api_key") apiKey: String
-    ) : Call<GetMoviesResponse>
+    ): Response<GetMoviesResponse>
 ////////////////////////////////////////////////////////////////////
     //REQUEST TOKEN WHILE REGISTRATION
     @GET("authentication/token/new")
@@ -132,7 +163,9 @@ interface MovieApi {
     fun getCredits():  Call<Credits>
     @GET("credits")
     fun getCreditsCoroutine(): Response<Credits>
+
     //    @GET("credits/{id}")
+
 //    fun getCredits(@Path("id") id: Int):  Call<Credits>
     /////////////////////////////////////////////////////////
     @GET("delete")
@@ -142,3 +175,4 @@ interface MovieApi {
 //    @GET("delete/{id}")
 //    fun getFavoriteResponse(@Path("id") id: Int):  Call<FavoriteResponse>
 }
+

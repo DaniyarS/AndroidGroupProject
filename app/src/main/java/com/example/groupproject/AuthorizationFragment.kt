@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ProgressBar
@@ -15,7 +14,6 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.groupproject.api.RequestToken
 import com.example.groupproject.api.RetrofitMoviesService
 import com.example.groupproject.api.Session
@@ -25,8 +23,6 @@ import kotlinx.android.synthetic.main.fragment_authorization.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import androidx.core.view.isVisible as isVisible1
-
 
 /**
  * A simple [Fragment] subclass.
@@ -35,7 +31,6 @@ class AuthorizationFragment : Fragment() {
 
     private val APP_PREFERENCES = "appsettings"
     private val APP_SESSION = "session_id"
-
 
     private lateinit var accountFragment: AccountFragment
     private lateinit var progressBar: ProgressBar
@@ -47,7 +42,7 @@ class AuthorizationFragment : Fragment() {
     lateinit var validation: Validation
     lateinit var requestTokenResult: RequestToken
     private lateinit var pref: SharedPreferences
-    private lateinit var signIN: Button
+    private lateinit var signIn: Button
     private lateinit var nMainNav: BottomNavigationView
 
     var session_id: String = ""
@@ -66,14 +61,14 @@ class AuthorizationFragment : Fragment() {
             pref = it.getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE)
             username = it.findViewById(R.id.etUsername)
             password = it.findViewById(R.id.etPassword)
-            signIN = it.findViewById(R.id.btRegistrate)
+            signIn = it.findViewById(R.id.btRegistrate)
             accountFragment = AccountFragment()
             progressBar = it.findViewById(R.id.progressBar2)
             nMainNav = it.findViewById(R.id.main_nav)
             progressBar2.hide()
         }
 
-        signIN.setOnClickListener() {
+        signIn.setOnClickListener() {
             initNewToken()
         }
     }
@@ -82,72 +77,72 @@ class AuthorizationFragment : Fragment() {
     private fun initNewToken() {
         progressBar2.show()
         RetrofitMoviesService.getMovieApi().getToken(BuildConfig.MOVIE_DB_API_TOKEN)
-            .enqueue(object :
-                Callback<RequestToken> {
-                override fun onFailure(call: Call<RequestToken>, t: Throwable) {
-                    requestToken = ""
-                    Toast.makeText(
-                        activity?.applicationContext,
-                        "TokenRequest Failure",
-                        Toast.LENGTH_LONG
-                    ).show()
-                }
+        .enqueue(object :
+            Callback<RequestToken> {
+            override fun onFailure(call: Call<RequestToken>, t: Throwable) {
+                requestToken = ""
+                Toast.makeText(
+                    activity?.applicationContext,
+                    "Token Request Failure",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
 
-                override fun onResponse(
-                    call: Call<RequestToken>,
-                    response: Response<RequestToken>
-                ) {
-                    progressBar2.hide()
-                    if (response.isSuccessful) {
-                        val result = response.body()
-                        if (result != null) {
-                            requestToken = result.request_token
-                            validation = Validation(
-                                username.text.toString(),
-                                password.text.toString(),
-                                requestToken
-                            )
-                            initValidation()
-                        } else {
-                            Toast.makeText(
-                                activity?.applicationContext,
-                                "TokenRequest Failure",
-                                Toast.LENGTH_LONG
-                            ).show()
-                        }
+            override fun onResponse(
+                call: Call<RequestToken>,
+                response: Response<RequestToken>
+            ) {
+                progressBar2.hide()
+                if (response.isSuccessful) {
+                    val result = response.body()
+                    if (result != null) {
+                        requestToken = result.request_token
+                        validation = Validation(
+                            username.text.toString(),
+                            password.text.toString(),
+                            requestToken
+                        )
+                        initValidation()
+                    } else {
+                        Toast.makeText(
+                            activity?.applicationContext,
+                            "TokenRequest Failure",
+                            Toast.LENGTH_LONG
+                        ).show()
                     }
                 }
-            })
+            }
+        })
     }
 
     private fun initValidation() {
         RetrofitMoviesService.getMovieApi().validation(BuildConfig.MOVIE_DB_API_TOKEN, validation)
-            .enqueue(object :
-                Callback<RequestToken> {
-                override fun onFailure(call: Call<RequestToken>, t: Throwable) {
+        .enqueue(object :
+            Callback<RequestToken> {
+            override fun onFailure(call: Call<RequestToken>, t: Throwable) {
+                Toast.makeText(
+                    activity?.applicationContext,
+                    "Wrong validation",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+
+            override fun onResponse(
+                call: Call<RequestToken>,
+                response: Response<RequestToken>
+            ) {
+                if (response.isSuccessful) {
+                    requestTokenResult = RequestToken(requestToken)
+                    initSession()
+                } else {
                     Toast.makeText(
                         activity?.applicationContext,
                         "Wrong validation",
                         Toast.LENGTH_LONG
                     ).show()
                 }
-
-                override fun onResponse(
-                    call: Call<RequestToken>,
-                    response: Response<RequestToken>
-                ) {
-                    if (response.isSuccessful) {
-                        requestTokenResult = RequestToken(requestToken)
-                        initSession()
-                    } else {
-                        Toast.makeText(
-                            activity?.applicationContext,
-                            "Wrong validation",
-                            Toast.LENGTH_LONG
-                        ).show()
-                    }
-                }
-            })
+            }
+        })
 
     }
 

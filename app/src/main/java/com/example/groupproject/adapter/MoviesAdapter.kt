@@ -1,6 +1,5 @@
 package com.example.groupproject.adapter
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,13 +7,16 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.example.groupproject.MovieDetailActivity
 import com.example.groupproject.R
+import com.example.groupproject.model.Credits
 import com.example.groupproject.model.Movie
 
 class MoviesAdapter(
     var ListOfMovies: List<Movie>? = null,
-    var context: Context,
-    val itemClickListener: RecyclerViewItemClick? = null
+    val itemClickListener: MovieDetailActivity = null,
+    var post: Movie?,
+    var creditsBody: Credits?
 ) : RecyclerView.Adapter<MoviesAdapter.MovieViewHolder>() {
     override fun onCreateViewHolder(p0: ViewGroup, p1: Int): MovieViewHolder {
         val view = LayoutInflater.from(p0.context).inflate(R.layout.movie_items, p0, false)
@@ -40,7 +42,7 @@ class MoviesAdapter(
             val movieTitle = view.findViewById<TextView>(R.id.tvMovieName)
             val movieImage= view.findViewById<ImageView>(R.id.ivMovie)
 
-            Glide.with(context).load(post?.getPosterPathImage()).into(movieImage)
+            Glide.with(context).load("https://image.tmdb.org/t/p/w342" + post?.poster_path).into(movieImage)
             movieTitle.text=post?.title
 
                     view.setOnClickListener {
