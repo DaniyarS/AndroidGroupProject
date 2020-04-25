@@ -42,7 +42,7 @@ class MoviesAdapter(
             val movieTitle = view.findViewById<TextView>(R.id.tvMovieName)
             val movieImage= view.findViewById<ImageView>(R.id.ivMovie)
 
-            Glide.with(context).load(post?.getPosterPathImage()).into(movieImage)
+            Glide.with(context).load("https://image.tmdb.org/t/p/w342" + post?.poster_path).into(movieImage)
             movieTitle.text=post?.title
 
                     view.setOnClickListener {

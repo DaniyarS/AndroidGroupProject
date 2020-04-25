@@ -35,12 +35,11 @@ class SelectFragment : Fragment(),FavoritesAdapter.RecyclerViewItemClick {
 
     private val APP_PREFERENCES = "appsettings"
     private val APP_SESSION = "session_id"
-    private val STAR_STATE = "starState"
 
     private var session_id: String=""
     private lateinit var getSP : SharedPreferences
     private lateinit var starPreferences: SharedPreferences
-    lateinit var  favMovieRecycler: RecyclerView
+    private lateinit var  favMovieRecycler: RecyclerView
     private lateinit var listOfFavMovies: List<Movie>
     private var favoritesAdapter: FavoritesAdapter? = null
 
@@ -65,8 +64,7 @@ class SelectFragment : Fragment(),FavoritesAdapter.RecyclerViewItemClick {
         }
         generateComponent()
 
-
-            return view
+        return view
     }
 
 
@@ -87,14 +85,15 @@ class SelectFragment : Fragment(),FavoritesAdapter.RecyclerViewItemClick {
 
     override fun removeFromFavorites(position: Int, item: Movie) {
         lateinit var favoriteRequest: FavoriteRequest
-        favoriteRequest= FavoriteRequest("movie",item.id, false)
+        favoriteRequest= FavoriteRequest("movie",item?.id!!, false)
+
+
         RetrofitMoviesService.getMovieApi().addFavorite(BuildConfig.MOVIE_DB_API_TOKEN, session_id, favoriteRequest).enqueue(object: Callback<FavoriteResponse>{
             override fun onFailure(call: Call<FavoriteResponse>, t: Throwable) {}
             override fun onResponse(call: Call<FavoriteResponse>, response: Response<FavoriteResponse>) {
                 Toast.makeText(activity, "Removed", Toast.LENGTH_SHORT).show()
             }
         })
-        setStarState(false)
     }
 
 
@@ -132,12 +131,7 @@ class SelectFragment : Fragment(),FavoritesAdapter.RecyclerViewItemClick {
                 }
             }) } catch (e: Exception) {
             Toast.makeText(activity, e.toString(), Toast.LENGTH_SHORT)
+            Toast.makeText(activity?.applicationContext,"No movie added, sign in first",Toast.LENGTH_LONG).show()
         }
-    }
-
-    private fun setStarState(state: Boolean){
-        val editor = starPreferences.edit()
-        editor.putBoolean(STAR_STATE, state)
-        editor.apply()
     }
 }
