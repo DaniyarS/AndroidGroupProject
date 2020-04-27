@@ -104,6 +104,7 @@ class HomeFragment : Fragment(), MoviesAdapter.RecyclerViewItemClick {
     override fun itemClick(position: Int, item: Movie) {
         val intent = Intent(activity, MovieDetailActivity::class.java)
         intent.putExtra("movie_id", item.id)
+        intent.putExtra("movie", item)
         startActivity(intent)
     }
 

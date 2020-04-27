@@ -17,6 +17,8 @@ import com.example.groupproject.adapter.FavoritesAdapter
 import com.example.groupproject.api.FavoriteRequest
 import com.example.groupproject.api.FavoriteResponse
 import com.example.groupproject.api.RetrofitMoviesService
+import com.example.groupproject.database.MovieDao
+import com.example.groupproject.database.MovieDatabase
 import com.example.groupproject.model.Movie
 import kotlinx.coroutines.*
 import retrofit2.Response
@@ -37,6 +39,7 @@ class SelectFragment : Fragment(), FavoritesAdapter.RecyclerViewItemClick, Corou
     private lateinit var listOfFavMovies: List<Movie>
     private lateinit var getSP: SharedPreferences
 
+    private var movieDao: MovieDao? = null
     private val job = Job()
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + job
@@ -52,6 +55,8 @@ class SelectFragment : Fragment(), FavoritesAdapter.RecyclerViewItemClick, Corou
         if (getSP.contains(APP_SESSION)) {
             sessionId = getSP.getString(APP_SESSION, "null")!!
         }
+
+        movieDao = MovieDatabase.getDatabase(context!!).movieDao()
 
         swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout)
         swipeRefreshLayout.setOnRefreshListener {
@@ -94,14 +99,16 @@ class SelectFragment : Fragment(), FavoritesAdapter.RecyclerViewItemClick, Corou
 
     override fun removeFromFavoritesCoroutine(position: Int, item: Movie) {
         var response: Response<FavoriteResponse>
-        val favoriteRequest = FavoriteRequest("movie", item.id, false)
+        val favoriteRequest = item.id?.let { FavoriteRequest("movie", it, false) }
         lifecycleScope.launchWhenResumed {
-                response = RetrofitMoviesService.getMovieApi()
-                .addFavoriteCoroutine(
-                    BuildConfig.MOVIE_DB_API_TOKEN,
-                    sessionId,
-                    favoriteRequest
-                )
+                response = favoriteRequest?.let {
+                    RetrofitMoviesService.getMovieApi()
+                        .addFavoriteCoroutine(
+                            BuildConfig.MOVIE_DB_API_TOKEN,
+                            sessionId,
+                            it
+                        )
+                }!!
 
             if (response.isSuccessful) {
                 Toast.makeText(

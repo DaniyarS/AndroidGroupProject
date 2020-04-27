@@ -1,35 +1,39 @@
 package com.example.groupproject.model
 
+import androidx.room.Entity
+import androidx.room.Ignore
+import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 
+@Entity(tableName = "movies_table")
 data class Movie(
-
-    @SerializedName("popularity") val populatiry: Double,
-    @SerializedName("vote_count") val vote_count: Int,
-    @SerializedName("video") val video: Boolean,
-    @SerializedName("poster_path") val poster_path: String,
-    @SerializedName("id") val id: Int,
-    @SerializedName("adult") val adult: Boolean,
-    @SerializedName("backdrop_path") val backdrop_path: String,
-    @SerializedName("original_language") val original_language: String,
-    @SerializedName("original_title") val original_title: String,
-
-    @SerializedName("genre_ids") val genre_ids: List<Int>,
-    @SerializedName("genres") val genres: List<MovieGenres>,
-
-    @SerializedName("title") val title: String,
-    @SerializedName("vote_average") val vote_average: Double,
-    @SerializedName("overview") val overview: String,
-    @SerializedName("release_date") val release_date: String,
-    @SerializedName("runtime") val runtime: Int,
-
-    @SerializedName("credits") val credits : Credits,
-
-    @SerializedName("results") val results: List<Movie>
-)
+    @PrimaryKey
+    @SerializedName("id") val id: Int? = null,
+    @SerializedName("popularity") val popularity: Double? = null,
+    @SerializedName("vote_count") val vote_count: Int? = null,
+    @SerializedName("video") val video: Boolean? = null,
+    @SerializedName("poster_path") val poster_path: String? = null,
+    @SerializedName("adult") val adult: Boolean? = null,
+    @SerializedName("backdrop_path") val backdrop_path: String? = null,
+    @SerializedName("original_language") val original_language: String? = null,
+    @SerializedName("original_title") val original_title: String? = null,
+    @SerializedName("selected") var selected: Int? = 0,
+//    @Ignore
+//    @SerializedName("genre_ids") val genre_ids: List<Int>,
+//    @Ignore
+//    @SerializedName("genres") val genres: List<MovieGenres>,
+    @SerializedName("title") val title: String? = null,
+    @SerializedName("vote_average") val vote_average: Double? = null,
+    @SerializedName("overview") val overview: String? = null,
+    @SerializedName("release_date") val release_date: String? = null,
+    @SerializedName("runtime") val runtime: Int? = null
+//    @Ignore
+//    @SerializedName("credits") val credits : Credits,
+//    @Ignore
+//    @SerializedName("results") val results: List<Movie>
+) : Serializable
 {
-    val baseImageUrl: String = "https://image.tmdb.org/t/p/w300"
-    val backdropImageUrl: String= "https://image.tmdb.org/t/p/w780"
     fun getPosterPathImage(): String {
         return "https://image.tmdb.org/t/p/w342"+poster_path }
 
@@ -37,19 +41,3 @@ data class Movie(
         return "https://image.tmdb.org/t/p/original" + backdrop_path }
 
 }
-
-
-// Backdrop pages format size:
-//w300
-//w780
-//w1280
-//original
-
-//poster_path images format size:
-//w92
-//w154
-//w185
-//w342
-//w500
-//w780
-//original

@@ -60,16 +60,16 @@ class MovieFragmentSecond: Fragment() {
 
                     MovieName.text = post.title
 
-                    val genreNameContainer = post.genres
-                    MovieGenre.text=""
-                    var genreCounter = 1
-                    for (genre in genreNameContainer){
-                        if (genreCounter == genreNameContainer.size) {
-                            MovieGenre.text = MovieGenre.text.toString() + genre.getGenreName()}
-                        else{
-                            MovieGenre.text = MovieGenre.text.toString() + genre.getGenreName()+ " • "}
-                        genreCounter += 1
-                    }
+//                    val genreNameContainer = post.genres
+//                    MovieGenre.text=""
+//                    var genreCounter = 1
+//                    for (genre in genreNameContainer){
+//                        if (genreCounter == genreNameContainer.size) {
+//                            MovieGenre.text = MovieGenre.text.toString() + genre.getGenreName()}
+//                        else{
+//                            MovieGenre.text = MovieGenre.text.toString() + genre.getGenreName()+ " • "}
+//                        genreCounter += 1
+//                    }
                 }
             }
         })

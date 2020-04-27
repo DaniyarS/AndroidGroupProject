@@ -5,6 +5,7 @@ import com.example.groupproject.model.Account
 import com.example.groupproject.model.GetMoviesResponse
 import com.example.groupproject.model.Credits
 import com.example.groupproject.model.Movie
+import com.google.gson.JsonObject
 import okhttp3.OkHttpClient
 import retrofit2.Call
 import retrofit2.Retrofit
@@ -154,4 +155,11 @@ interface MovieApi {
         @Query("api_key") apiKey: String,
         @Query("session_id") sessionId: String
     ) : Response<GetMoviesResponse>
+
+    @GET("movie/{movie_id}/account_states")
+    suspend fun hasLikeCoroutine(
+        @Path("movie_id") movieId: Int?,
+        @Query("api_key") apiKey: String,
+        @Query("session_id") sessionId: String?
+    ): Response<JsonObject>
 }
