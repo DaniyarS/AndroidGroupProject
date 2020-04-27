@@ -48,7 +48,7 @@ class FavoritesAdapter(
                 itemClickListener?.itemClick(adapterPosition, post!!)
             }
             removeFromFavList.setOnClickListener {
-                itemClickListener?.removeFromFavorites(adapterPosition,post!!)
+                itemClickListener?.removeFromFavoritesCoroutine(adapterPosition,post!!)
                 removeFromFavList.setImageResource(R.drawable.ic_star_border_black_24dp)
             }
         }
@@ -56,6 +56,6 @@ class FavoritesAdapter(
 
     interface RecyclerViewItemClick {
         fun itemClick(position: Int, item: Movie)
-        fun removeFromFavorites(position: Int, item: Movie)
+        fun removeFromFavoritesCoroutine(position: Int, item: Movie)
     }
 }

@@ -1,13 +1,13 @@
 package com.example.groupproject
 
 
-
 import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.lifecycleScope
 
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -32,25 +32,25 @@ import kotlin.coroutines.CoroutineContext
 class HomeFragment : Fragment(), MoviesAdapter.RecyclerViewItemClick, CoroutineScope {
 
     private lateinit var recyclerView: RecyclerView
-    private var moviesAdapter: MoviesAdapter?=null
+    private var moviesAdapter: MoviesAdapter? = null
     private lateinit var listMovies: List<Movie>
     lateinit var swipeRefreshLayout: SwipeRefreshLayout
 
     private lateinit var topRatedRecyclerView: RecyclerView
-    private var movies2Adapter: MoviesAdapter?=null
+    private var movies2Adapter: MoviesAdapter? = null
     private lateinit var listTopRatedMovies: List<Movie>
 
     private lateinit var upcomingRecyclerView: RecyclerView
-    private var movies3Adapter: MoviesAdapter?=null
+    private var movies3Adapter: MoviesAdapter? = null
     private lateinit var listUpcomingMovies: List<Movie>
 
     private lateinit var viewPager: ViewPager
-    private lateinit var  pagerAdapter: ViewPagerAdapter
+    private lateinit var pagerAdapter: ViewPagerAdapter
 
     //new val job
     private val job = Job()
 
-    private var movieDao : MovieDao?=null
+    private var movieDao: MovieDao? = null
 
 
     //override fun for coroutine context
@@ -62,7 +62,7 @@ class HomeFragment : Fragment(), MoviesAdapter.RecyclerViewItemClick, CoroutineS
         savedInstanceState: Bundle?
     ): View? {
 
-        val viewMovies = inflater.inflate(R.layout.fragment_home,container,false)
+        val viewMovies = inflater.inflate(R.layout.fragment_home, container, false)
 
         movieDao = MovieDatabase.getDatabase(context = activity!!).movieDao()
 
@@ -88,28 +88,49 @@ class HomeFragment : Fragment(), MoviesAdapter.RecyclerViewItemClick, CoroutineS
         return viewMovies
     }
 
-    private fun generateComponent(){
+    private fun generateComponent() {
 
         listMovies = ArrayList()
-        moviesAdapter =activity?.applicationContext?.let {MoviesAdapter(listMovies,it ,itemClickListener = this)}
-        recyclerView.layoutManager =   LinearLayoutManager(activity,LinearLayoutManager.HORIZONTAL, false)
+        moviesAdapter = activity?.applicationContext?.let {
+            MoviesAdapter(
+                listMovies,
+                it,
+                itemClickListener = this
+            )
+        }
+        recyclerView.layoutManager =
+            LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
         recyclerView.adapter = moviesAdapter
 
         listTopRatedMovies = ArrayList()
-        movies2Adapter = activity?.applicationContext?.let{MoviesAdapter(listTopRatedMovies,it , itemClickListener = this)}
-        topRatedRecyclerView.layoutManager = LinearLayoutManager(activity,LinearLayoutManager.HORIZONTAL, false)
+        movies2Adapter = activity?.applicationContext?.let {
+            MoviesAdapter(
+                listTopRatedMovies,
+                it,
+                itemClickListener = this
+            )
+        }
+        topRatedRecyclerView.layoutManager =
+            LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
         topRatedRecyclerView.adapter = movies2Adapter
 
         listUpcomingMovies = ArrayList()
-        movies3Adapter = activity?.applicationContext?.let{MoviesAdapter(listUpcomingMovies, it, itemClickListener = this)}
-        upcomingRecyclerView.layoutManager = LinearLayoutManager(activity,LinearLayoutManager.HORIZONTAL, false)
+        movies3Adapter = activity?.applicationContext?.let {
+            MoviesAdapter(
+                listUpcomingMovies,
+                it,
+                itemClickListener = this
+            )
+        }
+        upcomingRecyclerView.layoutManager =
+            LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
         upcomingRecyclerView.adapter = movies3Adapter
 
         loadMovies()
 
     }
 
-    private fun loadMovies(){
+    private fun loadMovies() {
         initPopularMoviesCoroutine()
         initTopRatedMoviesCoroutine()
         initUpcomingMoviesCoroutine()
@@ -127,83 +148,83 @@ class HomeFragment : Fragment(), MoviesAdapter.RecyclerViewItemClick, CoroutineS
     }
 
     //Binding data to the first recycler view
-    private fun initPopularMoviesCoroutine(){
-            launch {
-                swipeRefreshLayout.isRefreshing = true
-                val list = withContext(Dispatchers.IO){
-                    try{
-                        val response = RetrofitMoviesService.getMovieApi().
-                        getPopularMoviesCoroutine(BuildConfig.MOVIE_DB_API_TOKEN)
-                        if (response.isSuccessful) {
-                            val result = response.body()?.results
-                            if (!result.isNullOrEmpty()){
-                                movieDao?.insertAll(result)
-                            }
-                            result
-                        } else {
-                            movieDao?.getPopular() ?: emptyList()
+    private fun initPopularMoviesCoroutine() {
+        lifecycleScope.launchWhenResumed {
+            swipeRefreshLayout.isRefreshing = true
+            val list = withContext(Dispatchers.IO) {
+                try {
+                    val response = RetrofitMoviesService.getMovieApi()
+                        .getPopularMoviesCoroutine(BuildConfig.MOVIE_DB_API_TOKEN)
+                    if (response.isSuccessful) {
+                        val result = response.body()?.results
+                        if (!result.isNullOrEmpty()) {
+                            movieDao?.insertAll(result)
                         }
-                    } catch (e: Exception) {
+                        result
+                    } else {
                         movieDao?.getPopular() ?: emptyList()
                     }
+                } catch (e: Exception) {
+                    movieDao?.getPopular() ?: emptyList()
                 }
-                moviesAdapter?.ListOfMovies = list
-                moviesAdapter?.notifyDataSetChanged()
-                swipeRefreshLayout.isRefreshing = false
             }
+            moviesAdapter?.ListOfMovies = list
+            moviesAdapter?.notifyDataSetChanged()
+            swipeRefreshLayout.isRefreshing = false
+        }
     }
 
     //Binding data to the second recycler view
     private fun initTopRatedMoviesCoroutine() {
-            launch {
-                swipeRefreshLayout.isRefreshing = true
-                val list = withContext(Dispatchers.IO){
-                    try{
-                        val response = RetrofitMoviesService.getMovieApi().
-                        getTopRatedMoviesCoroutine(BuildConfig.MOVIE_DB_API_TOKEN)
-                        if (response.isSuccessful) {
-                            val result = response.body()?.results
-                            if (!result.isNullOrEmpty()){
-                                movieDao?.insertAll(result)
-                            }
-                            result
-                        } else {
-                            movieDao?.getTopRated() ?: emptyList()
+        lifecycleScope.launchWhenResumed {
+            swipeRefreshLayout.isRefreshing = true
+            val list = withContext(Dispatchers.IO) {
+                try {
+                    val response = RetrofitMoviesService.getMovieApi()
+                        .getTopRatedMoviesCoroutine(BuildConfig.MOVIE_DB_API_TOKEN)
+                    if (response.isSuccessful) {
+                        val result = response.body()?.results
+                        if (!result.isNullOrEmpty()) {
+                            movieDao?.insertAll(result)
                         }
-                    } catch (e: Exception) {
+                        result
+                    } else {
                         movieDao?.getTopRated() ?: emptyList()
                     }
+                } catch (e: Exception) {
+                    movieDao?.getTopRated() ?: emptyList()
                 }
-                movies2Adapter?.ListOfMovies = list
-                movies2Adapter?.notifyDataSetChanged()
-                swipeRefreshLayout.isRefreshing = false
             }
+            movies2Adapter?.ListOfMovies = list
+            movies2Adapter?.notifyDataSetChanged()
+            swipeRefreshLayout.isRefreshing = false
+        }
     }
 
     //Binding data to the second recycler view
     private fun initUpcomingMoviesCoroutine() {
-            launch {
-                swipeRefreshLayout.isRefreshing = true
-                val list = withContext(Dispatchers.IO){
-                    try{
-                        val response = RetrofitMoviesService.getMovieApi().
-                        getUpcomingMoviesCoroutine(BuildConfig.MOVIE_DB_API_TOKEN)
-                        if (response.isSuccessful) {
-                            val result = response.body()?.results
-                            if (!result.isNullOrEmpty()){
-                                movieDao?.insertAll(result)
-                            }
-                            result
-                        } else {
-                            movieDao?.getUpcoming() ?: emptyList()
+        lifecycleScope.launchWhenResumed {
+            swipeRefreshLayout.isRefreshing = true
+            val list = withContext(Dispatchers.IO) {
+                try {
+                    val response = RetrofitMoviesService.getMovieApi()
+                        .getUpcomingMoviesCoroutine(BuildConfig.MOVIE_DB_API_TOKEN)
+                    if (response.isSuccessful) {
+                        val result = response.body()?.results
+                        if (!result.isNullOrEmpty()) {
+                            movieDao?.insertAll(result)
                         }
-                    } catch (e: Exception) {
+                        result
+                    } else {
                         movieDao?.getUpcoming() ?: emptyList()
                     }
+                } catch (e: Exception) {
+                    movieDao?.getUpcoming() ?: emptyList()
                 }
-                movies3Adapter?.ListOfMovies = list
-                movies3Adapter?.notifyDataSetChanged()
-                swipeRefreshLayout.isRefreshing = false
             }
+            movies3Adapter?.ListOfMovies = list
+            movies3Adapter?.notifyDataSetChanged()
+            swipeRefreshLayout.isRefreshing = false
+        }
     }
 }

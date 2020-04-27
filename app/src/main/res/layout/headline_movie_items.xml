@@ -54,11 +54,13 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:fontFamily="sans-serif-black"
-        tools:text = "Sample Name"
         android:textColor="#FFF"
         android:textSize="24sp"
-        app:layout_constraintBottom_toTopOf="@+id/tvGenre"
-        app:layout_constraintStart_toStartOf="@+id/tvGenre" />
+        app:layout_constraintBottom_toBottomOf="@+id/tvImageIndex"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tvImageIndex"
+        tools:text="Sample Name" />
 
     <TextView
         android:id="@+id/tvImageIndex"

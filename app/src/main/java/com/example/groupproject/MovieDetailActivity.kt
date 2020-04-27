@@ -12,6 +12,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
+import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.example.groupproject.api.FavoriteRequest
 import com.example.groupproject.api.FavoriteResponse
@@ -82,8 +83,8 @@ class MovieDetailActivity : AppCompatActivity(), CoroutineScope {
         btnFavorite = findViewById(R.id.ivAddList)
         authorizationFragment = AuthorizationFragment()
         val movieId = intent.getIntExtra("movie_id", 1)
-        getMovieDetail(id = movieId)
-        getCredits(id = movieId)
+        getMovieDetailCoroutine(id = movieId)
+        getCreditsCoroutine(id = movieId)
 
 
         var loginCount = sessionPreference.getLoginCount()
@@ -95,7 +96,6 @@ class MovieDetailActivity : AppCompatActivity(), CoroutineScope {
                     "Please, sign in first",
                     Toast.LENGTH_SHORT
                 ).show()
-                setFragment(authorizationFragment)
             } else {
                 addToFavoriteCoroutine(movieId)
             }
@@ -125,7 +125,7 @@ class MovieDetailActivity : AppCompatActivity(), CoroutineScope {
                         session_id,
                         favoriteRequest
                     )
-                if (response.isSuccessful){
+                if (response.isSuccessful) {
                     Toast.makeText(
                         applicationContext,
                         "Added to favorites",
@@ -133,8 +133,7 @@ class MovieDetailActivity : AppCompatActivity(), CoroutineScope {
                     ).show()
                 }
             }
-        }
-        else{
+        } else {
             isClicked = false
             ivAddList.setImageResource(R.drawable.ic_star_border_black_24dp)
             favoriteRequest = FavoriteRequest("movie", item, isClicked)
@@ -145,7 +144,7 @@ class MovieDetailActivity : AppCompatActivity(), CoroutineScope {
                         session_id,
                         favoriteRequest
                     )
-                if (response.isSuccessful){
+                if (response.isSuccessful) {
                     Toast.makeText(
                         applicationContext,
                         "Removed from favorites",
@@ -168,7 +167,8 @@ class MovieDetailActivity : AppCompatActivity(), CoroutineScope {
                     progressBar.visibility = View.GONE
                     val post = response.body()
                     if (post != null) {
-                        Glide.with(movieImageBackdrop).load("https://image.tmdb.org/t/p/original"+post.backdrop_path)
+                        Glide.with(movieImageBackdrop)
+                            .load("https://image.tmdb.org/t/p/original" + post.backdrop_path)
                             .into(movieImageBackdrop)
 
                         movieTitle.text = post.title
@@ -205,47 +205,101 @@ class MovieDetailActivity : AppCompatActivity(), CoroutineScope {
             })
     }
 
-    private fun getCredits(id: Int) {
-        RetrofitMoviesService.getMovieApi().getCredits(id, BuildConfig.MOVIE_DB_API_TOKEN)
-            .enqueue(object : Callback<Credits> {
-                override fun onFailure(call: Call<Credits>, t: Throwable) {
-                    Toast.makeText(
-                        applicationContext,
-                        "Detail body is not filled yet",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
+    @SuppressLint("SetTextI18n")
+    private fun getMovieDetailCoroutine(id: Int) {
+        lifecycleScope.launchWhenResumed {
+            val response: Response<Movie> = RetrofitMoviesService.getMovieApi()
+                .getMovieByIdCoroutine(id, BuildConfig.MOVIE_DB_API_TOKEN)
+            if (response.isSuccessful) {
+                progressBar.visibility = View.GONE
+                val post = response.body()
+                Glide.with(movieImageBackdrop)
+                    .load("https://image.tmdb.org/t/p/original" + post?.backdrop_path)
+                    .into(movieImageBackdrop)
 
-                @SuppressLint("SetTextI18n")
-                override fun onResponse(call: Call<Credits>, response: Response<Credits>) {
-                    val creditsBody = response.body()
-                    if (creditsBody != null) {
-                        val crewCointainer = creditsBody.crew
-                        for (crew in crewCointainer) {
-                            if (crew.getDirectorName() == "Producer") {
-                                movieDirector.text = crew.name
-                            }
-                        }
-                        movieCast.text = ""
-                        var movieCastCounter = 0
-                        val castContainer = creditsBody.cast
-                        for (cast in castContainer) {
-                            if (movieCastCounter == 3) {
-                                break
-                            }
-                            movieCast.text = movieCast.text.toString() + cast.getCastName() + " "
-                            movieCastCounter += 1
-                        }
+                movieTitle.text = post?.title
+
+                val realiseDate = post?.release_date
+                movieRealease.text = "(" + realiseDate?.substring(0, 4) + ")"
+
+                val runtime = post?.runtime
+                if (runtime != null) {
+                    if (runtime > 60) {
+                        val runtimeHours = runtime / 60
+                        val runtimeMinutes = runtime % 60
+                        movieDuration.text =
+                            runtimeHours.toString() + "h " + runtimeMinutes.toString() + "min"
+                    } else {
+                        movieDuration.text = "$runtime min"
                     }
                 }
-            })
+            }
+        }
     }
 
-    private fun setFragment(fragment: Fragment) {
-        val fragmentTransaction: FragmentTransaction = supportFragmentManager.beginTransaction()
-        fragmentTransaction.replace(R.id.main_frame, fragment)
-        fragmentTransaction.commit()
+//    private fun getCredits(id: Int) {
+//        RetrofitMoviesService.getMovieApi().getCredits(id, BuildConfig.MOVIE_DB_API_TOKEN)
+//            .enqueue(object : Callback<Credits> {
+//                override fun onFailure(call: Call<Credits>, t: Throwable) {
+//                    Toast.makeText(
+//                        applicationContext,
+//                        "Detail body is not filled yet",
+//                        Toast.LENGTH_SHORT
+//                    ).show()
+//                }
+//
+//                @SuppressLint("SetTextI18n")
+//                override fun onResponse(call: Call<Credits>, response: Response<Credits>) {
+//                    val creditsBody = response.body()
+//                    if (creditsBody != null) {
+//                        val crewCointainer = creditsBody.crew
+//                        for (crew in crewCointainer) {
+//                            if (crew.getDirectorName() == "Producer") {
+//                                movieDirector.text = crew.name
+//                            }
+//                        }
+//                        movieCast.text = ""
+//                        var movieCastCounter = 0
+//                        val castContainer = creditsBody.cast
+//                        for (cast in castContainer) {
+//                            if (movieCastCounter == 3) {
+//                                break
+//                            }
+//                            movieCast.text = movieCast.text.toString() + cast.getCastName() + " "
+//                            movieCastCounter += 1
+//                        }
+//                    }
+//                }
+//            })
+//    }
+
+    @SuppressLint("SetTextI18n")
+    private fun getCreditsCoroutine(id: Int) {
+        lifecycleScope.launchWhenResumed {
+            val response: Response<Credits> = RetrofitMoviesService.getMovieApi()
+                .getCreditsCoroutine(id, BuildConfig.MOVIE_DB_API_TOKEN)
+
+            if (response.isSuccessful) {
+                val creditsBody = response.body()
+                if (creditsBody != null) {
+                    val crewCointainer = creditsBody.crew
+                    for (crew in crewCointainer) {
+                        if (crew.getDirectorName() == "Producer") {
+                            movieDirector.text = crew.name
+                        }
+                    }
+                    movieCast.text = ""
+                    var movieCastCounter = 0
+                    val castContainer = creditsBody.cast
+                    for (cast in castContainer) {
+                        if (movieCastCounter == 3) {
+                            break
+                        }
+                        movieCast.text = movieCast.text.toString() + cast.getCastName() + " "
+                        movieCastCounter += 1
+                    }
+                }
+            }
+        }
     }
-
-
 }

@@ -20,14 +20,19 @@ import com.example.groupproject.api.Session
 import com.example.groupproject.api.Validation
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.android.synthetic.main.fragment_authorization.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import kotlin.coroutines.CoroutineContext
 
 /**
  * A simple [Fragment] subclass.
  */
-class AuthorizationFragment : Fragment() {
+class AuthorizationFragment : Fragment(), CoroutineScope {
 
     private val APP_PREFERENCES = "appsettings"
     private val APP_SESSION = "session_id"
@@ -45,7 +50,12 @@ class AuthorizationFragment : Fragment() {
     private lateinit var signIn: Button
     private lateinit var nMainNav: BottomNavigationView
 
-    var session_id: String = ""
+    var sessionId: String = ""
+
+    private val job = Job()
+
+    override val coroutineContext: CoroutineContext
+        get() = Dispatchers.Main + job
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -69,112 +79,67 @@ class AuthorizationFragment : Fragment() {
         }
 
         signIn.setOnClickListener() {
-            initNewToken()
+            initNewTokenCoroutine()
+            progressBar2.show()
         }
     }
 
 
-    private fun initNewToken() {
-        progressBar2.show()
-        RetrofitMoviesService.getMovieApi().getToken(BuildConfig.MOVIE_DB_API_TOKEN)
-        .enqueue(object :
-            Callback<RequestToken> {
-            override fun onFailure(call: Call<RequestToken>, t: Throwable) {
-                requestToken = ""
-                Toast.makeText(
-                    activity?.applicationContext,
-                    "Token Request Failure",
-                    Toast.LENGTH_LONG
-                ).show()
+    private fun initNewTokenCoroutine(){
+        launch {
+            val response: Response<RequestToken> = RetrofitMoviesService.getMovieApi().getTokenCoroutine(
+                BuildConfig.MOVIE_DB_API_TOKEN
+            )
+            if (response.isSuccessful){
+                val result = response.body()
+                if (result!=null){
+                    requestToken = result.request_token
+                    validation = Validation(username.text.toString(), password.text.toString(),requestToken)
+                    initValidationCoroutine()
+                } else {
+                    Toast.makeText(activity?.applicationContext,"TokenRequest Failure", Toast.LENGTH_LONG).show()
+                }
             }
+        }
+    }
 
-            override fun onResponse(
-                call: Call<RequestToken>,
-                response: Response<RequestToken>
-            ) {
+    private fun initValidationCoroutine(){
+        launch {
+            val response: Response<RequestToken> = RetrofitMoviesService.getMovieApi().validationCoroutine(
+                BuildConfig.MOVIE_DB_API_TOKEN, validation
+            )
+            if (response.isSuccessful){
                 progressBar2.hide()
-                if (response.isSuccessful) {
-                    val result = response.body()
-                    if (result != null) {
-                        requestToken = result.request_token
-                        validation = Validation(
-                            username.text.toString(),
-                            password.text.toString(),
-                            requestToken
-                        )
-                        initValidation()
-                    } else {
-                        Toast.makeText(
-                            activity?.applicationContext,
-                            "TokenRequest Failure",
-                            Toast.LENGTH_LONG
-                        ).show()
-                    }
-                }
+                requestTokenResult = RequestToken(requestToken)
+                initSessionCoroutine()
+            }else{
+                Toast.makeText(activity?.applicationContext,"Wrong validation", Toast.LENGTH_LONG).show()
             }
-        })
+        }
     }
 
-    private fun initValidation() {
-        RetrofitMoviesService.getMovieApi().validation(BuildConfig.MOVIE_DB_API_TOKEN, validation)
-        .enqueue(object :
-            Callback<RequestToken> {
-            override fun onFailure(call: Call<RequestToken>, t: Throwable) {
-                Toast.makeText(
-                    activity?.applicationContext,
-                    "Wrong validation",
-                    Toast.LENGTH_LONG
-                ).show()
+    private fun initSessionCoroutine(){
+        launch {
+            val response: Response<Session> = RetrofitMoviesService.getMovieApi()
+                .createSessionCoroutine(BuildConfig.MOVIE_DB_API_TOKEN, requestTokenResult)
+            if (response.isSuccessful){
+                sessionId = response.body()?.session_id.toString()
+                editSharedPref()
+
+                val sessionPreference = SessionPreference(activity?.applicationContext!!)
+                sessionPreference.setUsername(username.text.toString())
+                sessionPreference.setSessionId(sessionId.removeRange(5, sessionId.length))
+                sessionPreference.setRealSessionId(sessionId)
+                var loginCount = sessionPreference.getLoginCount()
+                loginCount++
+                sessionPreference.setLoginCount(loginCount)
+
+                setFragment(accountFragment)
             }
-
-            override fun onResponse(
-                call: Call<RequestToken>,
-                response: Response<RequestToken>
-            ) {
-                if (response.isSuccessful) {
-                    requestTokenResult = RequestToken(requestToken)
-                    initSession()
-                } else {
-                    Toast.makeText(
-                        activity?.applicationContext,
-                        "Wrong validation",
-                        Toast.LENGTH_LONG
-                    ).show()
-                }
+            else{
+                Toast.makeText(activity?.applicationContext,"No session id", Toast.LENGTH_LONG).show()
             }
-        })
-
-    }
-
-    private fun initSession() {
-        RetrofitMoviesService.getMovieApi()
-            .createSession(BuildConfig.MOVIE_DB_API_TOKEN, requestTokenResult).enqueue(object :
-            Callback<Session> {
-            override fun onFailure(call: Call<Session>, t: Throwable) {
-                Toast.makeText(activity?.applicationContext, "No session id", Toast.LENGTH_LONG)
-                    .show()
-            }
-
-            override fun onResponse(call: Call<Session>, response: Response<Session>) {
-                if (response.isSuccessful) {
-                    session_id = response.body()?.session_id.toString()
-                    editSharedPref()
-
-                    val sessionPreference = SessionPreference(activity?.applicationContext!!)
-                    sessionPreference.setUsername(username.text.toString())
-                    sessionPreference.setSessionId(session_id.removeRange(5, session_id.length))
-                    sessionPreference.setRealSessionId(session_id)
-                    var loginCount = sessionPreference.getLoginCount()
-                    loginCount++
-                    sessionPreference.setLoginCount(loginCount)
-
-                    setFragment(accountFragment)
-                } else {
-                    Toast.makeText(activity?.applicationContext, "No session id", Toast.LENGTH_LONG)
-                        .show()
-                }
-            }
-        })
+        }
     }
 
     private fun setFragment(fragment: Fragment) {
@@ -186,7 +151,7 @@ class AuthorizationFragment : Fragment() {
     private fun editSharedPref() {
         val tempEdit = pref.edit()
         tempEdit.putString("username", username.text.toString())
-        tempEdit.putString(APP_SESSION, session_id)
+        tempEdit.putString(APP_SESSION, sessionId)
         tempEdit.apply()
     }
 }
