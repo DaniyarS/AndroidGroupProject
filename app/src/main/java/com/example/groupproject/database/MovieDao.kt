@@ -10,7 +10,7 @@ import com.example.groupproject.model.Movie
 interface MovieDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertAll(list: List<Movie>)
+    fun insertAll(list: List<Movie?>)
 
     @Query("SELECT * FROM movie_table LIMIT 20")
     fun getPopular(): List<Movie>
@@ -23,6 +23,9 @@ interface MovieDao {
 
     @Query("SELECT * FROM movie_table WHERE id=:movieId")
     fun getBriefMovie(movieId: Int): Movie
+
+//    @Query("SELECT * FROM movie_detail")
+//    fun getAll(): List<MovieDetail>
 
 //    @Insert(onConflict = OnConflictStrategy.REPLACE)
 //    fun insertMovie(movie: Movie)

@@ -9,10 +9,10 @@ import com.example.groupproject.model.Movie
 
 @Dao
 interface MovieDetailDao {
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertAll(list: Movie?)
-
-    @Query("SELECT * FROM movie_detail")
-    fun getAll(): List<MovieDetail>
+//
+//    @Insert(onConflict = OnConflictStrategy.REPLACE)
+//    fun insertAll(list: Movie?)
+//
+//    @Query("SELECT * FROM movie_detail")
+//    fun getAll(): List<MovieDetail>
 }

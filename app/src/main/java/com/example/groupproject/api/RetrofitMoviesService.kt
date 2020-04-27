@@ -11,10 +11,6 @@ import retrofit2.Call
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import okhttp3.Interceptor
-import retrofit2.Response
-import okhttp3.logging.HttpLoggingInterceptor
-import retrofit2.Response
 import retrofit2.http.*
 import java.util.concurrent.TimeUnit
 
@@ -152,26 +148,39 @@ interface MovieApi {
     ) : Call<GetMoviesResponse>
 
     //  COROUTINES
-    @GET("posts")
-    fun getMovieDetail():  Call<Movie>
-    @GET("posts")
-    fun getMovieDetailCoroutine(): Response<Movie>
-    @GET("posts/{id}")
-    fun getMovieById(@Path("id") id: Int):  Call<Movie>
-    /////////////////////////////////////////////////////
-    @GET("credits")
-    fun getCredits():  Call<Credits>
-    @GET("credits")
-    fun getCreditsCoroutine(): Response<Credits>
 
-    //    @GET("credits/{id}")
+    @GET("account/{account_id}/favorite/movies")
+    suspend fun getFavoriteCoroutine(
+        @Query("api_key") apiKey: String,
+        @Query("session_id") sessionId: String
+    ) : Response<GetMoviesResponse>
 
-//    fun getCredits(@Path("id") id: Int):  Call<Credits>
-    /////////////////////////////////////////////////////////
-    @GET("delete")
-    fun getFavoriteResponse():  Call<FavoriteResponse>
-    @GET("delete")
-    fun getFavoriteResponseCoroutine(): Response<FavoriteResponse>
+    suspend fun addFavoriteCoroutine(
+        @Query("api_key") apiKey: String,
+        @Query("session_id") sessionId : String,
+        @Body favoriteRequest: FavoriteRequest
+    ): Response<FavoriteResponse>
+
+//    @GET("posts")
+//    fun getMovieDetail():  Call<Movie>
+//    @GET("posts")
+//    fun getMovieDetailCoroutine(): Response<Movie>
+//    @GET("posts/{id}")
+//    fun getMovieById(@Path("id") id: Int):  Call<Movie>
+//    /////////////////////////////////////////////////////
+//    @GET("credits")
+//    fun getCredits():  Call<Credits>
+//    @GET("credits")
+//    fun getCreditsCoroutine(): Response<Credits>
+//
+//    //    @GET("credits/{id}")
+//
+////    fun getCredits(@Path("id") id: Int):  Call<Credits>
+//    /////////////////////////////////////////////////////////
+//    @GET("delete")
+//    fun getFavoriteResponse():  Call<FavoriteResponse>
+//    @GET("delete")
+//    fun getFavoriteResponseCoroutine(): Response<FavoriteResponse>
 //    @GET("delete/{id}")
 //    fun getFavoriteResponse(@Path("id") id: Int):  Call<FavoriteResponse>
 }

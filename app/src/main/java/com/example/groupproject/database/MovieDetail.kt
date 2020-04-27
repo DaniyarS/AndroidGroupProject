@@ -10,13 +10,13 @@ import com.google.gson.annotations.SerializedName
 data class MovieDetail (
     @PrimaryKey
     @SerializedName("id") val movieId: Int,
-    @SerializedName("movieImageBackdrop") val movieImageBackdrop: ImageView,
-    @SerializedName("movieTitle") val movieTitle: TextView,
-    @SerializedName("movieRealease") val movieRealease: TextView,
-    @SerializedName("movieDuration") val movieDuration: TextView,
-    @SerializedName("movieDetails") val movieDetails: TextView,
-    @SerializedName("movieDirector") val movieDirector: TextView,
-    @SerializedName("movieCast") val movieCast: TextView,
-    @SerializedName("movieGenre") val movieGenre: TextView,
-    @SerializedName("btnFavorite") val btnFavorite: ImageView
+    @SerializedName("movieImageBackdrop") val movieImageBackdrop: String,
+    @SerializedName("movieTitle") val movieTitle: String,
+    @SerializedName("movieRealease") val movieRealease: String,
+    @SerializedName("movieDuration") val movieDuration: String,
+    @SerializedName("movieDetails") val movieDetails: String,
+    @SerializedName("movieDirector") val movieDirector: String,
+    @SerializedName("movieCast") val movieCast: String,
+    @SerializedName("movieGenre") val movieGenre: String,
+    @SerializedName("btnFavorite") val btnFavorite: String
 )

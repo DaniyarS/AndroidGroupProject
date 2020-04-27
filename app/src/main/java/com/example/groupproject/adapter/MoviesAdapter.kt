@@ -1,5 +1,6 @@
 package com.example.groupproject.adapter
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,9 +15,8 @@ import com.example.groupproject.model.Movie
 
 class MoviesAdapter(
     var ListOfMovies: List<Movie>? = null,
-    val itemClickListener: MovieDetailActivity = null,
-    var post: Movie?,
-    var creditsBody: Credits?
+    var context: Context,
+    val itemClickListener: RecyclerViewItemClick? = null
 ) : RecyclerView.Adapter<MoviesAdapter.MovieViewHolder>() {
     override fun onCreateViewHolder(p0: ViewGroup, p1: Int): MovieViewHolder {
         val view = LayoutInflater.from(p0.context).inflate(R.layout.movie_items, p0, false)

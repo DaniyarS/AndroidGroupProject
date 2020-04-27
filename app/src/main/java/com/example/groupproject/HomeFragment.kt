@@ -91,35 +91,18 @@ class HomeFragment : Fragment(), MoviesAdapter.RecyclerViewItemClick, CoroutineS
     private fun generateComponent(){
 
         listMovies = ArrayList()
-      
-        moviesAdapter =activity?.applicationContext?.let {MoviesAdapter(
-            listMovies,
-            itemClickListener = this,
-            post =,
-            creditsBody =
-        )  }
-
-        recyclerView.layoutManager =   LinearLayoutManager(activity,LinearLayoutManager.HORIZONTAL,false)
+        moviesAdapter =activity?.applicationContext?.let {MoviesAdapter(listMovies,it ,itemClickListener = this)}
+        recyclerView.layoutManager =   LinearLayoutManager(activity,LinearLayoutManager.HORIZONTAL, false)
         recyclerView.adapter = moviesAdapter
 
         listTopRatedMovies = ArrayList()
-        movies2Adapter = activity?.applicationContext?.let{MoviesAdapter(
-            listTopRatedMovies,
-            itemClickListener = this,
-            post =,
-            creditsBody =
-        )}
-        topRatedRecyclerView.layoutManager = LinearLayoutManager(activity,LinearLayoutManager.HORIZONTAL,false)
+        movies2Adapter = activity?.applicationContext?.let{MoviesAdapter(listTopRatedMovies,it , itemClickListener = this)}
+        topRatedRecyclerView.layoutManager = LinearLayoutManager(activity,LinearLayoutManager.HORIZONTAL, false)
         topRatedRecyclerView.adapter = movies2Adapter
 
         listUpcomingMovies = ArrayList()
-        movies3Adapter = activity?.applicationContext?.let{MoviesAdapter(
-            listUpcomingMovies,
-            itemClickListener = this,
-            post =,
-            creditsBody =
-        )}
-        upcomingRecyclerView.layoutManager = LinearLayoutManager(activity,LinearLayoutManager.HORIZONTAL,false)
+        movies3Adapter = activity?.applicationContext?.let{MoviesAdapter(listUpcomingMovies, it, itemClickListener = this)}
+        upcomingRecyclerView.layoutManager = LinearLayoutManager(activity,LinearLayoutManager.HORIZONTAL, false)
         upcomingRecyclerView.adapter = movies3Adapter
 
         loadMovies()
