@@ -40,7 +40,4 @@ interface MovieDao{
 
     @Query("SELECT id FROM movies_table where selected=:selected")
     fun getLikedOffline(selected: Int?): List<Int>
-
-    @Query("SELECT*FROM movies_table WHERE id=:id")
-    fun getMovie(id: Int?): Movie
 }

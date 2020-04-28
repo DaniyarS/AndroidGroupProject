@@ -261,7 +261,7 @@ class MovieDetailActivity : AppCompatActivity(), CoroutineScope by MainScope() {
                         .hasLikeCoroutine(movieId, BuildConfig.MOVIE_DB_API_TOKEN, sessionId)
                     if (response.isSuccessful) {
                         val gson = Gson()
-                        val select = gson.fromJson(
+                        var select = gson.fromJson(
                             response.body(),
                             FavoriteResponse::class.java
                         ).favorite

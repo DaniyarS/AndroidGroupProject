@@ -70,12 +70,6 @@ interface MovieApi {
         @Query("api_key") apiKey: String
     ): Call<Movie>
 
-    @GET("movie/{movie_id}")
-    suspend fun getMovieByIdCoroutine(
-        @Path("movie_id") id: Int,
-        @Query("api_key") apiKey: String
-    ): Response<Movie>
-
     @GET("movie/{movie_id}/credits")
     suspend fun getCreditsCoroutine(
         @Path("movie_id") id: Int,
