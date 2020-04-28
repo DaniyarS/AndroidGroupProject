@@ -8,6 +8,7 @@ import android.net.NetworkCapabilities
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.ProgressBar
@@ -16,6 +17,7 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
+import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.example.groupproject.api.FavoriteRequest
 import com.example.groupproject.api.FavoriteResponse
@@ -26,8 +28,6 @@ import com.example.groupproject.model.Credits
 import com.example.groupproject.model.Movie
 import com.google.gson.Gson
 import kotlinx.coroutines.*
-import retrofit2.Call
-import retrofit2.Callback
 import retrofit2.Response
 import kotlin.coroutines.CoroutineContext
 
@@ -90,8 +90,8 @@ class MovieDetailActivity : AppCompatActivity(), CoroutineScope by MainScope() {
         authorizationFragment = AuthorizationFragment()
         val movieId = intent.getIntExtra("movie_id", 1)
         movie = intent.extras?.getSerializable("movie") as Movie
-        getMovieDetail(id = movieId)
-        getCredits(id = movieId)
+        getMovieDetailCoroutine(id = movieId)
+        getCreditsCoroutine(id = movieId)
 
         movieDao = MovieDatabase.getDatabase(this).movieDao()
 
@@ -108,8 +108,10 @@ class MovieDetailActivity : AppCompatActivity(), CoroutineScope by MainScope() {
                 setFragment(authorizationFragment)
             } else {
                 if (isInternetAvailable(this)) {
+                    progressBar.visibility = View.VISIBLE
                     addToFavoriteCoroutine(movieId)
                 } else {
+                    progressBar.visibility = View.VISIBLE
                     isFavorite(movieId)
                 }
             }
@@ -121,94 +123,77 @@ class MovieDetailActivity : AppCompatActivity(), CoroutineScope by MainScope() {
         job.cancel()
     }
 
+    @SuppressLint("SetTextI18n")
+    private fun getMovieDetailCoroutine(id: Int) {
+        lifecycleScope.launchWhenResumed {
 
-    private fun getMovieDetail(id: Int) {
-        RetrofitMoviesService.getMovieApi().getMovieById(id, BuildConfig.MOVIE_DB_API_TOKEN)
-            .enqueue(object : Callback<Movie> {
-                override fun onFailure(call: Call<Movie>, t: Throwable) {
-                    progressBar.visibility = View.GONE
-                }
-
-                @SuppressLint("SetTextI18n")
-                override fun onResponse(call: Call<Movie>, response: Response<Movie>) {
-                    progressBar.visibility = View.GONE
+            val movie = withContext(Dispatchers.IO) {
+                val response = RetrofitMoviesService.getMovieApi()
+                    .getMovieByIdCoroutine(id, BuildConfig.MOVIE_DB_API_TOKEN)
+                if (response.isSuccessful) {
                     val post = response.body()
                     if (post != null) {
-                        Glide.with(movieImageBackdrop).load(post.getBackDropPathImage())
-                            .into(movieImageBackdrop)
-
-                        movieTitle.text = post.title
-
-                        val realiseDate = post.release_date
-                        if (realiseDate != null) {
-                            movieRealease.text = "(" + realiseDate.substring(0, 4) + ")"
-                        }
-
-                        val runtime = post.runtime
-                        if (runtime != null) {
-                            if (runtime > 60) {
-                                val runtimeHours = runtime / 60
-                                val runtimeMinutes = runtime % 60
-                                movieDuration.text =
-                                    runtimeHours.toString() + "h " + runtimeMinutes.toString() + "min"
-                            } else {
-                                movieDuration.text = "$runtime min"
-                            }
-                        }
-
-//                        val genreNameContainer = post.genres
-//                        movieGenre.text = ""
-//                        var genreCounter = 1
-//                        for (genre in genreNameContainer) {
-//                            if (genreCounter == genreNameContainer.size) {
-//                                movieGenre.text = movieGenre.text.toString() + genre.getGenreName()
-//                            } else {
-//                                movieGenre.text =
-//                                    movieGenre.text.toString() + genre.getGenreName() + " • "
-//                            }
-//                            genreCounter += 1
-//                        }
-                        movieDetails.text = post.overview
-
+                        movieDao?.insert(post)
                     }
+                    post
+                } else {
+                    movieDao?.getMovie(id)
                 }
-            })
+            }
+
+            Glide.with(movieImageBackdrop)
+                .load("https://image.tmdb.org/t/p/original" + movie?.backdrop_path)
+                .into(movieImageBackdrop)
+
+            movieTitle.text = movie?.title
+
+            val realiseDate = movie?.release_date
+            movieRealease.text = "(" + realiseDate?.substring(0, 4) + ")"
+
+            val runtime = movie?.runtime
+            if (runtime != null) {
+                if (runtime > 60) {
+                    val runtimeHours = runtime / 60
+                    val runtimeMinutes = runtime % 60
+                    movieDuration.text =
+                        runtimeHours.toString() + "h " + runtimeMinutes.toString() + "min"
+                } else {
+                    movieDuration.text = "$runtime min"
+                }
+            }
+            progressBar.visibility = View.GONE
+        }
     }
 
-    private fun getCredits(id: Int) {
-        RetrofitMoviesService.getMovieApi().getCredits(id, BuildConfig.MOVIE_DB_API_TOKEN)
-            .enqueue(object : Callback<Credits> {
-                override fun onFailure(call: Call<Credits>, t: Throwable) {
-                    Toast.makeText(
-                        applicationContext,
-                        "Detail body is not filled yet",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
 
-                @SuppressLint("SetTextI18n")
-                override fun onResponse(call: Call<Credits>, response: Response<Credits>) {
-                    val creditsBody = response.body()
-                    if (creditsBody != null) {
-                        val crewCointainer = creditsBody.crew
-                        for (crew in crewCointainer) {
-                            if (crew.getDirectorName() == "Producer") {
-                                movieDirector.text = crew.name
-                            }
-                        }
-                        movieCast.text = ""
-                        var movieCastCounter = 0
-                        val castContainer = creditsBody.cast
-                        for (cast in castContainer) {
-                            if (movieCastCounter == 3) {
-                                break
-                            }
-                            movieCast.text = movieCast.text.toString() + cast.getCastName() + " "
-                            movieCastCounter += 1
+    @SuppressLint("SetTextI18n")
+    private fun getCreditsCoroutine(id: Int) {
+        lifecycleScope.launchWhenResumed {
+            val response: Response<Credits> = RetrofitMoviesService.getMovieApi()
+                .getCreditsCoroutine(id, BuildConfig.MOVIE_DB_API_TOKEN)
+
+            if (response.isSuccessful) {
+                val creditsBody = response.body()
+                if (creditsBody != null) {
+                    val crewCointainer = creditsBody.crew
+                    for (crew in crewCointainer) {
+                        if (crew.getDirectorName() == "Producer") {
+                            movieDirector.text = crew.name
                         }
                     }
+                    movieCast.text = ""
+                    var movieCastCounter = 0
+                    val castContainer = creditsBody.cast
+                    for (cast in castContainer) {
+                        if (movieCastCounter == 3) {
+                            break
+                        }
+                        movieCast.text = movieCast.text.toString() + cast.getCastName() + " "
+                        movieCastCounter += 1
+                    }
                 }
-            })
+            }
+        }
     }
 
     private fun addToFavoriteCoroutine(item: Int) {
@@ -259,7 +244,7 @@ class MovieDetailActivity : AppCompatActivity(), CoroutineScope by MainScope() {
                         Toast.LENGTH_SHORT
                     ).show()
                 }
-                if (!isClicked){
+                if (!isClicked) {
                     movie.selected = 10
                     movieDao?.insert(movie)
                 }
@@ -270,13 +255,13 @@ class MovieDetailActivity : AppCompatActivity(), CoroutineScope by MainScope() {
 
     private fun isFavorite(movieId: Int) {
         launch {
-            val selectInt = withContext(Dispatchers.IO){
+            val selectInt = withContext(Dispatchers.IO) {
                 try {
                     val response = RetrofitMoviesService.getMovieApi()
                         .hasLikeCoroutine(movieId, BuildConfig.MOVIE_DB_API_TOKEN, sessionId)
-                    if (response.isSuccessful){
+                    if (response.isSuccessful) {
                         val gson = Gson()
-                        var select = gson.fromJson(
+                        val select = gson.fromJson(
                             response.body(),
                             FavoriteResponse::class.java
                         ).favorite
@@ -285,7 +270,7 @@ class MovieDetailActivity : AppCompatActivity(), CoroutineScope by MainScope() {
                     } else {
                         movieDao?.getLiked(movie.id) ?: 0
                     }
-                } catch (e: Exception){
+                } catch (e: Exception) {
                     movieDao?.getLiked(movie.id) ?: 0
                 }
             }
@@ -325,7 +310,7 @@ class MovieDetailActivity : AppCompatActivity(), CoroutineScope by MainScope() {
                 }
             }
         }
-
+        Log.i("msg", result.toString())
         return result
     }
 

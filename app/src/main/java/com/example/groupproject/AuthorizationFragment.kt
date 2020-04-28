@@ -80,28 +80,6 @@ class AuthorizationFragment : Fragment(), CoroutineScope {
         job.cancel()
     }
 
-//    private fun initNewToken(){
-//        RetrofitMoviesService.getMovieApi().getToken(BuildConfig.MOVIE_DB_API_TOKEN).enqueue(object:
-//            Callback<RequestToken> {
-//            override fun onFailure(call : Call<RequestToken>, t : Throwable){
-//                requestToken = ""
-//                Toast.makeText(activity?.applicationContext,"TokenRequest Failure", Toast.LENGTH_LONG).show()
-//            }
-//            override fun onResponse(call : Call<RequestToken>, response : Response<RequestToken>){
-//                if (response.isSuccessful){
-//                    val result = response.body()
-//                    if (result!=null){
-//                        requestToken = result.request_token
-//                        validation = Validation(username.text.toString(),password.text.toString(),requestToken)
-//                        initValidation()
-//                    } else {
-//                        Toast.makeText(activity?.applicationContext,"TokenRequest Failure", Toast.LENGTH_LONG).show()
-//                    }
-//                }
-//            }
-//        })
-//    }
-
     private fun initNewTokenCoroutine(){
         launch {
             val response: Response<RequestToken> = RetrofitMoviesService.getMovieApi().getTokenCoroutine(
@@ -120,25 +98,6 @@ class AuthorizationFragment : Fragment(), CoroutineScope {
         }
     }
 
-//    private fun initValidation(){
-//        RetrofitMoviesService.getMovieApi().validation(BuildConfig.MOVIE_DB_API_TOKEN,validation).enqueue(object :
-//            Callback<RequestToken> {
-//            override fun onFailure(call : Call<RequestToken>, t : Throwable){
-//                Toast.makeText(activity?.applicationContext,"Wrong validation", Toast.LENGTH_LONG).show()
-//            }
-//
-//            override fun onResponse(call : Call<RequestToken>, response : Response<RequestToken>){
-//                if (response.isSuccessful){
-//                    requestTokenResult = RequestToken(requestToken)
-//                    initSession()
-//                }
-//                else{
-//                    Toast.makeText(activity?.applicationContext,"Wrong validation", Toast.LENGTH_LONG).show()
-//                }
-//            }
-//        })
-//    }
-
     private fun initValidationCoroutine(){
         launch {
             val response: Response<RequestToken> = RetrofitMoviesService.getMovieApi().validationCoroutine(
@@ -152,36 +111,6 @@ class AuthorizationFragment : Fragment(), CoroutineScope {
             }
         }
     }
-
-//    private fun initSession(){
-//        RetrofitMoviesService.getMovieApi().createSession(BuildConfig.MOVIE_DB_API_TOKEN,requestTokenResult).enqueue(object :
-//            Callback<Session> {
-//            override fun onFailure(call : Call<Session>, t : Throwable){
-//                Toast.makeText(activity?.applicationContext,"No session id", Toast.LENGTH_LONG).show()
-//            }
-//
-//            override fun onResponse(call : Call<Session>, response : Response<Session>){
-//                if (response.isSuccessful){
-//                    sessionId = response.body()?.session_id.toString()
-//                    editSharedPref()
-//
-//                    val sessionPreference = SessionPreference(activity?.applicationContext!!)
-//                    sessionPreference.setUsername(username.text.toString())
-//                    sessionPreference.setSessionId(sessionId.removeRange(5, sessionId.length))
-//                    sessionPreference.setRealSessionId(sessionId)
-//                    var loginCount = sessionPreference.getLoginCount()
-//                    loginCount++
-//                    sessionPreference.setLoginCount(loginCount)
-//
-//                    setFragment(accountFragment)
-//                }
-//                else{
-//                    Toast.makeText(activity?.applicationContext,"No session id", Toast.LENGTH_LONG).show()
-//                }
-//            }
-//        })
-//
-//    }
 
     private fun initSessionCoroutine(){
         launch {
