@@ -14,8 +14,20 @@ interface MovieDao{
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(movie: Movie?)
 
+    @Query("SELECT*FROM movies_table WHERE id=:id")
+    fun getMovie(id: Int?): Movie
+
     @Query("SELECT*FROM movies_table")
     fun getAll(): List<Movie>
+
+    @Query("SELECT * FROM movies_table LIMIT 20")
+    fun getPopular(): List<Movie>
+
+    @Query("SELECT * FROM movies_table LIMIT 20 OFFSET 20")
+    fun getTopRated(): List<Movie>
+
+    @Query("SELECT * FROM movies_table LIMIT 20 OFFSET 40")
+    fun getUpcoming(): List<Movie>
 
     @Query("SELECT*FROM movies_table where selected=10")
     fun getUnLikedOffline(): List<Movie>

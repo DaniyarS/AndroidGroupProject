@@ -13,6 +13,7 @@ import android.view.View
 import android.view.ViewGroup
 
 import android.widget.Toast
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -25,13 +26,20 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import androidx.viewpager.widget.ViewPager
+import com.example.groupproject.database.MovieDao
+import com.example.groupproject.database.MovieDatabase
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.withContext
+import kotlin.coroutines.CoroutineContext
 
 
 /**
  * A simple [Fragment] subclass.
  */
 
-class HomeFragment : Fragment(), MoviesAdapter.RecyclerViewItemClick {
+class HomeFragment : Fragment(), MoviesAdapter.RecyclerViewItemClick, CoroutineScope {
 
     private lateinit var recyclerView: RecyclerView
     private var moviesAdapter: MoviesAdapter?=null
@@ -49,6 +57,15 @@ class HomeFragment : Fragment(), MoviesAdapter.RecyclerViewItemClick {
     private lateinit var viewPager: ViewPager
     private lateinit var  pagerAdapter: ViewPagerAdapter
 
+    //new val job
+    private val job = Job()
+
+    private var movieDao : MovieDao?=null
+
+    //override fun for coroutine context
+    override val coroutineContext: CoroutineContext
+        get() = Dispatchers.Main + job
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -56,6 +73,8 @@ class HomeFragment : Fragment(), MoviesAdapter.RecyclerViewItemClick {
 
 
         val viewMovies = inflater.inflate(R.layout.fragment_home,container,false)
+
+        movieDao = MovieDatabase.getDatabase(context!!).movieDao()
 
         //initializing values
         recyclerView = viewMovies.findViewById(R.id.mainRecyclerView)
@@ -96,9 +115,9 @@ class HomeFragment : Fragment(), MoviesAdapter.RecyclerViewItemClick {
         upcomingRecyclerView.layoutManager = LinearLayoutManager(activity,LinearLayoutManager.HORIZONTAL,false)
         upcomingRecyclerView.adapter = movies3Adapter
 
-        initPopularMovies()
-        initTopRatedMovies()
-        initUpcomingMovies()
+        initPopularMoviesCoroutine()
+        initTopRatedMoviesCoroutine()
+        initUpcomingMoviesCoroutine()
     }
 
     override fun itemClick(position: Int, item: Movie) {
@@ -109,87 +128,90 @@ class HomeFragment : Fragment(), MoviesAdapter.RecyclerViewItemClick {
     }
 
 
+    override fun onDestroy() {
+        super.onDestroy()
+        job.cancel()
+    }
+
+
     //Binding data to the first recycler view
-    @SuppressLint("ShowToast")
-    private fun initPopularMovies() {
-        try {
-            if (BuildConfig.MOVIE_DB_API_TOKEN.isEmpty()) {
-                return
-            }
+    private fun initPopularMoviesCoroutine(){
+        lifecycleScope.launchWhenResumed {
             swipeRefreshLayout.isRefreshing = true
-            RetrofitMoviesService.getMovieApi().getPopularMovies(BuildConfig.MOVIE_DB_API_TOKEN).enqueue(object :
-                Callback<GetMoviesResponse> {
-                override fun onFailure(call: Call<GetMoviesResponse>, t: Throwable) {
-                    swipeRefreshLayout.isRefreshing = false
-                }
-                override fun onResponse(call: Call<GetMoviesResponse>, response: Response<GetMoviesResponse>
-                ) {
-                    Log.d("popular_movie_list", response.body().toString())
+            val list = withContext(Dispatchers.IO){
+                try{
+                    val response = RetrofitMoviesService.getMovieApi().
+                    getPopularMoviesCoroutine(BuildConfig.MOVIE_DB_API_TOKEN)
                     if (response.isSuccessful) {
-                        val list = response.body()?.results
-                        moviesAdapter?.ListOfMovies = list
-                        moviesAdapter?.notifyDataSetChanged()
+                        val result = response.body()?.results
+                        if (!result.isNullOrEmpty()){
+                            movieDao?.insertAll(result)
+                        }
+                        result
+                    } else {
+                        movieDao?.getPopular() ?: emptyList()
                     }
-                    swipeRefreshLayout.isRefreshing = false
+                } catch (e: Exception) {
+                    movieDao?.getPopular() ?: emptyList()
                 }
-            }) } catch (e: Exception) {
-            Toast.makeText(activity, e.toString(), Toast.LENGTH_SHORT)
+            }
+            moviesAdapter?.ListOfMovies = list
+            moviesAdapter?.notifyDataSetChanged()
+            swipeRefreshLayout.isRefreshing = false
         }
     }
 
     //Binding data to the second recycler view
-    @SuppressLint("ShowToast")
-    private fun initTopRatedMovies() {
-        try {
-            if (BuildConfig.MOVIE_DB_API_TOKEN.isEmpty()) {
-                return
-            }
+    private fun initTopRatedMoviesCoroutine() {
+        lifecycleScope.launchWhenResumed {
             swipeRefreshLayout.isRefreshing = true
-            RetrofitMoviesService.getMovieApi().getTopRatedMovies(BuildConfig.MOVIE_DB_API_TOKEN).enqueue(object :
-                Callback<GetMoviesResponse> {
-                override fun onFailure(call: Call<GetMoviesResponse>, t: Throwable) {
-                    swipeRefreshLayout.isRefreshing = false
-                }
-                override fun onResponse(call: Call<GetMoviesResponse>, response: Response<GetMoviesResponse>
-                ) {
-                    Log.d("top_rated_movie_list", response.body().toString())
+            val list = withContext(Dispatchers.IO){
+                try{
+                    val response = RetrofitMoviesService.getMovieApi().
+                    getTopRatedMoviesCoroutine(BuildConfig.MOVIE_DB_API_TOKEN)
                     if (response.isSuccessful) {
-                        val list = response.body()?.results
-                        movies2Adapter?.ListOfMovies = list
-                        movies2Adapter?.notifyDataSetChanged()
+                        val result = response.body()?.results
+                        if (!result.isNullOrEmpty()){
+                            movieDao?.insertAll(result)
+                        }
+                        result
+                    } else {
+                        movieDao?.getTopRated() ?: emptyList()
                     }
-                    swipeRefreshLayout.isRefreshing = false
+                } catch (e: Exception) {
+                    movieDao?.getTopRated() ?: emptyList()
                 }
-            }) } catch (e: Exception) {
-            Toast.makeText(activity, e.toString(), Toast.LENGTH_SHORT)
+            }
+            movies2Adapter?.ListOfMovies = list
+            movies2Adapter?.notifyDataSetChanged()
+            swipeRefreshLayout.isRefreshing = false
         }
     }
 
     //Binding data to the second recycler view
-    @SuppressLint("ShowToast")
-    private fun initUpcomingMovies() {
-        try {
-            if (BuildConfig.MOVIE_DB_API_TOKEN.isEmpty()) {
-                return
-            }
+    private fun initUpcomingMoviesCoroutine() {
+        lifecycleScope.launchWhenResumed {
             swipeRefreshLayout.isRefreshing = true
-            RetrofitMoviesService.getMovieApi().getUpcomingMovies(BuildConfig.MOVIE_DB_API_TOKEN).enqueue(object :
-                Callback<GetMoviesResponse> {
-                override fun onFailure(call: Call<GetMoviesResponse>, t: Throwable) {
-                    swipeRefreshLayout.isRefreshing = false
-                }
-                override fun onResponse(call: Call<GetMoviesResponse>, response: Response<GetMoviesResponse>
-                ) {
-                    Log.d("upcoming_movie_list", response.body().toString())
+            val list = withContext(Dispatchers.IO){
+                try{
+                    val response = RetrofitMoviesService.getMovieApi().
+                    getUpcomingMoviesCoroutine(BuildConfig.MOVIE_DB_API_TOKEN)
                     if (response.isSuccessful) {
-                        val list = response.body()?.results
-                        movies3Adapter?.ListOfMovies = list
-                        movies3Adapter?.notifyDataSetChanged()
+                        val result = response.body()?.results
+                        if (!result.isNullOrEmpty()){
+                            movieDao?.insertAll(result)
+                        }
+                        result
+                    } else {
+                        movieDao?.getUpcoming() ?: emptyList()
                     }
-                    swipeRefreshLayout.isRefreshing = false
+                } catch (e: Exception) {
+                    movieDao?.getUpcoming() ?: emptyList()
                 }
-            }) } catch (e: Exception) {
-            Toast.makeText(activity, e.toString(), Toast.LENGTH_SHORT)
+            }
+            movies3Adapter?.ListOfMovies = list
+            movies3Adapter?.notifyDataSetChanged()
+            swipeRefreshLayout.isRefreshing = false
         }
     }
 }
