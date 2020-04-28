@@ -20,13 +20,13 @@ interface MovieDao{
     @Query("SELECT*FROM movies_table")
     fun getAll(): List<Movie>
 
-    @Query("SELECT * FROM movies_table LIMIT 20")
+    @Query("SELECT * FROM movies_table WHERE idiwka>=1 AND idiwka<=20")
     fun getPopular(): List<Movie>
 
-    @Query("SELECT * FROM movies_table LIMIT 20 OFFSET 20")
+    @Query("SELECT * FROM movies_table WHERE idiwka>=21 AND idiwka<=40")
     fun getTopRated(): List<Movie>
 
-    @Query("SELECT * FROM movies_table LIMIT 20 OFFSET 40")
+    @Query("SELECT * FROM movies_table WHERE idiwka>=41 AND idiwka<=60")
     fun getUpcoming(): List<Movie>
 
     @Query("SELECT*FROM movies_table where selected=10")
