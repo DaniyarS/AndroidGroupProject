@@ -52,9 +52,16 @@ interface MovieApi {
 
     //POPULAR MOVIES
     @GET("movie/popular")
-    fun getPopularMovies(
+    suspend fun getPopularMoviesCoroutine(
         @Query("api_key") apiKey: String
-    ): Call<GetMoviesResponse>
+    ): Response<GetMoviesResponse>
+
+    //MOVIE BY ID
+    @GET("movie/{movie_id}")
+    suspend fun getMovieByIdCoroutine(
+        @Path("movie_id")  id: Int,
+        @Query("api_key") apiKey: String
+    ): Response<Movie>
 
     //MOVIE BY ID
     @GET("movie/{movie_id}")
@@ -85,15 +92,15 @@ interface MovieApi {
 
     //TOPRATED MOVIES
     @GET("movie/top_rated")
-    fun getTopRatedMovies(
+    suspend fun getTopRatedMoviesCoroutine(
         @Query("api_key") apiKey: String
-    ): Call<GetMoviesResponse>
+    ): Response<GetMoviesResponse>
 
     //UPCOMING MOVIES
     @GET("movie/upcoming")
-    fun getUpcomingMovies(
+    suspend fun getUpcomingMoviesCoroutine(
         @Query("api_key") apiKey: String
-    ) : Call<GetMoviesResponse>
+    ): Response<GetMoviesResponse>
 ////////////////////////////////////////////////////////////////////
     //REQUEST TOKEN WHILE REGISTRATION
     @GET("authentication/token/new")

@@ -9,6 +9,7 @@ import java.io.Serializable
 @Entity(tableName = "movies_table")
 data class Movie(
     @PrimaryKey
+    val idiwka: Int?=null,
     @SerializedName("id") val id: Int? = null,
     @SerializedName("popularity") val popularity: Double? = null,
     @SerializedName("vote_count") val vote_count: Int? = null,
