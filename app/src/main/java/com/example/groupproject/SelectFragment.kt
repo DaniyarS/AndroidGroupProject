@@ -1,137 +1,202 @@
 package com.example.groupproject
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
 import android.widget.Toast
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.bumptech.glide.Glide
 import com.example.groupproject.adapter.FavoritesAdapter
 import com.example.groupproject.api.FavoriteRequest
 import com.example.groupproject.api.FavoriteResponse
 import com.example.groupproject.api.RetrofitMoviesService
-import com.example.groupproject.model.GetMoviesResponse
+import com.example.groupproject.database.MovieDao
+import com.example.groupproject.database.MovieDatabase
 import com.example.groupproject.model.Movie
+import com.google.gson.JsonObject
 import kotlinx.android.synthetic.main.movie_detail_items.*
-import retrofit2.Call
-import retrofit2.Callback
+import kotlinx.coroutines.*
 import retrofit2.Response
+import kotlin.coroutines.CoroutineContext
 
 /**
  * A simple [Fragment] subclass.
  */
-class SelectFragment : Fragment(),FavoritesAdapter.RecyclerViewItemClick {
+class SelectFragment : Fragment(), FavoritesAdapter.RecyclerViewItemClick, CoroutineScope {
 
     private val APP_PREFERENCES = "appsettings"
     private val APP_SESSION = "session_id"
-
-    private var session_id: String=""
-    private lateinit var getSP : SharedPreferences
-    private lateinit var starPreferences: SharedPreferences
-    private lateinit var  favMovieRecycler: RecyclerView
-    private lateinit var listOfFavMovies: List<Movie>
+    private var sessionId: String = ""
     private var favoritesAdapter: FavoritesAdapter? = null
 
     lateinit var swipeRefreshLayout: SwipeRefreshLayout
+    private lateinit var favMovieRecycler: RecyclerView
+    private lateinit var listOfFavMovies: List<Movie>
+    private lateinit var getSP: SharedPreferences
+
+    private var movieDao: MovieDao? = null
+    private val job = Job()
+    override val coroutineContext: CoroutineContext
+        get() = Dispatchers.Main + job
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_select, container, false)
-            favMovieRecycler = view.findViewById(R.id.favMovieRecycler)
 
+        favMovieRecycler = view.findViewById(R.id.favMovieRecycler)
         getSP = activity?.getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE)!!
-        if (getSP.contains(APP_SESSION)){
-            session_id = getSP.getString(APP_SESSION,"null")!!
+        if (getSP.contains(APP_SESSION)) {
+            sessionId = getSP.getString(APP_SESSION, "null")!!
         }
-        starPreferences = activity?.getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE)!!
+
+        movieDao = MovieDatabase.getDatabase(context!!).movieDao()
+
         swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout)
         swipeRefreshLayout.setOnRefreshListener {
             favoritesAdapter?.clearAll()
             generateComponent()
         }
-        generateComponent()
 
+        generateComponent()
         return view
     }
 
 
-
-    private fun generateComponent(){
+    private fun generateComponent() {
         listOfFavMovies = ArrayList()
-        favoritesAdapter =activity?.applicationContext?.let {FavoritesAdapter(listOfFavMovies, it.applicationContext,itemClickListener = this)  }
-        favMovieRecycler.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL,false)
+        favoritesAdapter = activity?.applicationContext?.let {
+            FavoritesAdapter(
+                listOfFavMovies,
+                it.applicationContext,
+                itemClickListener = this
+            )
+        }
+        favMovieRecycler.layoutManager =
+            LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
         favMovieRecycler.adapter = favoritesAdapter
-        getFavorite()
-    }
-
-    override fun itemClick(position: Int, item: Movie) {
-        val intent = Intent(activity, MovieDetailActivity::class.java)
-        intent.putExtra("movie_id", item.id)
-        startActivity(intent)
-    }
-
-    override fun removeFromFavorites(position: Int, item: Movie) {
-        lateinit var favoriteRequest: FavoriteRequest
-        favoriteRequest= FavoriteRequest("movie",item?.id!!, false)
-
-
-        RetrofitMoviesService.getMovieApi().addFavorite(BuildConfig.MOVIE_DB_API_TOKEN, session_id, favoriteRequest).enqueue(object: Callback<FavoriteResponse>{
-            override fun onFailure(call: Call<FavoriteResponse>, t: Throwable) {}
-            override fun onResponse(call: Call<FavoriteResponse>, response: Response<FavoriteResponse>) {
-                Toast.makeText(activity, "Removed", Toast.LENGTH_SHORT).show()
-            }
-        })
+        getFavmovieCoroutine()
     }
 
 
+    override fun onDestroy() {
+        super.onDestroy()
+        job.cancel()
+    }
 
-    @SuppressLint("ShowToast")
-    private fun getFavorite(){
-        try {
-            if (BuildConfig.MOVIE_DB_API_TOKEN.isEmpty()) {
-                return
+    override fun removeFromFavoritesCoroutine(position: Int, item: Movie) {
+        var response: Response<FavoriteResponse>
+        val favoriteRequest = FavoriteRequest("movie", item.id, false)
+        lifecycleScope.launchWhenResumed {
+            try {
+                response = RetrofitMoviesService.getMovieApi()
+                    .addFavoriteCoroutine(
+                        BuildConfig.MOVIE_DB_API_TOKEN,
+                        sessionId,
+                        favoriteRequest
+                    )
+                if (response.isSuccessful) {
+                    item.selected = 10
+                    movieDao?.insert(item)
+                    Toast.makeText(
+                        view?.context,
+                        "Removed",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            } catch (e: Exception) {
+                item.selected = 10
+                movieDao?.insert(item)
+                Toast.makeText(
+                    activity?.applicationContext,
+                    "Removed",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
-            getSP = activity?.getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE)!!
-            if (getSP.contains(APP_SESSION)){
-                session_id = getSP.getString(APP_SESSION,null)!!
-            }
+        }
+    }
+
+    private fun getFavmovieCoroutine() {
+        lifecycleScope.launchWhenResumed {
             swipeRefreshLayout.isRefreshing = true
-            RetrofitMoviesService.getMovieApi().getFavorite(BuildConfig.MOVIE_DB_API_TOKEN,session_id).enqueue(object :
-                Callback<GetMoviesResponse> {
-                override fun onFailure(call: Call<GetMoviesResponse>, t: Throwable) {
-                    swipeRefreshLayout.isRefreshing = false
-                }
-                override fun onResponse(call: Call<GetMoviesResponse>, response: Response<GetMoviesResponse>
-                ) {
-                    Log.d("favorite_movies_list", response.body().toString())
-                    if (response.isSuccessful) {
-                        val list = response.body()?.results
-                        val movieList : GetMoviesResponse? = response.body()
-                        if (list?.size==0){
-                            Toast.makeText(activity,"No movie added",Toast.LENGTH_LONG).show()
-                        }
-                        favoritesAdapter?.listOfFavMovies = list
-                        favoritesAdapter?.notifyDataSetChanged()
-
+            val selectedOffline = movieDao?.getLikedOffline()
+            if (selectedOffline != null) {
+                for (i in selectedOffline) {
+                    val result = JsonObject().apply {
+                        addProperty("media_type", "movie")
+                        addProperty("media_id", i)
+                        addProperty("favorite", true)
                     }
-                    swipeRefreshLayout.isRefreshing = false
+                    try {
+                        RetrofitMoviesService.getMovieApi()
+                            .rateCoroutine(sessionId, BuildConfig.MOVIE_DB_API_TOKEN, result)
+                    } catch (e: Exception) {
+                    }
                 }
-            }) } catch (e: Exception) {
-            Toast.makeText(activity, e.toString(), Toast.LENGTH_SHORT)
-            Toast.makeText(activity?.applicationContext,"No movie added, sign in first",Toast.LENGTH_LONG).show()
+            }
+
+            val unSelectOffline = movieDao?.getLikedOffline()
+            if (unSelectOffline != null) {
+                for (i in unSelectOffline) {
+                    val result = JsonObject().apply {
+                        addProperty("media_type", "movie")
+                        addProperty("media_id", i)
+                        addProperty("favorite", false)
+                    }
+                    try {
+                        RetrofitMoviesService.getMovieApi()
+                            .rateCoroutine(sessionId, BuildConfig.MOVIE_DB_API_TOKEN, result)
+                    } catch (e: Exception) {
+                    }
+                }
+            }
+
+            val unSelectMoviesOffline = movieDao?.getUnLikedOffline()
+            val newArray: ArrayList<Movie>? = null
+            if (unSelectMoviesOffline != null) {
+                for (movie in unSelectMoviesOffline) {
+                    movie.selected = 0
+                    newArray?.add(movie)
+                }
+            }
+
+            if (movieDao != null) newArray?.let { movieDao?.insertAll(it) }
+
+            val list = withContext(Dispatchers.IO) {
+                try {
+                    val response = RetrofitMoviesService.getMovieApi()
+                        .getFavoriteCoroutine(BuildConfig.MOVIE_DB_API_TOKEN, sessionId)
+
+                    if (response.isSuccessful) {
+                        val result = response.body()?.results
+                        if (result != null) {
+                            for (m in result) {
+                                m.selected = 1
+                            }
+                        }
+                        if (!result.isNullOrEmpty()) {
+                            movieDao?.insertAll(result)
+                        }
+                        result
+                    } else {
+                        movieDao?.getAllLiked() ?: emptyList()
+                    }
+                } catch (e: Exception) {
+                    movieDao?.getAllLiked() ?: emptyList()
+                }
+            }
+
+            favoritesAdapter?.listOfFavMovies = list
+            favoritesAdapter?.notifyDataSetChanged()
+            swipeRefreshLayout.isRefreshing = false
         }
     }
 }

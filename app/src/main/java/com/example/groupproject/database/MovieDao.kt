@@ -1,32 +1,43 @@
 package com.example.groupproject.database
-
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
 import com.example.groupproject.model.Movie
 
 @Dao
-interface MovieDao {
+interface MovieDao{
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertAll(list: List<Movie>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertAll(list: List<Movie?>)
+    fun insert(movie: Movie?)
 
-    @Query("SELECT * FROM movie_table LIMIT 20")
+    @Query("SELECT*FROM movies_table WHERE id=:id")
+    fun getMovie(id: Int?): Movie
+
+    @Query("SELECT*FROM movies_table")
+    fun getAll(): List<Movie>
+
+    @Query("SELECT * FROM movies_table WHERE idMovie>=1 AND idMovie<=20")
     fun getPopular(): List<Movie>
 
-    @Query("SELECT * FROM movie_table LIMIT 20 OFFSET 20")
+    @Query("SELECT * FROM movies_table WHERE idMovie>=21 AND idMovie<=40")
     fun getTopRated(): List<Movie>
 
-    @Query("SELECT * FROM movie_table LIMIT 20 OFFSET 40")
+    @Query("SELECT * FROM movies_table WHERE idMovie>=41 AND idMovie<=60")
     fun getUpcoming(): List<Movie>
 
-    @Query("SELECT * FROM movie_table WHERE id=:movieId")
-    fun getBriefMovie(movieId: Int): Movie
+    @Query("SELECT*FROM movies_table where selected=10")
+    fun getUnLikedOffline(): List<Movie>
 
-//    @Query("SELECT * FROM movie_detail")
-//    fun getAll(): List<MovieDetail>
+    @Query("SELECT*FROM movies_table where selected=1 or selected=11")
+    fun getAllLiked(): List<Movie>
 
-//    @Insert(onConflict = OnConflictStrategy.REPLACE)
-//    fun insertMovie(movie: Movie)
+    @Query("SELECT selected FROM movies_table where id=:id")
+    fun getLiked(id: Int?): Int
+
+    @Query("SELECT id FROM movies_table where selected=11")
+    fun getLikedOffline(): List<Int>
+
+    @Query("UPDATE movies_table SET runtime = :runtime WHERE id = :id")
+    fun updateMovieRuntime(runtime: Int, id: Int)
+
 }

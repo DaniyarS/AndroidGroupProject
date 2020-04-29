@@ -12,29 +12,29 @@ import com.example.groupproject.R
 import com.example.groupproject.model.Movie
 
 class FavoritesAdapter(
-    var listOfFavMovies: List<Movie>? = null,
+    var listOfFavMovies: List<*>? = null,
     var context: Context,
     val itemClickListener: RecyclerViewItemClick? = null
-): RecyclerView.Adapter<FavoritesAdapter.FavoritesViewHolder>() {
+) : RecyclerView.Adapter<FavoritesAdapter.FavoritesViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FavoritesViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.favorite_movie_item, parent, false)
+        val view =
+            LayoutInflater.from(parent.context).inflate(R.layout.favorite_movie_item, parent, false)
         return FavoritesViewHolder(view)
     }
 
     override fun getItemCount(): Int = listOfFavMovies?.size ?: 0
 
     override fun onBindViewHolder(p0: FavoritesViewHolder, p1: Int) {
-        p0.bind(listOfFavMovies?.get(p1))
+        p0.bind(listOfFavMovies?.get(p1) as Movie?)
     }
 
-    fun clearAll(){
-        (listOfFavMovies as? ArrayList<Movie>)?.clear()
+    fun clearAll() {
+        (listOfFavMovies as? ArrayList<*>)?.clear()
         notifyDataSetChanged()
     }
 
-    inner class FavoritesViewHolder(val view: View): RecyclerView.ViewHolder(view)
-    {
-        fun bind(post: Movie?){
+    inner class FavoritesViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
+        fun bind(post: Movie?) {
 
 
             val movieTitle = view.findViewById<TextView>(R.id.tvMovieNameFav)
@@ -43,19 +43,14 @@ class FavoritesAdapter(
             Glide.with(context).load("https://image.tmdb.org/t/p/original"+post?.backdrop_path).into(movieImage)
             movieTitle.text = post?.title
 
-
-            view.setOnClickListener {
-                itemClickListener?.itemClick(adapterPosition, post!!)
-            }
             removeFromFavList.setOnClickListener {
-                itemClickListener?.removeFromFavorites(adapterPosition,post!!)
+                itemClickListener?.removeFromFavoritesCoroutine(adapterPosition, post!!)
                 removeFromFavList.setImageResource(R.drawable.ic_star_border_black_24dp)
             }
         }
     }
 
     interface RecyclerViewItemClick {
-        fun itemClick(position: Int, item: Movie)
-        fun removeFromFavorites(position: Int, item: Movie)
+        fun removeFromFavoritesCoroutine(position: Int, item: Movie)
     }
 }

@@ -52,13 +52,14 @@
         android:id="@+id/tvMovieName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="16dp"
         android:fontFamily="sans-serif-black"
-        tools:text = "Sample Name"
         android:textColor="#FFF"
         android:textSize="24sp"
         app:layout_constraintBottom_toTopOf="@+id/tvGenre"
-        app:layout_constraintStart_toStartOf="@+id/tvGenre" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/tvGenre"
+        tools:text="Sample Name" />
 
     <TextView
         android:id="@+id/tvImageIndex"
@@ -81,21 +82,23 @@
         android:textColor="@android:color/darker_gray"
         android:textSize="12sp"
         app:layout_constraintBottom_toBottomOf="@+id/tvImageIndex"
-        app:layout_constraintEnd_toStartOf="@+id/tvImageSize"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/tvImageIndex" />
 
     <TextView
         android:id="@+id/tvImageSize"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="24dp"
+        android:layout_marginStart="12dp"
         android:fontFamily="sans-serif-condensed-medium"
         android:text="8"
         android:textColor="@android:color/darker_gray"
         android:textSize="12sp"
         app:layout_constraintBottom_toBottomOf="@+id/textView4"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/textView4" />
+        app:layout_constraintStart_toStartOf="@+id/textView4"
+        app:layout_constraintTop_toTopOf="@+id/textView4"
+        app:layout_constraintVertical_bias="0.0" />
 
     <androidx.core.widget.ContentLoadingProgressBar
         android:id="@+id/progressBar"

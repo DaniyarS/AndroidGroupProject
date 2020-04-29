@@ -1,7 +1,5 @@
 package com.example.groupproject.fragment
 
-import android.annotation.SuppressLint
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,33 +8,35 @@ import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.example.groupproject.BuildConfig
-import com.example.groupproject.MovieDetailActivity
 import com.example.groupproject.R
 import com.example.groupproject.api.RetrofitMoviesService
 import com.example.groupproject.database.MovieDao
 import com.example.groupproject.database.MovieDatabase
 import com.example.groupproject.model.Movie
-import kotlinx.coroutines.*
-import java.lang.Exception
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.withContext
 import kotlin.coroutines.CoroutineContext
 
 class MovieFragment : Fragment(), CoroutineScope {
     private lateinit var progressBar : ProgressBar
-    private lateinit var Image : ImageView
-    private lateinit var MovieName: TextView
-    private lateinit var MovieGenre: TextView
-    private lateinit var MovieIndex: TextView
+    private lateinit var image : ImageView
+    private lateinit var movieName: TextView
+    private lateinit var movieGenre: TextView
+    private lateinit var movieIndex: TextView
 
     //new val job
     private val job = Job()
 
+    private var movieDao : MovieDao?=null
+
     //override fun for coroutine context
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + job
-
-    private var movieDao : MovieDao?=null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -46,93 +46,49 @@ class MovieFragment : Fragment(), CoroutineScope {
 
         val view = inflater.inflate(R.layout.headline_movie_items, container,false)
 
-        movieDao = MovieDatabase.getDatabase(context = activity!!).movieDao()
+        movieDao = MovieDatabase.getDatabase(context!!).movieDao()
 
+        val id = 110
         progressBar = view.findViewById(R.id.progressBar)
-        Image = view.findViewById(R.id.ivHeadlineMovie)
-        MovieName = view.findViewById(R.id.tvMovieName)
-        MovieGenre = view.findViewById(R.id.tvGenre)
-        MovieIndex = view.findViewById(R.id.tvImageIndex)
-        MovieIndex.text="1"
-//        getBriefMovieDetail(110)
-        getBriefMovieDetailCoroutine(13)
-
-        view.setOnClickListener{
-            getDetails(13)
-        }
+        image = view.findViewById(R.id.ivHeadlineMovie)
+        movieName = view.findViewById(R.id.tvMovieName)
+        movieGenre = view.findViewById(R.id.tvGenre)
+        movieIndex = view.findViewById(R.id.tvImageIndex)
+        movieIndex.text="1"
+        getBriefMovieDetail(id)
 
         return view
     }
-
 
     override fun onDestroy() {
         super.onDestroy()
         job.cancel()
     }
-  
-   private fun getDetails(id: Int){
-        val intent = Intent(activity, MovieDetailActivity::class.java)
-        intent.putExtra("movie_id", id)
-        startActivity(intent)
-    }
 
-
-
-    @SuppressLint("SetTextI18n")
-    private fun getBriefMovieDetailCoroutine(id: Int){
-        launch {
+    private fun getBriefMovieDetail(id: Int) {
+        lifecycleScope.launchWhenResumed {
             progressBar.visibility = View.GONE
             val movie = withContext(Dispatchers.IO){
-//                try {
-//                    progressBar.visibility = View.GONE
-//                    val response = RetrofitMoviesService.getMovieApi()
-//                        .getMovieByIdCoroutine(id, BuildConfig.MOVIE_DB_API_TOKEN)
-//                    if (response.isSuccessful) {
-//                        val post = response.body()
-//                        if (post!=null){
-//                            movieDao?.getBriefMovie(id)
-//                        }
-//                        post
-//                    } else {
-//                        movieDao?.getBriefMovie(id)
-//                    }
-//                } catch (e: Exception) {
-//                    movieDao?.getBriefMovie(id)
-//                }
-                movieDao?.getBriefMovie(id) ?: Movie()
+                try {
+                    progressBar.visibility = View.GONE
+                    val response = RetrofitMoviesService.getMovieApi()
+                        .getMovieByIdCoroutine(id, BuildConfig.MOVIE_DB_API_TOKEN)
+                    if (response.isSuccessful) {
+                        val post = response.body()
+                        if (post != null) {
+                            movieDao?.insert(post)
+                        }
+                    post
+                    } else {
+                        movieDao?.getMovie(id) ?: Movie()
+                    }
+                } catch (e: Exception) {
+                    movieDao?.getMovie(id) ?: Movie()
+                }
             }
-//            progressBar.visibility = View.GONE
-            Glide.with(Image).load("https://image.tmdb.org/t/p/original"+movie.backdrop_path).into(Image)
-            MovieName.text = movie.title
-            MovieGenre.text = ""
-//            val genreNameContainer = movie?.genres
-//            var genreCounter = 1
-//            for (genre in genreNameContainer!!) {
-//                if (genreCounter == genreNameContainer.size) {
-//                    MovieGenre.text = MovieGenre.text.toString() + genre.name
-//                } else {
-//                    MovieGenre.text = MovieGenre.text.toString() + genre.name + " • "
-//                }
-//                genreCounter += 1
-//            }
-
-//            val response: Response<Movie> = RetrofitMoviesService.getMovieApi().
-//            getMovieByIdCoroutine(id,BuildConfig.MOVIE_DB_API_TOKEN)
-//            if (response.isSuccessful){
-//                val post = response.body()
-//                if (post != null) {
-//                    progressBar.visibility = View.GONE
-//                    Glide.with(Image).load("https://image.tmdb.org/t/p/original"+post.backdrop_path).into(Image)
-//                    MovieName.text = post.title
-//                    val genreNameContainer = post.genres
-//                    MovieGenre.text=""
-//                    var genreCounter = 1
-////                    for (genre in genreNameContainer!!){
-////                        if (genreCounter == genreNameContainer.size) {
-////                            MovieGenre.text = MovieGenre.text.toString() + genre.name}
-////                        else{
-////                            MovieGenre.text = MovieGenre.text.toString() + genre.name+ " • "}
-////                        genreCounter += 1
+            Glide.with(image).load(movie?.getBackDropPathImage()).into(image)
+            movieName.text = movie?.title
         }
     }
+
 }

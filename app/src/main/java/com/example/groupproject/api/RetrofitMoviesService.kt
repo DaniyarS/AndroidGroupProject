@@ -2,16 +2,19 @@ package com.example.groupproject.api
 
 import android.util.Log
 import com.example.groupproject.model.Account
-import com.example.groupproject.model.Credits
 import com.example.groupproject.model.GetMoviesResponse
+import com.example.groupproject.model.Credits
 import com.example.groupproject.model.Movie
+import com.google.gson.JsonObject
 import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Call
-import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import okhttp3.Interceptor
+import okhttp3.logging.HttpLoggingInterceptor
+import retrofit2.Response
 import retrofit2.http.*
+
 import java.util.concurrent.TimeUnit
 
 object RetrofitMoviesService {
@@ -46,37 +49,16 @@ object RetrofitMoviesService {
 }
 
 interface MovieApi {
-
-    //POPULAR MOVIES
-//    @GET("movie/popular")
-//    fun getPopularMovies(
-//        @Query("api_key") apiKey: String
-//    ): Call<GetMoviesResponse>
-
     @GET("movie/popular")
     suspend fun getPopularMoviesCoroutine(
         @Query("api_key") apiKey: String
     ): Response<GetMoviesResponse>
 
-    //MOVIE BY ID
-    @GET("movie/{movie_id}")
-    fun getMovieById(
-        @Path("movie_id")  id: Int,
-        @Query("api_key") apiKey: String
-    ): Call<Movie>
-
     @GET("movie/{movie_id}")
     suspend fun getMovieByIdCoroutine(
-        @Path("movie_id") id: Int,
+        @Path("movie_id")  id: Int,
         @Query("api_key") apiKey: String
     ): Response<Movie>
-
-    //CREDITS FOR MOVIE ID
-    @GET("movie/{movie_id}/credits")
-    fun getCredits(
-        @Path("movie_id") id: Int,
-        @Query("api_key") apiKey: String
-    ): Call<Credits>
 
     @GET("movie/{movie_id}/credits")
     suspend fun getCreditsCoroutine(
@@ -84,70 +66,32 @@ interface MovieApi {
         @Query("api_key") apiKey: String
     ): Response<Credits>
 
-    //TOPRATED MOVIES
-//    @GET("movie/top_rated")
-//    fun getTopRatedMovies(
-//        @Query("api_key") apiKey: String
-//    ): Call<GetMoviesResponse>
-
     @GET("movie/top_rated")
     suspend fun getTopRatedMoviesCoroutine(
         @Query("api_key") apiKey: String
     ): Response<GetMoviesResponse>
 
-    //UPCOMING MOVIES
-//    @GET("movie/upcoming")
-//    fun getUpcomingMovies(
-//        @Query("api_key") apiKey: String
-//    ) : Call<GetMoviesResponse>
-
     @GET("movie/upcoming")
     suspend fun getUpcomingMoviesCoroutine(
         @Query("api_key") apiKey: String
     ): Response<GetMoviesResponse>
-////////////////////////////////////////////////////////////////////
-    //REQUEST TOKEN WHILE REGISTRATION
-    @GET("authentication/token/new")
-    fun getToken(
-        @Query("api_key") apiKey: String
-    ) : Call<RequestToken>
 
-    //VALIDATION WITH ACCOUNT == request token
+    @GET("authentication/token/new")
+    suspend fun getTokenCoroutine(
+        @Query("api_key") apiKey: String
+    ) : Response<RequestToken>
+
     @POST("authentication/token/validate_with_login")
-    fun validation(
+    suspend fun validationCoroutine(
         @Query("api_key") apiKey: String,
         @Body validation: Validation
-    ) : Call<RequestToken>
+    ) : Response<RequestToken>
 
-    //CREATE NEW SESSION
     @POST("authentication/session/new")
-    fun createSession(
+    suspend fun createSessionCoroutine(
         @Query("api_key") apiKey: String,
         @Body  token: RequestToken
-    ) : Call<Session>
-    ////////////////////////////////////
-    @GET("account") ///////account
-    fun getAccount(
-        @Query("api_key")apiKey:String,
-        @Query("session_id") sessionId: String
-    ): Call<Account>
-    /////////////////////////////////
-    //ADD MOVIE TO FAVORITE
-    @POST("account/{account_id}/favorite")
-    fun addFavorite(
-        @Query("api_key") apiKey: String,
-        @Query("session_id") sessionId : String,
-        @Body favoriteRequest: FavoriteRequest
-    ) : Call<FavoriteResponse>
-
-    //GET LIST OF FAVORITE MOVIES
-    @GET("account/{account_id}/favorite/movies")
-    fun getFavorite(
-        @Query("api_key") apiKey: String,
-        @Query("session_id") sessionId: String
-    ) : Call<GetMoviesResponse>
-
-    //  COROUTINES
+    ) : Response<Session>
 
     @GET("account/{account_id}/favorite/movies")
     suspend fun getFavoriteCoroutine(
@@ -155,33 +99,24 @@ interface MovieApi {
         @Query("session_id") sessionId: String
     ) : Response<GetMoviesResponse>
 
+    @GET("movie/{movie_id}/account_states")
+    suspend fun hasLikeCoroutine(
+        @Path("movie_id") movieId: Int?,
+        @Query("api_key") apiKey: String,
+        @Query("session_id") sessionId: String?
+    ): Response<JsonObject>
+
+    @POST("account/{account_id}/favorite")
+    suspend fun rateCoroutine(
+        @Query("api_key") apiKey: String,
+        @Query("session_id") sessionId: String?,
+        @Body body: JsonObject
+    ):Response<JsonObject>
+
+    @POST("account/{account_id}/favorite")
     suspend fun addFavoriteCoroutine(
         @Query("api_key") apiKey: String,
         @Query("session_id") sessionId : String,
         @Body favoriteRequest: FavoriteRequest
     ): Response<FavoriteResponse>
-
-//    @GET("posts")
-//    fun getMovieDetail():  Call<Movie>
-//    @GET("posts")
-//    fun getMovieDetailCoroutine(): Response<Movie>
-//    @GET("posts/{id}")
-//    fun getMovieById(@Path("id") id: Int):  Call<Movie>
-//    /////////////////////////////////////////////////////
-//    @GET("credits")
-//    fun getCredits():  Call<Credits>
-//    @GET("credits")
-//    fun getCreditsCoroutine(): Response<Credits>
-//
-//    //    @GET("credits/{id}")
-//
-////    fun getCredits(@Path("id") id: Int):  Call<Credits>
-//    /////////////////////////////////////////////////////////
-//    @GET("delete")
-//    fun getFavoriteResponse():  Call<FavoriteResponse>
-//    @GET("delete")
-//    fun getFavoriteResponseCoroutine(): Response<FavoriteResponse>
-//    @GET("delete/{id}")
-//    fun getFavoriteResponse(@Path("id") id: Int):  Call<FavoriteResponse>
 }
-
