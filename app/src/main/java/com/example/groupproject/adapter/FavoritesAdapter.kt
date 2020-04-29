@@ -43,10 +43,6 @@ class FavoritesAdapter(
             Glide.with(context).load(post?.getBackDropPathImage()).into(movieImage)
             movieTitle.text = post?.title
 
-
-            view.setOnClickListener {
-                itemClickListener?.itemClick(adapterPosition, post!!)
-            }
             removeFromFavList.setOnClickListener {
                 itemClickListener?.removeFromFavoritesCoroutine(adapterPosition, post!!)
                 removeFromFavList.setImageResource(R.drawable.ic_star_border_black_24dp)
@@ -55,7 +51,6 @@ class FavoritesAdapter(
     }
 
     interface RecyclerViewItemClick {
-        fun itemClick(position: Int, item: Movie)
         fun removeFromFavoritesCoroutine(position: Int, item: Movie)
     }
 }

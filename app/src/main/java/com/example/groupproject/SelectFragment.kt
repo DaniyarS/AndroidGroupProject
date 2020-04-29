@@ -92,10 +92,6 @@ class SelectFragment : Fragment(), FavoritesAdapter.RecyclerViewItemClick, Corou
         job.cancel()
     }
 
-    override fun itemClick(position: Int, item: Movie) {
-        TODO("Not yet implemented")
-    }
-    
     override fun removeFromFavoritesCoroutine(position: Int, item: Movie) {
         var response: Response<FavoriteResponse>
         val favoriteRequest = FavoriteRequest("movie", item.id, false)
@@ -131,7 +127,7 @@ class SelectFragment : Fragment(), FavoritesAdapter.RecyclerViewItemClick, Corou
     private fun getFavmovieCoroutine() {
         lifecycleScope.launchWhenResumed {
             swipeRefreshLayout.isRefreshing = true
-            val selectedOffline = movieDao?.getLikedOffline(11)
+            val selectedOffline = movieDao?.getLikedOffline()
             if (selectedOffline != null) {
                 for (i in selectedOffline) {
                     val result = JsonObject().apply {
@@ -147,7 +143,7 @@ class SelectFragment : Fragment(), FavoritesAdapter.RecyclerViewItemClick, Corou
                 }
             }
 
-            val unSelectOffline = movieDao?.getLikedOffline(10)
+            val unSelectOffline = movieDao?.getLikedOffline()
             if (unSelectOffline != null) {
                 for (i in unSelectOffline) {
                     val result = JsonObject().apply {

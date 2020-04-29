@@ -196,7 +196,7 @@ class MovieDetailActivity : AppCompatActivity(), CoroutineScope by MainScope() {
                     }
                 }
             } catch (e: Exception) {
-                Toast.makeText(this@MovieDetailActivity, "no credits", Toast.LENGTH_SHORT).show()
+
             }
         }
     }
