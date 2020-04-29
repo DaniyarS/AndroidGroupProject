@@ -28,6 +28,7 @@ import com.example.groupproject.database.MovieDatabase
 import com.example.groupproject.model.Credits
 import com.example.groupproject.model.Movie
 import com.google.gson.Gson
+import com.google.gson.JsonObject
 import kotlinx.coroutines.*
 import retrofit2.Response
 import java.util.logging.Logger
@@ -200,56 +201,53 @@ class MovieDetailActivity : AppCompatActivity(), CoroutineScope by MainScope() {
     }
 
     private fun addToFavoriteCoroutine(item: Int) {
-        lateinit var favoriteRequest: FavoriteRequest
         if (ivAddList.drawable.constantState == resources.getDrawable(
                 R.drawable.ic_star_border_black_24dp,
                 null
             ).constantState
         ) {
             isClicked = true
-            favoriteRequest = FavoriteRequest("movie", item, isClicked)
             ivAddList.setImageResource(R.drawable.ic_star_black_24dp)
+            val body = JsonObject().apply {
+                addProperty("media_type", "movie")
+                addProperty("media_id", item)
+                addProperty("favorite", isClicked)
+            }
             launch {
-                val response: Response<FavoriteResponse> = RetrofitMoviesService.getMovieApi()
-                    .addFavoriteCoroutine(
-                        BuildConfig.MOVIE_DB_API_TOKEN,
-                        sessionId,
-                        favoriteRequest
-                    )
-                if (response.isSuccessful) {
+                try {
+                    RetrofitMoviesService.getMovieApi().rateCoroutine(sessionId, BuildConfig.MOVIE_DB_API_TOKEN, body)
+                } catch (e: Exception) { }
+                if (isClicked) {
+                    movie.selected = 11
+                    movieDao?.insert(movie)
                     Toast.makeText(
                         applicationContext,
                         "Added to favorites",
                         Toast.LENGTH_SHORT
                     ).show()
                 }
-
-                if (isClicked) {
-                    movie.selected = 11
-                    movieDao?.insert(movie)
-                }
             }
         } else {
             isClicked = false
             ivAddList.setImageResource(R.drawable.ic_star_border_black_24dp)
-            favoriteRequest = FavoriteRequest("movie", item, isClicked)
+
+            val body = JsonObject().apply {
+                addProperty("media_type", "movie")
+                addProperty("media_id", item)
+                addProperty("favorite", isClicked)
+            }
             launch {
-                val response: Response<FavoriteResponse> = RetrofitMoviesService.getMovieApi()
-                    .addFavoriteCoroutine(
-                        BuildConfig.MOVIE_DB_API_TOKEN,
-                        sessionId,
-                        favoriteRequest
-                    )
-                if (response.isSuccessful) {
+                try {
+                    RetrofitMoviesService.getMovieApi().rateCoroutine(sessionId, BuildConfig.MOVIE_DB_API_TOKEN, body)
+                } catch (e: Exception) { }
+                if (!isClicked) {
+                    movie.selected = 10
+                    movieDao?.insert(movie)
                     Toast.makeText(
                         applicationContext,
                         "Removed from favorites",
                         Toast.LENGTH_SHORT
                     ).show()
-                }
-                if (!isClicked) {
-                    movie.selected = 10
-                    movieDao?.insert(movie)
                 }
             }
         }

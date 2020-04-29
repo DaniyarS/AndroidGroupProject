@@ -21,6 +21,7 @@ import com.example.groupproject.database.MovieDao
 import com.example.groupproject.database.MovieDatabase
 import com.example.groupproject.model.Movie
 import com.google.gson.JsonObject
+import kotlinx.android.synthetic.main.movie_detail_items.*
 import kotlinx.coroutines.*
 import retrofit2.Response
 import kotlin.coroutines.CoroutineContext
@@ -99,32 +100,14 @@ class SelectFragment : Fragment(), FavoritesAdapter.RecyclerViewItemClick, Corou
 
 
     override fun removeFromFavoritesCoroutine(position: Int, item: Movie) {
-        var response: Response<FavoriteResponse>
-        val favoriteRequest = item.id?.let { FavoriteRequest("movie", it, false) }
         lifecycleScope.launchWhenResumed {
-            response = favoriteRequest?.let {
-                RetrofitMoviesService.getMovieApi()
-                    .addFavoriteCoroutine(
-                        BuildConfig.MOVIE_DB_API_TOKEN,
-                        sessionId,
-                        it
-                    )
-            }!!
-
-            if (response.isSuccessful) {
-                Toast.makeText(
-                    view?.context,
-                    "Removed",
-                    Toast.LENGTH_SHORT
-                ).show()
-            } else {
-                Toast.makeText(
-                    view?.context,
-                    "Internet connection lost",
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-
+            item.selected = 10
+            movieDao?.insert(item)
+            Toast.makeText(
+                activity?.applicationContext,
+                "Removed from favorites",
+                Toast.LENGTH_SHORT
+            ).show()
         }
     }
 
