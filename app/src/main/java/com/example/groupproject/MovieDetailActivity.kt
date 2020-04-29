@@ -173,29 +173,33 @@ class MovieDetailActivity : AppCompatActivity(), CoroutineScope by MainScope() {
     @SuppressLint("SetTextI18n")
     private fun getCreditsCoroutine(id: Int) {
         lifecycleScope.launchWhenResumed {
-            val response: Response<Credits> = RetrofitMoviesService.getMovieApi()
-                .getCreditsCoroutine(id, BuildConfig.MOVIE_DB_API_TOKEN)
+            try {
+                val response: Response<Credits> = RetrofitMoviesService.getMovieApi()
+                    .getCreditsCoroutine(id, BuildConfig.MOVIE_DB_API_TOKEN)
 
-            if (response.isSuccessful) {
-                val creditsBody = response.body()
-                if (creditsBody != null) {
-                    val crewCointainer = creditsBody.crew
-                    for (crew in crewCointainer) {
-                        if (crew.getDirectorName() == "Producer") {
-                            movieDirector.text = crew.name
+                if (response.isSuccessful) {
+                    val creditsBody = response.body()
+                    if (creditsBody != null) {
+                        val crewCointainer = creditsBody.crew
+                        for (crew in crewCointainer) {
+                            if (crew.getDirectorName() == "Producer") {
+                                movieDirector.text = crew.name
+                            }
                         }
-                    }
-                    movieCast.text = ""
-                    var movieCastCounter = 0
-                    val castContainer = creditsBody.cast
-                    for (cast in castContainer) {
-                        if (movieCastCounter == 3) {
-                            break
+                        movieCast.text = ""
+                        var movieCastCounter = 0
+                        val castContainer = creditsBody.cast
+                        for (cast in castContainer) {
+                            if (movieCastCounter == 3) {
+                                break
+                            }
+                            movieCast.text = movieCast.text.toString() + cast.getCastName() + " "
+                            movieCastCounter += 1
                         }
-                        movieCast.text = movieCast.text.toString() + cast.getCastName() + " "
-                        movieCastCounter += 1
                     }
                 }
+            } catch (e:Exception){
+                Toast.makeText(this@MovieDetailActivity,"no credits",Toast.LENGTH_SHORT).show()
             }
         }
     }
