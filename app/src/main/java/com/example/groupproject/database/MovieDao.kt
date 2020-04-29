@@ -40,4 +40,7 @@ interface MovieDao{
 
     @Query("SELECT id FROM movies_table where selected=:selected")
     fun getLikedOffline(selected: Int?): List<Int>
+
+    @Query("UPDATE movies_table SET runtime = :runtime WHERE id = :id")
+    fun updateMovieRuntime(runtime: Int, id: Int)
 }

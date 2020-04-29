@@ -12,7 +12,7 @@ import com.example.groupproject.R
 import com.example.groupproject.model.Movie
 
 class FavoritesAdapter(
-    var listOfFavMovies: List<Movie>? = null,
+    var listOfFavMovies: List<*>? = null,
     var context: Context,
     val itemClickListener: RecyclerViewItemClick? = null
 ): RecyclerView.Adapter<FavoritesAdapter.FavoritesViewHolder>() {
@@ -24,11 +24,11 @@ class FavoritesAdapter(
     override fun getItemCount(): Int = listOfFavMovies?.size ?: 0
 
     override fun onBindViewHolder(p0: FavoritesViewHolder, p1: Int) {
-        p0.bind(listOfFavMovies?.get(p1))
+        p0.bind(listOfFavMovies?.get(p1) as Movie?)
     }
 
     fun clearAll(){
-        (listOfFavMovies as? ArrayList<Movie>)?.clear()
+        (listOfFavMovies as? ArrayList<*>)?.clear()
         notifyDataSetChanged()
     }
 

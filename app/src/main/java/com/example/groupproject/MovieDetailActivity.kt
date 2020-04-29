@@ -9,6 +9,7 @@ import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.util.Log.d
 import android.view.View
 import android.widget.ImageView
 import android.widget.ProgressBar
@@ -29,6 +30,7 @@ import com.example.groupproject.model.Movie
 import com.google.gson.Gson
 import kotlinx.coroutines.*
 import retrofit2.Response
+import java.util.logging.Logger
 import kotlin.coroutines.CoroutineContext
 
 
@@ -62,7 +64,6 @@ class MovieDetailActivity : AppCompatActivity(), CoroutineScope by MainScope() {
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + job
 
-    @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.movie_detail_items)
@@ -97,6 +98,8 @@ class MovieDetailActivity : AppCompatActivity(), CoroutineScope by MainScope() {
 
         var loginCount = sessionPreference.getLoginCount()
 
+        isFavorite(movieId)
+
         ivAddList.setOnClickListener() {
 
             if (loginCount == 0) {
@@ -107,13 +110,8 @@ class MovieDetailActivity : AppCompatActivity(), CoroutineScope by MainScope() {
                 ).show()
                 setFragment(authorizationFragment)
             } else {
-                if (isInternetAvailable(this)) {
-                    progressBar.visibility = View.VISIBLE
-                    addToFavoriteCoroutine(movieId)
-                } else {
-                    progressBar.visibility = View.VISIBLE
-                    isFavorite(movieId)
-                }
+                progressBar.visibility = View.VISIBLE
+                addToFavoriteCoroutine(movieId)
             }
         }
     }
@@ -128,21 +126,25 @@ class MovieDetailActivity : AppCompatActivity(), CoroutineScope by MainScope() {
         lifecycleScope.launchWhenResumed {
 
             val movie = withContext(Dispatchers.IO) {
-                val response = RetrofitMoviesService.getMovieApi()
-                    .getMovieByIdCoroutine(id, BuildConfig.MOVIE_DB_API_TOKEN)
-                if (response.isSuccessful) {
-                    val post = response.body()
-                    if (post != null) {
-                        movieDao?.insert(post)
+                try {
+                    val response = RetrofitMoviesService.getMovieApi()
+                        .getMovieByIdCoroutine(id, BuildConfig.MOVIE_DB_API_TOKEN)
+                    if (response.isSuccessful) {
+                        val post = response.body()
+                        if (post?.runtime != null) {
+                            movieDao?.updateMovieRuntime(post.runtime, id)
+                        }
+                        post
+                    } else {
+                        movieDao?.getMovie(id) ?: Movie()
                     }
-                    post
-                } else {
-                    movieDao?.getMovie(id)
+                } catch (e: Exception) {
+                    movieDao?.getMovie(id) ?: Movie()
                 }
             }
 
             Glide.with(movieImageBackdrop)
-                .load("https://image.tmdb.org/t/p/original" + movie?.backdrop_path)
+                .load(movie?.getBackDropPathImage())
                 .into(movieImageBackdrop)
 
             movieTitle.text = movie?.title
@@ -161,6 +163,7 @@ class MovieDetailActivity : AppCompatActivity(), CoroutineScope by MainScope() {
                     movieDuration.text = "$runtime min"
                 }
             }
+            movieDetails.text = movie?.overview
             progressBar.visibility = View.GONE
         }
     }
@@ -254,7 +257,7 @@ class MovieDetailActivity : AppCompatActivity(), CoroutineScope by MainScope() {
 
 
     private fun isFavorite(movieId: Int) {
-        launch {
+        lifecycleScope.launchWhenResumed {
             val selectInt = withContext(Dispatchers.IO) {
                 try {
                     val response = RetrofitMoviesService.getMovieApi()
@@ -280,38 +283,6 @@ class MovieDetailActivity : AppCompatActivity(), CoroutineScope by MainScope() {
                 ivAddList.setImageResource(R.drawable.ic_star_border_black_24dp)
             }
         }
-    }
-
-    @RequiresApi(Build.VERSION_CODES.M)
-    private fun isInternetAvailable(context: Context): Boolean {
-        var result = false
-        val connectivityManager =
-            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            val networkCapabilities = connectivityManager.activeNetwork ?: return false
-            val actNw =
-                connectivityManager.getNetworkCapabilities(networkCapabilities) ?: return false
-            result = when {
-                actNw.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
-                actNw.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
-                actNw.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> true
-                else -> false
-            }
-        } else {
-            connectivityManager.run {
-                connectivityManager.activeNetworkInfo?.run {
-                    result = when (type) {
-                        ConnectivityManager.TYPE_WIFI -> true
-                        ConnectivityManager.TYPE_MOBILE -> true
-                        ConnectivityManager.TYPE_ETHERNET -> true
-                        else -> false
-                    }
-
-                }
-            }
-        }
-        Log.i("msg", result.toString())
-        return result
     }
 
     private fun setFragment(fragment: Fragment) {

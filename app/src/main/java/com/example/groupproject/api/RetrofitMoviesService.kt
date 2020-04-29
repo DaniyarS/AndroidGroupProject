@@ -176,4 +176,11 @@ interface MovieApi {
         @Query("api_key") apiKey: String,
         @Query("session_id") sessionId: String?
     ): Response<JsonObject>
+
+    @POST("account/{account_id}/favorite")
+    suspend fun rateCoroutine(
+        @Query("api_key") apiKey: String,
+        @Query("session_id") sessionId: String?,
+        @Body body: JsonObject
+    ):Response<JsonObject>
 }

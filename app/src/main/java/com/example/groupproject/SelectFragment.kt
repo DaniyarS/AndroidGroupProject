@@ -20,6 +20,7 @@ import com.example.groupproject.api.RetrofitMoviesService
 import com.example.groupproject.database.MovieDao
 import com.example.groupproject.database.MovieDatabase
 import com.example.groupproject.model.Movie
+import com.google.gson.JsonObject
 import kotlinx.coroutines.*
 import retrofit2.Response
 import kotlin.coroutines.CoroutineContext
@@ -101,14 +102,14 @@ class SelectFragment : Fragment(), FavoritesAdapter.RecyclerViewItemClick, Corou
         var response: Response<FavoriteResponse>
         val favoriteRequest = item.id?.let { FavoriteRequest("movie", it, false) }
         lifecycleScope.launchWhenResumed {
-                response = favoriteRequest?.let {
-                    RetrofitMoviesService.getMovieApi()
-                        .addFavoriteCoroutine(
-                            BuildConfig.MOVIE_DB_API_TOKEN,
-                            sessionId,
-                            it
-                        )
-                }!!
+            response = favoriteRequest?.let {
+                RetrofitMoviesService.getMovieApi()
+                    .addFavoriteCoroutine(
+                        BuildConfig.MOVIE_DB_API_TOKEN,
+                        sessionId,
+                        it
+                    )
+            }!!
 
             if (response.isSuccessful) {
                 Toast.makeText(
@@ -116,7 +117,7 @@ class SelectFragment : Fragment(), FavoritesAdapter.RecyclerViewItemClick, Corou
                     "Removed",
                     Toast.LENGTH_SHORT
                 ).show()
-            }else{
+            } else {
                 Toast.makeText(
                     view?.context,
                     "Internet connection lost",
@@ -137,16 +138,106 @@ class SelectFragment : Fragment(), FavoritesAdapter.RecyclerViewItemClick, Corou
         }
         lifecycleScope.launchWhenResumed {
             swipeRefreshLayout.isRefreshing = true
-            val response = RetrofitMoviesService.getMovieApi()
-                .getFavoriteCoroutine(BuildConfig.MOVIE_DB_API_TOKEN, sessionId)
-            if (response.isSuccessful) {
-                val list = response.body()?.results
-                if (list?.size == 0) {
-                    Toast.makeText(activity, "No movie added", Toast.LENGTH_LONG).show()
+
+
+            val favorites = withContext(Dispatchers.IO) {
+                try {
+                    val response = RetrofitMoviesService.getMovieApi()
+                        .getFavoriteCoroutine(BuildConfig.MOVIE_DB_API_TOKEN, sessionId)
+                    if (response.isSuccessful) {
+                        val result = response.body()
+                        if (result != null) {
+                            movieDao?.insertAll(result.results)
+                        }
+                        result
+                    } else {
+                        movieDao?.getAllLiked()
+                    }
+                } catch (e: Exception) {
+                    movieDao?.getAllLiked()
                 }
-                favoritesAdapter?.listOfFavMovies = list
-                favoritesAdapter?.notifyDataSetChanged()
             }
+
+            if (favorites == null) {
+                Toast.makeText(activity, "No movie added", Toast.LENGTH_LONG).show()
+            }
+            favoritesAdapter?.listOfFavMovies = favorites as List<*>?
+            favoritesAdapter?.notifyDataSetChanged()
+            swipeRefreshLayout.isRefreshing = false
+        }
+    }
+
+    private fun getFavmovieCoroutine() {
+        launch {
+            swipeRefreshLayout.isRefreshing = true
+            val selectedOffline = movieDao?.getLikedOffline(11)
+            if (selectedOffline != null) {
+                for (i in selectedOffline) {
+                    val result = JsonObject().apply {
+                        addProperty("media_type", "movie")
+                        addProperty("media_id", i)
+                        addProperty("favorite", true)
+                    }
+                    try {
+                        RetrofitMoviesService.getMovieApi()
+                            .rateCoroutine(sessionId, BuildConfig.MOVIE_DB_API_TOKEN, result)
+                    } catch (e: Exception) {
+                    }
+                }
+            }
+
+            val unSelectOffline = movieDao?.getLikedOffline(10)
+            if (unSelectOffline != null) {
+                for (i in unSelectOffline) {
+                    val result = JsonObject().apply {
+                        addProperty("media_type", "movie")
+                        addProperty("media_id", i)
+                        addProperty("favorite", false)
+                    }
+                    try {
+                        RetrofitMoviesService.getMovieApi()
+                            .rateCoroutine(sessionId, BuildConfig.MOVIE_DB_API_TOKEN, result)
+                    } catch (e: Exception) {
+                    }
+                }
+            }
+
+            val unSelectMoviesOffline = movieDao?.getUnLikedOffline()
+            val newArray: ArrayList<Movie>? = null
+            if (unSelectMoviesOffline != null) {
+                for (movie in unSelectMoviesOffline) {
+                    movie.selected = 0
+                    newArray?.add(movie)
+                }
+            }
+
+            if (movieDao != null) newArray?.let { movieDao?.insertAll(it) }
+
+            val list = withContext(Dispatchers.IO) {
+                try {
+                    val response = RetrofitMoviesService.getMovieApi().getFavoriteCoroutine(BuildConfig.MOVIE_DB_API_TOKEN, sessionId)
+
+                    if (response.isSuccessful) {
+                        val result = response.body()?.results
+                        if (result != null) {
+                            for (m in result) {
+                                m.selected = 1
+                            }
+                        }
+                        if (!result.isNullOrEmpty()) {
+                            movieDao?.insertAll(result)
+                        }
+                        result
+                    } else {
+                        movieDao?.getAllLiked() ?: emptyList()
+                    }
+                } catch (e: Exception) {
+                    movieDao?.getAllLiked() ?: emptyList()
+                }
+            }
+
+            favoritesAdapter?.listOfFavMovies = list
+            favoritesAdapter?.notifyDataSetChanged()
             swipeRefreshLayout.isRefreshing = false
         }
     }
