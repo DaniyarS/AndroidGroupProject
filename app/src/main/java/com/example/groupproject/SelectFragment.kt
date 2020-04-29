@@ -82,7 +82,7 @@ class SelectFragment : Fragment(), FavoritesAdapter.RecyclerViewItemClick, Corou
         favMovieRecycler.layoutManager =
             LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
         favMovieRecycler.adapter = favoritesAdapter
-        getFavoriteCorotine()
+        getFavmovieCoroutine()
     }
 
 
@@ -128,47 +128,47 @@ class SelectFragment : Fragment(), FavoritesAdapter.RecyclerViewItemClick, Corou
         }
     }
 
-    private fun getFavoriteCorotine() {
-        if (BuildConfig.MOVIE_DB_API_TOKEN.isEmpty()) {
-            return
-        }
-        getSP = activity?.getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE)!!
-        if (getSP.contains(APP_SESSION)) {
-            sessionId = getSP.getString(APP_SESSION, null)!!
-        }
-        lifecycleScope.launchWhenResumed {
-            swipeRefreshLayout.isRefreshing = true
-
-
-            val favorites = withContext(Dispatchers.IO) {
-                try {
-                    val response = RetrofitMoviesService.getMovieApi()
-                        .getFavoriteCoroutine(BuildConfig.MOVIE_DB_API_TOKEN, sessionId)
-                    if (response.isSuccessful) {
-                        val result = response.body()
-                        if (result != null) {
-                            movieDao?.insertAll(result.results)
-                        }
-                        result
-                    } else {
-                        movieDao?.getAllLiked()
-                    }
-                } catch (e: Exception) {
-                    movieDao?.getAllLiked()
-                }
-            }
-
-            if (favorites == null) {
-                Toast.makeText(activity, "No movie added", Toast.LENGTH_LONG).show()
-            }
-            favoritesAdapter?.listOfFavMovies = favorites as List<*>?
-            favoritesAdapter?.notifyDataSetChanged()
-            swipeRefreshLayout.isRefreshing = false
-        }
-    }
+//    private fun getFavoriteCorotine() {
+//        if (BuildConfig.MOVIE_DB_API_TOKEN.isEmpty()) {
+//            return
+//        }
+//        getSP = activity?.getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE)!!
+//        if (getSP.contains(APP_SESSION)) {
+//            sessionId = getSP.getString(APP_SESSION, null)!!
+//        }
+//        lifecycleScope.launchWhenResumed {
+//            swipeRefreshLayout.isRefreshing = true
+//
+//
+//            val favorites = withContext(Dispatchers.IO) {
+//                try {
+//                    val response = RetrofitMoviesService.getMovieApi()
+//                        .getFavoriteCoroutine(BuildConfig.MOVIE_DB_API_TOKEN, sessionId)
+//                    if (response.isSuccessful) {
+//                        val result = response.body()
+//                        if (result != null) {
+//                            movieDao?.insertAll(result.results)
+//                        }
+//                        result
+//                    } else {
+//                        movieDao?.getAllLiked()
+//                    }
+//                } catch (e: Exception) {
+//                    movieDao?.getAllLiked()
+//                }
+//            }
+//
+//            if (favorites == null) {
+//                Toast.makeText(activity, "No movie added", Toast.LENGTH_LONG).show()
+//            }
+//            favoritesAdapter?.listOfFavMovies = favorites as List<*>?
+//            favoritesAdapter?.notifyDataSetChanged()
+//            swipeRefreshLayout.isRefreshing = false
+//        }
+//    }
 
     private fun getFavmovieCoroutine() {
-        launch {
+        lifecycleScope.launchWhenResumed {
             swipeRefreshLayout.isRefreshing = true
             val selectedOffline = movieDao?.getLikedOffline(11)
             if (selectedOffline != null) {
