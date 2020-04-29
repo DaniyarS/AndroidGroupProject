@@ -58,7 +58,7 @@ class MovieFragmentSecond : Fragment(), CoroutineScope {
         movieName = view.findViewById(R.id.tvMovieName)
         movieGenre = view.findViewById(R.id.tvGenre)
         movieIndex = view.findViewById(R.id.tvImageIndex)
-        movieIndex.text = "1"
+        movieIndex.text = "2"
         getBriefMovieDetail(id)
 
         return view

@@ -48,7 +48,6 @@ class MovieDetailActivity : AppCompatActivity(), CoroutineScope by MainScope() {
     private lateinit var movieTitle: TextView
     private lateinit var movieRealease: TextView
     private lateinit var movieDuration: TextView
-    private lateinit var movieGenre: TextView
     private lateinit var movieDetails: TextView
     private lateinit var movieDirector: TextView
     private lateinit var movieCast: TextView
@@ -84,7 +83,6 @@ class MovieDetailActivity : AppCompatActivity(), CoroutineScope by MainScope() {
         movieTitle = findViewById(R.id.tvMovieName)
         movieRealease = findViewById(R.id.tvYear)
         movieDuration = findViewById(R.id.tvDuration)
-        movieGenre = findViewById(R.id.textView6)
         movieDetails = findViewById(R.id.tvDetailDesc)
         movieDirector = findViewById(R.id.tvDirectorName)
         movieCast = findViewById(R.id.tvCastName)

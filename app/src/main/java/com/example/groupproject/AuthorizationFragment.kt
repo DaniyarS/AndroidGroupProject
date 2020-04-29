@@ -66,6 +66,7 @@ class AuthorizationFragment : Fragment(), CoroutineScope {
             password = it.findViewById(R.id.etPassword)
             btSign = it.findViewById(R.id.btRegistrate)
             accountFragment = AccountFragment()
+            progressBar2.hide()
         }
         btSign.setOnClickListener(){
             initNewTokenCoroutine()
