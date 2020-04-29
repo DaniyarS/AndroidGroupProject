@@ -221,8 +221,10 @@ class MovieDetailActivity : AppCompatActivity(), CoroutineScope by MainScope() {
                     RetrofitMoviesService.getMovieApi().addFavoriteCoroutine(BuildConfig.MOVIE_DB_API_TOKEN, sessionId,
                         favoriteRequest)
                 } catch (e: Exception) {
-                    RetrofitMoviesService.getMovieApi()
-                        .rateCoroutine(sessionId, BuildConfig.MOVIE_DB_API_TOKEN, body)
+                    try {
+                        RetrofitMoviesService.getMovieApi()
+                            .rateCoroutine(sessionId, BuildConfig.MOVIE_DB_API_TOKEN, body)
+                    } catch (e: Exception) { }
                 }
                 if (isClicked) {
                     movie.selected = 11

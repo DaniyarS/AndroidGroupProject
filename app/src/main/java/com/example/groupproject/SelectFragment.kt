@@ -87,18 +87,15 @@ class SelectFragment : Fragment(), FavoritesAdapter.RecyclerViewItemClick, Corou
     }
 
 
-    override fun itemClick(position: Int, item: Movie) {
-        val intent = Intent(activity, MovieDetailActivity::class.java)
-        intent.putExtra("movie_id", item.id)
-        startActivity(intent)
-    }
-
     override fun onDestroy() {
         super.onDestroy()
         job.cancel()
     }
 
-
+    override fun itemClick(position: Int, item: Movie) {
+        TODO("Not yet implemented")
+    }
+    
     override fun removeFromFavoritesCoroutine(position: Int, item: Movie) {
         var response: Response<FavoriteResponse>
         val favoriteRequest = FavoriteRequest("movie", item.id, false)
@@ -108,7 +105,8 @@ class SelectFragment : Fragment(), FavoritesAdapter.RecyclerViewItemClick, Corou
                     .addFavoriteCoroutine(
                         BuildConfig.MOVIE_DB_API_TOKEN,
                         sessionId,
-                        favoriteRequest)
+                        favoriteRequest
+                    )
                 if (response.isSuccessful) {
                     item.selected = 10
                     movieDao?.insert(item)
