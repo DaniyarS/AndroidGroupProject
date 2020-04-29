@@ -100,14 +100,33 @@ class SelectFragment : Fragment(), FavoritesAdapter.RecyclerViewItemClick, Corou
 
 
     override fun removeFromFavoritesCoroutine(position: Int, item: Movie) {
+        var response: Response<FavoriteResponse>
+        val favoriteRequest = FavoriteRequest("movie", item.id, false)
         lifecycleScope.launchWhenResumed {
-            item.selected = 10
-            movieDao?.insert(item)
-            Toast.makeText(
-                activity?.applicationContext,
-                "Removed from favorites",
-                Toast.LENGTH_SHORT
-            ).show()
+            try {
+                response = RetrofitMoviesService.getMovieApi()
+                    .addFavoriteCoroutine(
+                        BuildConfig.MOVIE_DB_API_TOKEN,
+                        sessionId,
+                        favoriteRequest)
+                if (response.isSuccessful) {
+                    item.selected = 10
+                    movieDao?.insert(item)
+                    Toast.makeText(
+                        view?.context,
+                        "Removed",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            } catch (e: Exception) {
+                item.selected = 10
+                movieDao?.insert(item)
+                Toast.makeText(
+                    activity?.applicationContext,
+                    "Removed",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
         }
     }
 

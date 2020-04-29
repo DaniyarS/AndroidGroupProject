@@ -66,12 +66,6 @@ interface MovieApi {
         @Query("api_key") apiKey: String
     ): Response<Credits>
 
-    @GET("movie/{movie_id}/credits")
-    fun getCredits(
-        @Path("movie_id") id: Int,
-        @Query("api_key") apiKey: String
-    ): Call<Credits>
-
     @GET("movie/top_rated")
     suspend fun getTopRatedMoviesCoroutine(
         @Query("api_key") apiKey: String
@@ -99,12 +93,6 @@ interface MovieApi {
         @Body  token: RequestToken
     ) : Response<Session>
 
-    @GET("account")
-    fun getAccount(
-        @Query("api_key")apiKey:String,
-        @Query("session_id") sessionId: String
-    ): Call<Account>
-
     @GET("account/{account_id}/favorite/movies")
     suspend fun getFavoriteCoroutine(
         @Query("api_key") apiKey: String,
@@ -124,4 +112,11 @@ interface MovieApi {
         @Query("session_id") sessionId: String?,
         @Body body: JsonObject
     ):Response<JsonObject>
+
+    @POST("account/{account_id}/favorite")
+    suspend fun addFavoriteCoroutine(
+        @Query("api_key") apiKey: String,
+        @Query("session_id") sessionId : String,
+        @Body favoriteRequest: FavoriteRequest
+    ): Response<FavoriteResponse>
 }

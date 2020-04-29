@@ -107,7 +107,6 @@ class MovieDetailActivity : AppCompatActivity(), CoroutineScope by MainScope() {
                     "Please, sign in first",
                     Toast.LENGTH_SHORT
                 ).show()
-                setFragment(authorizationFragment)
             } else {
                 progressBar.visibility = View.VISIBLE
                 addToFavoriteCoroutine(movieId)
@@ -210,6 +209,7 @@ class MovieDetailActivity : AppCompatActivity(), CoroutineScope by MainScope() {
         ) {
             isClicked = true
             ivAddList.setImageResource(R.drawable.ic_star_black_24dp)
+            lateinit var favoriteRequest: FavoriteRequest
             val body = JsonObject().apply {
                 addProperty("media_type", "movie")
                 addProperty("media_id", item)
@@ -217,9 +217,12 @@ class MovieDetailActivity : AppCompatActivity(), CoroutineScope by MainScope() {
             }
             launch {
                 try {
+                    favoriteRequest = FavoriteRequest("movie", item, isClicked)
+                    RetrofitMoviesService.getMovieApi().addFavoriteCoroutine(BuildConfig.MOVIE_DB_API_TOKEN, sessionId,
+                        favoriteRequest)
+                } catch (e: Exception) {
                     RetrofitMoviesService.getMovieApi()
                         .rateCoroutine(sessionId, BuildConfig.MOVIE_DB_API_TOKEN, body)
-                } catch (e: Exception) {
                 }
                 if (isClicked) {
                     movie.selected = 11
@@ -242,10 +245,14 @@ class MovieDetailActivity : AppCompatActivity(), CoroutineScope by MainScope() {
                 addProperty("favorite", isClicked)
             }
             launch {
+                lateinit var favoriteRequest: FavoriteRequest
                 try {
+                    favoriteRequest = FavoriteRequest("movie", item, isClicked)
+                    RetrofitMoviesService.getMovieApi().addFavoriteCoroutine(BuildConfig.MOVIE_DB_API_TOKEN, sessionId,
+                        favoriteRequest)
+                } catch (e: Exception) {
                     RetrofitMoviesService.getMovieApi()
                         .rateCoroutine(sessionId, BuildConfig.MOVIE_DB_API_TOKEN, body)
-                } catch (e: Exception) {
                 }
                 if (!isClicked) {
                     movie.selected = 10
@@ -263,7 +270,7 @@ class MovieDetailActivity : AppCompatActivity(), CoroutineScope by MainScope() {
 
 
     private fun isFavorite(movieId: Int) {
-        lifecycleScope.launchWhenResumed {
+        launch {
             val selectInt = withContext(Dispatchers.IO) {
                 try {
                     val response = RetrofitMoviesService.getMovieApi()
@@ -289,11 +296,5 @@ class MovieDetailActivity : AppCompatActivity(), CoroutineScope by MainScope() {
                 ivAddList.setImageResource(R.drawable.ic_star_border_black_24dp)
             }
         }
-    }
-
-    private fun setFragment(fragment: Fragment) {
-        val fragmentTransaction: FragmentTransaction = supportFragmentManager.beginTransaction()
-        fragmentTransaction.replace(R.id.main_frame, fragment)
-        fragmentTransaction.commit()
     }
 }
