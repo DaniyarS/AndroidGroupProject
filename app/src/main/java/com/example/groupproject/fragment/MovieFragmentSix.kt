@@ -1,6 +1,7 @@
 package com.example.groupproject.fragment
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import android.view.ContextMenu
 import android.view.LayoutInflater
@@ -13,6 +14,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.example.groupproject.BuildConfig
+import com.example.groupproject.MovieDetailActivity
 import com.example.groupproject.R
 import com.example.groupproject.api.RetrofitMoviesService
 import com.example.groupproject.database.MovieDao
@@ -25,6 +27,7 @@ import kotlinx.coroutines.withContext
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+
 import kotlin.coroutines.CoroutineContext
 
 class MovieFragmentSix : Fragment(), CoroutineScope {
@@ -44,6 +47,15 @@ class MovieFragmentSix : Fragment(), CoroutineScope {
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + job
 
+    //new val job
+    private val job = Job()
+
+    //override fun for coroutine context
+    override val coroutineContext: CoroutineContext
+        get() = Dispatchers.Main + job
+
+    private var movieDao : MovieDao?=null
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -61,7 +73,7 @@ class MovieFragmentSix : Fragment(), CoroutineScope {
         movieIndex = view.findViewById(R.id.tvImageIndex)
         movieIndex.text = "6"
         getBriefMovieDetail(id)
-
+        
         return view
     }
 
@@ -69,6 +81,7 @@ class MovieFragmentSix : Fragment(), CoroutineScope {
         super.onDestroy()
         job.cancel()
     }
+
 
     private fun getBriefMovieDetail(id: Int) {
         lifecycleScope.launchWhenResumed {
@@ -93,6 +106,7 @@ class MovieFragmentSix : Fragment(), CoroutineScope {
             }
             Glide.with(image).load(movie?.getBackDropPathImage()).into(image)
             movieName.text = movie?.title
+
         }
     }
-}
+//}

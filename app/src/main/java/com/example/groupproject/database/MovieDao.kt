@@ -1,5 +1,4 @@
 package com.example.groupproject.database
-
 import androidx.room.*
 import com.example.groupproject.model.Movie
 
@@ -40,4 +39,5 @@ interface MovieDao{
 
     @Query("UPDATE movies_table SET runtime = :runtime WHERE id = :id")
     fun updateMovieRuntime(runtime: Int, id: Int)
+
 }

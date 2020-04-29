@@ -40,7 +40,7 @@ class FavoritesAdapter(
             val movieTitle = view.findViewById<TextView>(R.id.tvMovieNameFav)
             val movieImage = view.findViewById<ImageView>(R.id.ivMovieFav)
             val removeFromFavList = view.findViewById<ImageView>(R.id.ivAddListFav)
-            Glide.with(context).load(post?.getBackDropPathImage()).into(movieImage)
+            Glide.with(context).load("https://image.tmdb.org/t/p/original"+post?.backdrop_path).into(movieImage)
             movieTitle.text = post?.title
 
             removeFromFavList.setOnClickListener {
