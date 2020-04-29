@@ -2,7 +2,6 @@ package com.example.groupproject
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -16,12 +15,11 @@ import com.example.groupproject.api.RequestToken
 import com.example.groupproject.api.RetrofitMoviesService
 import com.example.groupproject.api.Session
 import com.example.groupproject.api.Validation
+import kotlinx.android.synthetic.main.fragment_authorization.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import retrofit2.Call
-import retrofit2.Callback
 import retrofit2.Response
 import kotlin.coroutines.CoroutineContext
 
@@ -67,11 +65,11 @@ class AuthorizationFragment : Fragment(), CoroutineScope {
             username = it.findViewById(R.id.etUsername)
             password = it.findViewById(R.id.etPassword)
             btSign = it.findViewById(R.id.btRegistrate)
-
             accountFragment = AccountFragment()
         }
         btSign.setOnClickListener(){
             initNewTokenCoroutine()
+            progressBar2.show()
         }
     }
 
@@ -117,7 +115,8 @@ class AuthorizationFragment : Fragment(), CoroutineScope {
             val response: Response<Session> = RetrofitMoviesService.getMovieApi()
                 .createSessionCoroutine(BuildConfig.MOVIE_DB_API_TOKEN, requestTokenResult)
             if (response.isSuccessful){
-                sessionId = response.body()?.session_id.toString()
+                progressBar2.hide()
+                sessionId = response.body()?.sessionId.toString()
                 editSharedPref()
 
                 val sessionPreference = SessionPreference(activity?.applicationContext!!)
@@ -132,15 +131,16 @@ class AuthorizationFragment : Fragment(), CoroutineScope {
             }
             else{
                 Toast.makeText(activity?.applicationContext,"No session id", Toast.LENGTH_LONG).show()
+                progressBar2.hide()
             }
         }
     }
 
 
     private fun setFragment(fragment: Fragment){
-        val fragmentTransaction:FragmentTransaction = fragmentManager?.beginTransaction()!!
-        fragmentTransaction.replace(R.id.main_frame, fragment)
-        fragmentTransaction.commit()
+        val fragmentTransaction: FragmentTransaction? = fragmentManager?.beginTransaction()
+        fragmentTransaction?.replace(R.id.main_frame, fragment)
+        fragmentTransaction?.commit()
     }
 
     private fun editSharedPref(){

@@ -1,15 +1,12 @@
 package com.example.groupproject.fragment
 
-import android.annotation.SuppressLint
 import android.os.Bundle
-import android.view.ContextMenu
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
@@ -23,17 +20,14 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.withContext
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import kotlin.coroutines.CoroutineContext
 
 class MovieFragment : Fragment(), CoroutineScope {
     private lateinit var progressBar : ProgressBar
-    private lateinit var Image : ImageView
-    private lateinit var MovieName: TextView
-    private lateinit var MovieGenre: TextView
-    private lateinit var MovieIndex: TextView
+    private lateinit var image : ImageView
+    private lateinit var movieName: TextView
+    private lateinit var movieGenre: TextView
+    private lateinit var movieIndex: TextView
 
     //new val job
     private val job = Job()
@@ -54,13 +48,14 @@ class MovieFragment : Fragment(), CoroutineScope {
 
         movieDao = MovieDatabase.getDatabase(context!!).movieDao()
 
+        val id = 110
         progressBar = view.findViewById(R.id.progressBar)
-        Image = view.findViewById(R.id.ivHeadlineMovie)
-        MovieName = view.findViewById(R.id.tvMovieName)
-        MovieGenre = view.findViewById(R.id.tvGenre)
-        MovieIndex = view.findViewById(R.id.tvImageIndex)
-        MovieIndex.text="1"
-        getBriefMovieDetail(110)
+        image = view.findViewById(R.id.ivHeadlineMovie)
+        movieName = view.findViewById(R.id.tvMovieName)
+        movieGenre = view.findViewById(R.id.tvGenre)
+        movieIndex = view.findViewById(R.id.tvImageIndex)
+        movieIndex.text="1"
+        getBriefMovieDetail(id)
 
         return view
     }
@@ -91,8 +86,8 @@ class MovieFragment : Fragment(), CoroutineScope {
                     movieDao?.getMovie(id) ?: Movie()
                 }
             }
-            Glide.with(Image).load(movie?.getBackDropPathImage()).into(Image)
-            MovieName.text = movie?.title
+            Glide.with(image).load(movie?.getBackDropPathImage()).into(image)
+            movieName.text = movie?.title
         }
     }
 

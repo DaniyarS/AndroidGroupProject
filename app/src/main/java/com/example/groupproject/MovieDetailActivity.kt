@@ -198,8 +198,8 @@ class MovieDetailActivity : AppCompatActivity(), CoroutineScope by MainScope() {
                         }
                     }
                 }
-            } catch (e:Exception){
-                Toast.makeText(this@MovieDetailActivity,"no credits",Toast.LENGTH_SHORT).show()
+            } catch (e: Exception) {
+                Toast.makeText(this@MovieDetailActivity, "no credits", Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -219,8 +219,10 @@ class MovieDetailActivity : AppCompatActivity(), CoroutineScope by MainScope() {
             }
             launch {
                 try {
-                    RetrofitMoviesService.getMovieApi().rateCoroutine(sessionId, BuildConfig.MOVIE_DB_API_TOKEN, body)
-                } catch (e: Exception) { }
+                    RetrofitMoviesService.getMovieApi()
+                        .rateCoroutine(sessionId, BuildConfig.MOVIE_DB_API_TOKEN, body)
+                } catch (e: Exception) {
+                }
                 if (isClicked) {
                     movie.selected = 11
                     movieDao?.insert(movie)
@@ -229,6 +231,7 @@ class MovieDetailActivity : AppCompatActivity(), CoroutineScope by MainScope() {
                         "Added to favorites",
                         Toast.LENGTH_SHORT
                     ).show()
+                    progressBar.visibility = View.GONE
                 }
             }
         } else {
@@ -242,8 +245,10 @@ class MovieDetailActivity : AppCompatActivity(), CoroutineScope by MainScope() {
             }
             launch {
                 try {
-                    RetrofitMoviesService.getMovieApi().rateCoroutine(sessionId, BuildConfig.MOVIE_DB_API_TOKEN, body)
-                } catch (e: Exception) { }
+                    RetrofitMoviesService.getMovieApi()
+                        .rateCoroutine(sessionId, BuildConfig.MOVIE_DB_API_TOKEN, body)
+                } catch (e: Exception) {
+                }
                 if (!isClicked) {
                     movie.selected = 10
                     movieDao?.insert(movie)
@@ -252,6 +257,7 @@ class MovieDetailActivity : AppCompatActivity(), CoroutineScope by MainScope() {
                         "Removed from favorites",
                         Toast.LENGTH_SHORT
                     ).show()
+                    progressBar.visibility = View.GONE
                 }
             }
         }
@@ -266,7 +272,7 @@ class MovieDetailActivity : AppCompatActivity(), CoroutineScope by MainScope() {
                         .hasLikeCoroutine(movieId, BuildConfig.MOVIE_DB_API_TOKEN, sessionId)
                     if (response.isSuccessful) {
                         val gson = Gson()
-                        var select = gson.fromJson(
+                        val select = gson.fromJson(
                             response.body(),
                             FavoriteResponse::class.java
                         ).favorite

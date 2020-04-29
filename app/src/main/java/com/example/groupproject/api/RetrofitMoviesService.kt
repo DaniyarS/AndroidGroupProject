@@ -49,26 +49,16 @@ object RetrofitMoviesService {
 }
 
 interface MovieApi {
-
-    //POPULAR MOVIES
     @GET("movie/popular")
     suspend fun getPopularMoviesCoroutine(
         @Query("api_key") apiKey: String
     ): Response<GetMoviesResponse>
 
-    //MOVIE BY ID
     @GET("movie/{movie_id}")
     suspend fun getMovieByIdCoroutine(
         @Path("movie_id")  id: Int,
         @Query("api_key") apiKey: String
     ): Response<Movie>
-
-    //MOVIE BY ID
-    @GET("movie/{movie_id}")
-    fun getMovieById(
-        @Path("movie_id")  id: Int,
-        @Query("api_key") apiKey: String
-    ): Call<Movie>
 
     @GET("movie/{movie_id}/credits")
     suspend fun getCreditsCoroutine(
@@ -76,58 +66,32 @@ interface MovieApi {
         @Query("api_key") apiKey: String
     ): Response<Credits>
 
-
-    //CREDITS FOR MOVIE ID
     @GET("movie/{movie_id}/credits")
     fun getCredits(
         @Path("movie_id") id: Int,
         @Query("api_key") apiKey: String
     ): Call<Credits>
 
-    //TOPRATED MOVIES
     @GET("movie/top_rated")
     suspend fun getTopRatedMoviesCoroutine(
         @Query("api_key") apiKey: String
     ): Response<GetMoviesResponse>
 
-    //UPCOMING MOVIES
     @GET("movie/upcoming")
     suspend fun getUpcomingMoviesCoroutine(
         @Query("api_key") apiKey: String
     ): Response<GetMoviesResponse>
-////////////////////////////////////////////////////////////////////
-    //REQUEST TOKEN WHILE REGISTRATION
-    @GET("authentication/token/new")
-    fun getToken(
-        @Query("api_key") apiKey: String
-    ) : Call<RequestToken>
 
-    //REQUEST TOKEN WHILE REGISTRATION COROUTINE
     @GET("authentication/token/new")
     suspend fun getTokenCoroutine(
         @Query("api_key") apiKey: String
     ) : Response<RequestToken>
 
-    //VALIDATION WITH ACCOUNT == request token
-    @POST("authentication/token/validate_with_login")
-    fun validation(
-        @Query("api_key") apiKey: String,
-        @Body validation: Validation
-    ) : Call<RequestToken>
-
-    //VALIDATION WITH ACCOUNT == request token
     @POST("authentication/token/validate_with_login")
     suspend fun validationCoroutine(
         @Query("api_key") apiKey: String,
         @Body validation: Validation
     ) : Response<RequestToken>
-
-    //CREATE NEW SESSION
-    @POST("authentication/session/new")
-    fun createSession(
-        @Query("api_key") apiKey: String,
-        @Body  token: RequestToken
-    ) : Call<Session>
 
     @POST("authentication/session/new")
     suspend fun createSessionCoroutine(
@@ -135,34 +99,11 @@ interface MovieApi {
         @Body  token: RequestToken
     ) : Response<Session>
 
-    ////////////////////////////////////
-    @GET("account") ///////account
+    @GET("account")
     fun getAccount(
         @Query("api_key")apiKey:String,
         @Query("session_id") sessionId: String
     ): Call<Account>
-    /////////////////////////////////
-    //ADD MOVIE TO FAVORITE
-    @POST("account/{account_id}/favorite")
-    fun addFavorite(
-        @Query("api_key") apiKey: String,
-        @Query("session_id") sessionId : String,
-        @Body favoriteRequest: FavoriteRequest
-    ) : Call<FavoriteResponse>
-
-    @POST("account/{account_id}/favorite")
-    suspend fun addFavoriteCoroutine(
-        @Query("api_key") apiKey: String,
-        @Query("session_id") sessionId : String,
-        @Body favoriteRequest: FavoriteRequest
-    ): Response<FavoriteResponse>
-
-    //GET LIST OF FAVORITE MOVIES
-    @GET("account/{account_id}/favorite/movies")
-    fun getFavorite(
-        @Query("api_key") apiKey: String,
-        @Query("session_id") sessionId: String
-    ) : Call<GetMoviesResponse>
 
     @GET("account/{account_id}/favorite/movies")
     suspend fun getFavoriteCoroutine(

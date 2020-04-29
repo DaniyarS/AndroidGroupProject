@@ -12,7 +12,7 @@ import com.example.groupproject.R
 import com.example.groupproject.model.Movie
 
 class MoviesAdapter(
-    var ListOfMovies: List<Movie>? = null,
+    var listMovies: List<Movie>? = null,
     var context: Context,
     val itemClickListener: RecyclerViewItemClick? = null
 ) : RecyclerView.Adapter<MoviesAdapter.MovieViewHolder>() {
@@ -21,36 +21,34 @@ class MoviesAdapter(
         return MovieViewHolder(view)
     }
 
-    override fun getItemCount(): Int = ListOfMovies?.size ?: 0
+    override fun getItemCount(): Int = listMovies?.size ?: 0
 
     override fun onBindViewHolder(p0: MovieViewHolder, p1: Int) {
-        p0.bind(ListOfMovies?.get(p1))
+        p0.bind(listMovies?.get(p1))
     }
 
-    fun clearAll(){
-        (ListOfMovies as? ArrayList<Movie>)?.clear()
+    fun clearAll() {
+        (listMovies as? ArrayList<Movie>)?.clear()
         notifyDataSetChanged()
     }
 
-    inner class MovieViewHolder(val view: View): RecyclerView.ViewHolder(view)
-    {
+    inner class MovieViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
 
         fun bind(post: Movie?) {
 
             val movieTitle = view.findViewById<TextView>(R.id.tvMovieName)
-            val movieImage= view.findViewById<ImageView>(R.id.ivMovie)
+            val movieImage = view.findViewById<ImageView>(R.id.ivMovie)
 
             Glide.with(context).load(post?.getPosterPathImage()).into(movieImage)
-            movieTitle.text=post?.title
+            movieTitle.text = post?.title
 
-                    view.setOnClickListener {
-                        itemClickListener?.itemClick(adapterPosition, post!!)
-                    }
+            view.setOnClickListener {
+                itemClickListener?.itemClick(adapterPosition, post!!)
+            }
         }
     }
 
     interface RecyclerViewItemClick {
         fun itemClick(position: Int, item: Movie)
     }
-
 }

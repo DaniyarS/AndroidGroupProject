@@ -6,9 +6,10 @@ import androidx.fragment.app.FragmentPagerAdapter
 import com.example.groupproject.fragment.*
 
 
-class ViewPagerAdapter internal constructor(fm: FragmentManager) : FragmentPagerAdapter(fm, FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
+class ViewPagerAdapter internal constructor(fm: FragmentManager) :
+    FragmentPagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
 
-    private val COUNT = 8
+    private val count = 8
 
     override fun getItem(position: Int): Fragment {
         var fragment: Fragment? = null
@@ -27,7 +28,7 @@ class ViewPagerAdapter internal constructor(fm: FragmentManager) : FragmentPager
     }
 
     override fun getCount(): Int {
-        return COUNT
+        return count
     }
 
     override fun getPageTitle(position: Int): CharSequence? {

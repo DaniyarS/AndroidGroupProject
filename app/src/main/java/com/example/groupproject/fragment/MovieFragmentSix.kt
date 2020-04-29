@@ -30,15 +30,15 @@ import kotlin.coroutines.CoroutineContext
 class MovieFragmentSix : Fragment(), CoroutineScope {
 
     private lateinit var progressBar: ProgressBar
-    private lateinit var Image : ImageView
-    private lateinit var MovieName: TextView
-    private lateinit var MovieGenre: TextView
-    private lateinit var MovieIndex: TextView
+    private lateinit var image: ImageView
+    private lateinit var movieName: TextView
+    private lateinit var movieGenre: TextView
+    private lateinit var movieIndex: TextView
 
     //new val job
     private val job = Job()
 
-    private var movieDao : MovieDao?=null
+    private var movieDao: MovieDao? = null
 
     //override fun for coroutine context
     override val coroutineContext: CoroutineContext
@@ -49,17 +49,18 @@ class MovieFragmentSix : Fragment(), CoroutineScope {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.headline_movie_items, container,false)
+
+        val view = inflater.inflate(R.layout.headline_movie_items, container, false)
 
         movieDao = MovieDatabase.getDatabase(context!!).movieDao()
-
+        val id = 660
         progressBar = view.findViewById(R.id.progressBar)
-        Image = view.findViewById(R.id.ivHeadlineMovie)
-        MovieName = view.findViewById(R.id.tvMovieName)
-        MovieGenre = view.findViewById(R.id.tvGenre)
-        MovieIndex = view.findViewById(R.id.tvImageIndex)
-        MovieIndex.text="6"
-        getBriefMovieDetail(660)
+        image = view.findViewById(R.id.ivHeadlineMovie)
+        movieName = view.findViewById(R.id.tvMovieName)
+        movieGenre = view.findViewById(R.id.tvGenre)
+        movieIndex = view.findViewById(R.id.tvImageIndex)
+        movieIndex.text = "6"
+        getBriefMovieDetail(id)
 
         return view
     }
@@ -69,11 +70,10 @@ class MovieFragmentSix : Fragment(), CoroutineScope {
         job.cancel()
     }
 
-
     private fun getBriefMovieDetail(id: Int) {
         lifecycleScope.launchWhenResumed {
             progressBar.visibility = View.GONE
-            val movie = withContext(Dispatchers.IO){
+            val movie = withContext(Dispatchers.IO) {
                 try {
                     progressBar.visibility = View.GONE
                     val response = RetrofitMoviesService.getMovieApi()
@@ -91,8 +91,8 @@ class MovieFragmentSix : Fragment(), CoroutineScope {
                     movieDao?.getMovie(id) ?: Movie()
                 }
             }
-            Glide.with(Image).load(movie?.getBackDropPathImage()).into(Image)
-            MovieName.text = movie?.title
+            Glide.with(image).load(movie?.getBackDropPathImage()).into(image)
+            movieName.text = movie?.title
         }
     }
 }
